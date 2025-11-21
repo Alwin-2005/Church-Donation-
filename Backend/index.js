@@ -1,13 +1,7 @@
 const express = require("express");
 const PORT = 4000;
-const User = require("./models/user");
-const Donation = require("./models/donation");
-const dCampaign = require("./models/donationCampaign");
-const merch = require("./models/merchandise");
-const content = require("./models/content");
-const cart = require("./models/cart");
-const order = require("./models/order");
-const payment = require("./models/payment");
+
+const adminRoute = require("./routes/admin");
 const homeRoute = require("./routes/home");
 const authRoute = require("./routes/auth");
 
@@ -23,6 +17,7 @@ connectMongoDB("mongodb://localhost:27017/ChurchDonation")
 
 app.use("/",homeRoute);
 app.use("/users",authRoute);
+app.use("/admin",adminRoute);
 
 app.listen(PORT, () => {
     console.log("Server started at port ", PORT);

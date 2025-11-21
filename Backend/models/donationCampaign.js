@@ -18,6 +18,7 @@ const donationCampaignSchema = mongoose.Schema({
     goalAmount: {
         type: Number,
         required: true,
+        default: "0",
     },
 
     collectedAmount: {
@@ -41,7 +42,7 @@ const donationCampaignSchema = mongoose.Schema({
 
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        required: 'true',
+        required: true,
         refPath: 'user',
     },
 
