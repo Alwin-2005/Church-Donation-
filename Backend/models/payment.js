@@ -16,7 +16,9 @@ const paymentSchema = mongoose.Schema({
     },
 
     method: {
+        type: String,
         enum: ['card','UPI','BankTransfer'],
+        required: true,
     },
 
     paymentDate: {
@@ -25,7 +27,9 @@ const paymentSchema = mongoose.Schema({
     },
 
     status: {
+        type: String,
         enum: ['pending', 'failed', 'paid', 'refunded'],
+        required: true,
     },
 
     transactionNo: {

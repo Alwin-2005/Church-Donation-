@@ -14,7 +14,9 @@ const donationSchema = mongoose.Schema({
     },
 
     paymentStatus: {
+        type: String,
         enum: ['pending','paid','failed'],
+        required: true,
     },
 
     receiptNo: {

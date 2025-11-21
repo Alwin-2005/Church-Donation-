@@ -17,7 +17,10 @@ const contentSchema = mongoose.Schema({
    },
 
    status:{
-        enum: ['visible','hidden'],
+          type: String,
+          enum: ['visible','hidden'],
+          required: true,
+          default: 'visible',
    },
 
    createdBy: {

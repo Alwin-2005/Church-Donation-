@@ -34,7 +34,9 @@ const donationCampaignSchema = mongoose.Schema({
     },
 
     status:{
+        type: String,
         enum: ['active','closed','paused'],
+        default: 'active',
     },
 
     createdBy: {

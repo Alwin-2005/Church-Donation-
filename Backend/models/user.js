@@ -18,7 +18,9 @@ const userSchema = mongoose.Schema({
     },
 
     gender:{
+        type: String,
         enum: ['Male','Female','Other'],
+        required: true,
     },
 
     dob:{
@@ -30,7 +32,9 @@ const userSchema = mongoose.Schema({
     },
 
     role:{
+        type: String,
         enum: ['admin','churchMember','externalMember'],
+        required: true,
     },
 
     passwordHash:{
@@ -39,7 +43,10 @@ const userSchema = mongoose.Schema({
     },
 
     status:{
+        type: String,
         enum: ['enabled','disabled'],
+        required: true,
+        default: 'enabled',
         
     },
 

@@ -22,7 +22,9 @@ const merchandiseSchema = mongoose.Schema({
     },
 
     status: {
+        type: String,
         enum: ['visible','hidden'],
+        default: 'visible',
     },
 
     description: {
