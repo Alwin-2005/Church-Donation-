@@ -3,7 +3,9 @@ const user = require("./user");
 
 const donationCampaignSchema = mongoose.Schema({
     donationType: {
+        type: String,
         enum: ['internal','external'],
+        required: true,
     },
 
     title: {

@@ -1,4 +1,4 @@
-const merch = require("../models/merchandise");
+const merch = require("../../models/merchandise");
 
 async function handleAddNewMerchItem(req,res){
     const {} = req.body;
@@ -19,7 +19,23 @@ async function handleGetAllMerchItems(req,res){
     return res.status(201).json({result});
 }
 
+async function handleUpdateMerch(req,res){
+    const Result = await merch.findOneAndUpdate({
+        _id: req.params.id
+    },
+    {
+        $set: req.body,
+    },
+    {
+        new: true,
+        runValidators: true,
+    });
+
+    return res.status(201).json({Result});
+}
+
 module.exports = {
     handleAddNewMerchItem,
     handleGetAllMerchItems,
+    handleUpdateMerch,
 };

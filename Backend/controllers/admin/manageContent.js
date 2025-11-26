@@ -1,4 +1,4 @@
-const content = require("../models/content");
+const content = require("../../models/content");
 
 async function handleAddNewContent(req,res){
     const {title, body, type, status, createdBy} = req.body;
@@ -24,7 +24,23 @@ async function handleViewAllContent(req,res){
     return res.status(201).json({result});
 }
 
+async function handleUpdateContent(req,res){
+    const Result = await content.findOneAndUpdate({
+        _id: req.params.id
+    },
+    {
+        $set: req.body,
+    },
+    {
+        new: true,
+        runValidators: true,
+    });
+
+    return res.status(201).json({Result});
+}
+
 module.exports = {
     handleAddNewContent,
     handleViewAllContent,
+    handleUpdateContent,
 };
