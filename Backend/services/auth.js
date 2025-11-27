@@ -12,7 +12,10 @@ function setUser(User){
 
 function getUser(token){
     if(!token) return null;
-    return jwt.verify(token, key);
+    try{
+        return jwt.verify(token, key);
+    }
+    catch(error){return null;}
 }
 
 module.exports = {

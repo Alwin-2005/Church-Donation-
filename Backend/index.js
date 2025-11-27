@@ -1,4 +1,5 @@
 const express = require("express");
+const {restrictToLoggedinUserOnly, checkAuth} = require("./middlewares/auth");
 const PORT = 4000;
 
 const adminRoute = require("./routes/admin");
@@ -17,7 +18,7 @@ connectMongoDB("mongodb://localhost:27017/ChurchDonation")
 
 app.use("/",homeRoute);
 app.use("/users",authRoute);
-app.use("/admin",adminRoute);
+app.use("/admin",restrictToLoggedinUserOnly,adminRoute);
 
 app.listen(PORT, () => {
     console.log("Server started at port ", PORT);
