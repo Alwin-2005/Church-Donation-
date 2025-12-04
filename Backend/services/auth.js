@@ -7,7 +7,7 @@ function setUser(User){
         email: User.email,
         role: User.role,
     };
-    return jwt.sign(payload, key);
+    return jwt.sign(payload, key,{expiresIn: "5m"});
 }
 
 function getUser(token){

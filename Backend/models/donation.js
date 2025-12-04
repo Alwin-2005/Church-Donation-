@@ -1,11 +1,16 @@
 const mongoose = require("mongoose");
-const user = require("./user");
 
 const donationSchema = mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        refPath: 'user',
+        ref: "User",
+    },
+
+    donationCampaignId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "DonationCampaign",
     },
     
     amount: {

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const user = require("./user");
 
 const donationCampaignSchema = mongoose.Schema({
     donationType: {
@@ -45,7 +44,7 @@ const donationCampaignSchema = mongoose.Schema({
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        refPath: 'user',
+        ref: "User",
     },
 
 },

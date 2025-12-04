@@ -1,4 +1,5 @@
 const order = require("../../models/order");
+const mongoose = require("mongoose");
 
 async function handleGetAllOrdersInfo(req,res){
     const Result = await order.find({});
@@ -6,7 +7,7 @@ async function handleGetAllOrdersInfo(req,res){
 }
 
 async function handleUpdateOrderStatus(req,res){
-    const id = req.params.id;
+    const id = new mongoose.Types.ObjectId(req.params.id);
     const state = req.body;
     const Result = await order.findOneAndUpdate(
         { _id: id },

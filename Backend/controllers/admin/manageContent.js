@@ -1,14 +1,15 @@
 const content = require("../../models/content");
 
 async function handleAddNewContent(req,res){
-    const {title, body, type, status, createdBy} = req.body;
+    const {title, body, type, status} = req.body;
+    const userId = new mongoose.Types.ObjectId(req.user._id);
     try{
         await content.create({
             title,
             body,
             type,
             status,
-            createdBy,
+            userId,
         });
         return res.status(201).json("msg: Created successfully");
     }

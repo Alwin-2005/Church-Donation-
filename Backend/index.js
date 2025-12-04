@@ -1,10 +1,15 @@
 const express = require("express");
-const {restrictToLoggedinUserOnly, checkAuth} = require("./middlewares/auth");
+const {restrictToLoggedinUserOnly} = require("./middlewares/auth");
 const PORT = 4000;
 
 const adminRoute = require("./routes/admin");
 const homeRoute = require("./routes/home");
 const authRoute = require("./routes/auth");
+const userRoute = require("./routes/userRoute");
+
+const {handleMemberRegistration,} = require("./controllers/register");
+const {handleUserLogin,} = require("./controllers/login");
+
 
 const app = express();
 const mongoose = require("mongoose");
@@ -16,9 +21,10 @@ connectMongoDB("mongodb://localhost:27017/ChurchDonation")
 .then(console.log("Database connected"))
 .catch((err) => console.log("Error occured", err));;
 
-app.use("/",homeRoute);
-app.use("/users",authRoute);
+app.use("/login",handleUserLogin);
+app.use("/register",handleMemberRegistration);
 app.use("/admin",restrictToLoggedinUserOnly,adminRoute);
+app.use("/users",userRoute);
 
 app.listen(PORT, () => {
     console.log("Server started at port ", PORT);

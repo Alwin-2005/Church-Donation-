@@ -26,7 +26,7 @@ const contentSchema = mongoose.Schema({
    createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         required: 'true',
-        refPath: 'user',
+        ref: "User",
     },
 
 

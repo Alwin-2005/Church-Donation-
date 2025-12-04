@@ -6,13 +6,13 @@ const cartSchema = mongoose.Schema({
     userId:{
         type: mongoose.Schema.ObjectId,
         required: true,
-        refPath: 'user',
+        ref: "User",
     },
 
     itemId: {
         type: mongoose.Schema.ObjectId,
         required: true,
-        refPath: 'merch',
+        ref: "Merchandise",
     },
 
    status: {

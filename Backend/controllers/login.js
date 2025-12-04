@@ -12,7 +12,6 @@ async function handleUserLogin(req,res){
     const token = setUser(user);
     //res.cookie("uuid", token);
     return res.json({token});
-    return res.status(200).json({msg: "logged in"});
 
 }
 

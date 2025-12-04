@@ -1,12 +1,9 @@
 const mongoose = require("mongoose");
-const user = require("./user");
-const merch = require("./merchandise");
-const order = require("./order");
 
 const paymentSchema = mongoose.Schema({
     orderId: {
         type: mongoose.Schema.ObjectId,
-        refPath: order,
+        ref: "Order",
         required: true,
     },
 

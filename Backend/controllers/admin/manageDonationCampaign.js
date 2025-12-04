@@ -1,15 +1,19 @@
 const donationC = require("../../models/donationCampaign");
+const mongoose = require("mongoose");
+
 
 async function handleAddNewDonationCampaign(req,res){
-    const {type, title, desc, goalAmt, startDate, endDate} = req.body;
+    const {type, ctitle, desc, goalAmt, startDate, endate} = req.body;
+    const userId = new mongoose.Types.ObjectId(req.user._id);
     try{
         await donationC.create({
-            type,
-            title,
-            desc,
-            goalAmt,
-            startDate,
-            endDate,
+            donationType: type,
+            title: ctitle,
+            description: desc,
+            goalAmount: goalAmt,
+            startDate: startDate,
+            endDate: endate,
+            createdBy: userId,
         });
         return res.status(201).json("msg: created successfully");
     }
