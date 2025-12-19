@@ -8,12 +8,26 @@ const cartSchema = mongoose.Schema({
         required: true,
         ref: "User",
     },
+    items: [
+     {
+          itemId: {
+               type: mongoose.Schema.ObjectId,
+               required: true,
+               ref: "Merchandise",
+          },
 
-    itemId: {
-        type: mongoose.Schema.ObjectId,
-        required: true,
-        ref: "Merchandise",
-    },
+          quantity: {
+               type: Number,
+               required: true,
+          },
+
+          price: {
+               type: Number,
+               required: true,
+          }
+     }
+    ],
+    
 
    status: {
         type: String,
@@ -26,7 +40,7 @@ const cartSchema = mongoose.Schema({
         required: true,
    },
 
-   price: {
+   totalPrice: {
         type: Number,
         required: true,
    },

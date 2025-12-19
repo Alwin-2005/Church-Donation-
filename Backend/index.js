@@ -19,12 +19,14 @@ app.use(express.json());
 
 connectMongoDB("mongodb://localhost:27017/ChurchDonation")
 .then(console.log("Database connected"))
-.catch((err) => console.log("Error occured", err));;
+.catch((err) => console.log("Error occured", err));
 
 app.use("/login",handleUserLogin);
 app.use("/register",handleMemberRegistration);
 app.use("/admin",restrictToLoggedinUserOnly,adminRoute);
-app.use("/users",userRoute);
+app.use("/users",restrictToLoggedinUserOnly,userRoute);
+app.use("/home",homeRoute);
+
 
 app.listen(PORT, () => {
     console.log("Server started at port ", PORT);

@@ -8,18 +8,32 @@ const orderSchema = mongoose.Schema({
           required: true,
      },
 
-     itemId: {
-          type: mongoose.Schema.ObjectId,
-          ref: "Merchandise",
-          required: true,
-     },
+     items: [
+          {
+               itemId: {
+                    type: mongoose.Schema.ObjectId,
+                    required: true,
+                    ref: "Merchandise",
+               },
+     
+               quantity: {
+                    type: Number,
+                    required: true,
+               },
+     
+               price: {
+                    type: Number,
+                    required: true,
+               }
+          }
+         ],
 
      orderDate: {
           type: Date,
           required: true,
      },
 
-     amount: {
+     totalAmount: {
           type: Number,
           required: true,
      },

@@ -1,4 +1,5 @@
 const content = require("../../models/content");
+const mongoose = require("mongoose");
 
 async function handleAddNewContent(req,res){
     const {title, body, type, status} = req.body;

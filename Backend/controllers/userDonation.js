@@ -1,11 +1,13 @@
 const donation = require("../models/donation");
+const mongoose = require("mongoose");
 
 async function handleUserMakeDonation(req,res){
-    const uid = req.params.userId;
+    const uid = new mongoose.Types.ObjectId(req.user._id);
     const cid = req.params.campaignId;
-    const {amt, status, receipt} = req.body;
+    const {type ,amt, status, receipt} = req.body;
     try{
         const result = await donation.create({
+            donationType: type,
             userId: uid,
             donationCampaignId: cid,
             amount: amt,
