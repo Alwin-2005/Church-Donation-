@@ -9,7 +9,7 @@ const userRoute = require("./routes/userRoute");
 
 const {handleMemberRegistration,} = require("./controllers/register");
 const {handleUserLogin,} = require("./controllers/login");
-
+const {handleAdminRole,handleMemberRole} = require("./middlewares/roleCheck");
 
 const app = express();
 const mongoose = require("mongoose");
@@ -23,7 +23,7 @@ connectMongoDB("mongodb://localhost:27017/ChurchDonation")
 
 app.use("/login",handleUserLogin);
 app.use("/register",handleMemberRegistration);
-app.use("/admin",restrictToLoggedinUserOnly,adminRoute);
+app.use("/admin",restrictToLoggedinUserOnly,handleAdminRole,adminRoute);
 app.use("/users",restrictToLoggedinUserOnly,userRoute);
 app.use("/home",homeRoute);
 
