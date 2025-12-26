@@ -12,18 +12,15 @@ const cartSchema = mongoose.Schema({
      {
           itemId: {
                type: mongoose.Schema.ObjectId,
-               required: true,
                ref: "Merchandise",
           },
 
           quantity: {
                type: Number,
-               required: true,
           },
 
           price: {
                type: Number,
-               required: true,
           }
      }
     ],
@@ -37,17 +34,14 @@ const cartSchema = mongoose.Schema({
 
    quantity: {
         type: Number,
-        required: true,
    },
 
    totalPrice: {
         type: Number,
-        required: true,
    },
 
    subTotal: {
         type: Number,
-        required: true,
    },
 
 },

@@ -1,32 +1,19 @@
 const cart = require("../models/cart");
 const merch = require("../models/merchandise");
 const mongoose = require("mongoose");
-const {handleGetUserRole} = require("../services/getRole");
 
 async function handleAddToCart(req,res){
-    const role = handleGetUserRole(req.user);
-    const temp = 0
-    const {merchId} = req.body;
+    const {itId,q,pr,totalp} = req.body;
     const userCart = await cart.findOne({userId: req.user._id});
-
     if(!userCart){
         const result = await cart.create({
             userId: req.user._id,
-            items: [
-                {
-                    itemId: merchId,
-                    quantity: temp,
-                    price: temp
-                }
-            ],
-            quantity: temp,
             status: "active",
-            totalPrice: temp,
-            subTotal: temp 
         });
+        return res.json({msg: "cart created",result});
     }
  
-    return res.json({msg: "success"});
+    return res.json({msg: "Cart exists"});
     
 }
 
@@ -37,7 +24,18 @@ async function handleGetCartInfo(req,res){
 
 
 async function handleUpdateCart(req,res){
+    const Result = await cart.findOneAndUpdate({
+        _id: req.user._id,
+    },
+    {
+        $set: req.body,
+    },
+    {
+        new: true,
+        runValidators: true,
+    });
 
+    return res.status(201).json({msg: "Updated Successfully"});
 }
 
 module.exports = {

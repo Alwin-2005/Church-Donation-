@@ -3,14 +3,14 @@ const {handleGetMerchItemsForUsers} = require("../controllers/userMerch");
 const {handleGetOrderById,handlePlaceOrder,handleUpdateOrder} = require("../controllers/userOrder");
 const {handleGetPaymentById} = require("../controllers/userPayment");
 const {handleUserMakeDonation} = require("../controllers/userDonation");
-const {handleAddToCart,handleGetCartInfo} = require("../controllers/userCart");
+const {handleAddToCart,handleGetCartInfo,handleUpdateCart} = require("../controllers/userCart");
 const {handleGetAllContent} = require("../controllers/userContent");
 const {handleGetUserInfo,handleUpdateProfile} = require("../controllers/userProfile");
 
 const {handleMemberRole} = require("../middlewares/roleCheck");
 const Router = express.Router();
 
-// todo view donationById, crud cart, make payment
+// todo view donationById make payment
 
 
 Router.get("/profile/view",handleGetUserInfo);
@@ -25,7 +25,7 @@ Router.post("/cart/add",handleAddToCart);
 Router.post("/orders/place",handlePlaceOrder);
 //Router.post("/payment/make");
 
-//Router.patch("/cart/update");
+Router.patch("/cart/update",handleUpdateCart);
 Router.patch("/profile/update",handleUpdateProfile);
 
 

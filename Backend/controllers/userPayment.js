@@ -1,4 +1,5 @@
 const payment = require("../models/payment");
+const order = require("../models/order");
 
 async function handleGetPaymentById(req,res){
     const result = await payment.findOne({userId: req.user._id});
@@ -7,6 +8,7 @@ async function handleGetPaymentById(req,res){
 
 async function handleMakePayment(req,res){
     try{
+        const {oId,  amount, method, paymentDate, status, transactionNo} = req.body;
         const result = await payment.create({
 
         });
@@ -15,7 +17,7 @@ async function handleMakePayment(req,res){
 }
 
 async function handleUpdatePayment(req,res){
-
+    
 }
 
 module.exports = {
