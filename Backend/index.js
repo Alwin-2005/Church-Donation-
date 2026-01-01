@@ -1,6 +1,7 @@
 const express = require("express");
 const {restrictToLoggedinUserOnly} = require("./middlewares/auth");
 const PORT = 4000;
+const cors = require("cors");
 
 const adminRoute = require("./routes/admin");
 const homeRoute = require("./routes/home");
@@ -16,15 +17,16 @@ const mongoose = require("mongoose");
 const {connectMongoDB} = require("./connection");
 
 app.use(express.json());
+app.use(cors());
 
 connectMongoDB("mongodb://localhost:27017/ChurchDonation")
 .then(console.log("Database connected"))
 .catch((err) => console.log("Error occured", err));
 
-app.use("/login",handleUserLogin);
-app.use("/register",handleMemberRegistration);
-app.use("/admin",restrictToLoggedinUserOnly,handleAdminRole,adminRoute);
-app.use("/users",restrictToLoggedinUserOnly,userRoute);
+app.use("/api/login",handleUserLogin);
+app.use("/api/register",handleMemberRegistration);
+app.use("/api/admin",restrictToLoggedinUserOnly,handleAdminRole,adminRoute);
+app.use("/api/users",restrictToLoggedinUserOnly,userRoute);
 app.use("/home",homeRoute);
 
 

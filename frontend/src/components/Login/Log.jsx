@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Login from "../../assets/Login.jpg";
 import COG from "../../assets/COG.png";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 const Log = () => {
   const navigate = useNavigate();
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin  = async (e) => {
     e.preventDefault();
-    navigate("/home");
+    try{
+      const res = await axios.post("http://localhost:4000/api/login",{email,password}); 
+      console.log(res);
+      navigate("/home");
+    }
+    catch(err){console.log(err)}
   };
 
   return (
@@ -38,12 +46,16 @@ const Log = () => {
             <input
               type="email"
               placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
             <input
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
