@@ -1,5 +1,7 @@
 import React from "react";
 import COG from "../../assets/COG.png";
+import {Link } from "react-router-dom";
+
 
 const Footer = () => {
   return (
@@ -35,9 +37,9 @@ const Footer = () => {
           <h2 className="text-white text-lg font-semibold mb-4">
             Legal
           </h2>
-          <p className="text-sm hover:text-white cursor-pointer transition">
+          <Link to="/TermsCon" className="text-sm hover:text-white cursor-pointer transition">
             Terms & Conditions
-          </p>
+          </Link>
         </div>
 
       </div>

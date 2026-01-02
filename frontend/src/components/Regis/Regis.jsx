@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import Login from "../../assets/Login.jpg";
 import COG from "../../assets/COG.png";
 import { useNavigate, Link } from "react-router-dom";
 
 const Regis = () => {
   const navigate = useNavigate();
+  const [gender,setGender] = useState('');
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    navigate("/home");
-  };
+  const handleRegistration = async (e) => {
 
+  }
+  
   return (
     <div
       className="h-screen w-full bg-cover bg-center relative"
@@ -26,7 +26,7 @@ const Regis = () => {
         alt="Logo"
       />
 
-      {/* Reg Card */}
+      {/* Registration Card */}
       <div className="relative z-10 h-full flex items-center justify-center">
         <div className="w-[380px] backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl px-10 py-12 shadow-2xl">
 
@@ -34,7 +34,7 @@ const Regis = () => {
             Registration
           </h1>
 
-          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+          <form  className="flex flex-col gap-5">
 
           <input
               type="text"
@@ -50,15 +50,18 @@ const Regis = () => {
 
             <input
               type="tel"
-              placeholder="Email"
+              placeholder="Phone No."
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
-            <input
-              type="gender"
-              placeholder="Gender"
-              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
-            />
+            <select
+            className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+            value={gender}
+            >
+              <option value={"Male"}>Male</option>
+              <option value={"Female"}>Female</option>
+              <option value={"Other"}>Other</option>
+            </select>
 
             <input
               type="date"
@@ -70,7 +73,14 @@ const Regis = () => {
 
             <input
               type="password"
-              placeholder="Password"
+              placeholder="Create Password"
+              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+            />
+
+
+            <input
+              type="password"
+              placeholder="Confirm Password"
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
@@ -78,7 +88,7 @@ const Regis = () => {
               type="submit"
               className="mt-2 bg-black text-white rounded py-2 font-semibold hover:bg-gray-900 active:scale-95 transition-all"
             >
-              Reg
+              Register
             </button>
           </form>
 

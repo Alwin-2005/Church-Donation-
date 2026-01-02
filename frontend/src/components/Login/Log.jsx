@@ -13,10 +13,13 @@ const Log = () => {
     e.preventDefault();
     try{
       const res = await axios.post("http://localhost:4000/api/login",{email,password}); 
-      console.log(res);
       navigate("/home");
     }
-    catch(err){console.log(err)}
+    catch(err){console.log(err)
+      alert("Invalid email or password");
+    }
+    
+
   };
 
   return (
@@ -70,10 +73,17 @@ const Log = () => {
           {/* Extra Links */}
           <div className="text-center mt-5">
             <Link
-              to="/forgot-password"
+              to="/registerNow"
               className="text-sm text-gray-300 hover:text-white transition"
             >
-              Forgot Password?
+              Register Now
+            </Link>
+            <br></br>
+            <Link
+              to="/forgotpass"
+              className="text-sm text-gray-300 hover:text-white transition"
+            >
+             Forgot Password???
             </Link>
           </div>
 
