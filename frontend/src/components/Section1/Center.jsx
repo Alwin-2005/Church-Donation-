@@ -1,6 +1,6 @@
 import React from "react";
 import middle from "../../assets/middle.png";
-import footer2 from "../../assets/footer2.jpg";
+import footer2 from "../../assets/footer2.jpg"
 
 
 const Center=()=>

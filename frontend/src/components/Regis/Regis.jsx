@@ -3,14 +3,78 @@ import Login from "../../assets/Login.jpg";
 import COG from "../../assets/COG.png";
 import { useNavigate, Link } from "react-router-dom";
 
+const initialForm = {
+  fullName: "",
+  email: "",
+  phoneNo: "",
+  gender: "",
+  dob: "",
+  password: "",
+  confirmPassword: ""
+};
+
+const initialError = {
+  fullName: "",
+  email: "",
+  phoneNo: "",
+  gender: "",
+  dob: "",
+  password: ""
+};
+
 const Regis = () => {
   const navigate = useNavigate();
-  const [gender,setGender] = useState('');
 
-  const handleRegistration = async (e) => {
+  const [formInput, setFormInput] = useState(initialForm);
+  const [formError, setFormError] = useState(initialError);
+
+  const handleInput = (name,value) => {
+    setFormInput({
+      ...formInput,
+      [name]: value
+    });
+    return;
+  }
+
+  const handleFormValidation = (e) => {
+    e.preventDefault();
+    const inputError = {};
+
+    if(!formInput.fullName)
+      inputError.fullName = "Full name is required, Please fill this field";
+
+    if(!formInput.email)
+      inputError.email = "Email is required";
+
+    if(!formInput.phoneNo)
+      inputError.phoneNo = "Phone Number is required";
+
+    if(formInput.password !== formInput.confirmPassword || !formInput.password || ! formInput.confirmPassword)
+      inputError.password = "Password and confirm password should be the same";
+
+    if(!/^\d{10}$/.test(formInput.phoneNo))
+      inputError.phoneNo =  "Phone Number should be of 10 digits only";
+
+    if (!formInput.gender)
+      inputError.gender = "Please select gender";
+
+    if(!formInput.dob)
+      inputError.dob = "Please enter date of birth"
+
+      setFormError({
+        ...initialError,
+        ...inputError
+      });
+      console.log("Errors:", inputError);
+
+      console.log(Object.keys(inputError).length);
+    if (Object.keys(inputError).length === 0) {
+      console.log("Form Submitted:", formInput);
+      // navigate("/login");
+    }
 
   }
-  
+    
   return (
     <div
       className="h-screen w-full bg-cover bg-center relative"
@@ -34,55 +98,99 @@ const Regis = () => {
             Registration
           </h1>
 
-          <form  className="flex flex-col gap-5">
+          <form  className="flex flex-col gap-5"
+                 onSubmit={handleFormValidation}
+          >
 
           <input
+              name="fullName"
               type="text"
               placeholder="Full Name"
+              value= {formInput.fullName}
+              onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
+            <p
+              className="px-2  text-red-600 font-medium"
+            >{formError.fullName}</p>
+
             <input
+              name="email"
               type="email"
               placeholder="Email"
+              value= {formInput.email}
+              onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
+
+            <p
+              className="px-2  text-red-600 font-medium"
+            >{formError.email}</p>
 
             <input
+              name="phoneNo"
               type="tel"
               placeholder="Phone No."
+              value = {formInput.phoneNo}
+              onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
+            <p
+              className="px-2  text-red-600 font-medium"
+            >{formError.phoneNo}</p>
+
             <select
+            name="gender"
             className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
-            value={gender}
+            value={formInput.gender}
+            onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
             >
+              <option value="">Select gender</option>
               <option value={"Male"}>Male</option>
               <option value={"Female"}>Female</option>
               <option value={"Other"}>Other</option>
             </select>
 
+            <p
+              className="px-2  text-red-600 font-medium"
+            >{formError.gender}</p>
+
             <input
+              name="dob"
               type="date"
               placeholder="DOB"
+              value = {formInput.dob}
+              onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
-
+            <p
+              className="px-2  text-red-600 font-medium"
+            >{formError.dob}</p>
   
-
             <input
+              name="password"
               type="password"
               placeholder="Create Password"
+              value = {formInput.password}
+              onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
 
             <input
+              name="confirmPassword"
               type="password"
               placeholder="Confirm Password"
+              value = {formInput.confirmPassword}
+              onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
+
+            <p
+              className="px-2  text-red-600 font-medium"
+            >{formError.password}</p>
 
             <button
               type="submit"
@@ -91,8 +199,6 @@ const Regis = () => {
               Register
             </button>
           </form>
-
-          
 
         </div>
       </div>

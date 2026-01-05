@@ -3,6 +3,10 @@ const {setUser} = require("../services/auth");
 const bcrypt = require("bcrypt");
 
 async function handleUserLogin(req,res){
+
+    if(!req.body){
+        return res.status(401).json({msg: "Please provide email and password"});
+    }
     const {email, password} = req.body;
     const user = await User.findOne({email});
     

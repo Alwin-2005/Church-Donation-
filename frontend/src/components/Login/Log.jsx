@@ -8,15 +8,18 @@ const Log = () => {
   const navigate = useNavigate();
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
+  const [loginError,setLoginError] = useState("");
 
   const handleLogin  = async (e) => {
     e.preventDefault();
     try{
       const res = await axios.post("http://localhost:4000/api/login",{email,password}); 
+      console.log(res);
       navigate("/home");
     }
-    catch(err){console.log(err)
-      alert("Invalid email or password");
+    catch(err){
+      console.log(err);
+      setLoginError("Invalid email or password");
     }
     
 
@@ -61,6 +64,10 @@ const Log = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
+
+            <p
+              className="px-2  text-red-600 font-medium"
+            >{loginError}</p>
 
             <button
               type="submit"
