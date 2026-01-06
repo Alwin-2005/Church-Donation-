@@ -14,7 +14,6 @@ const Log = () => {
     e.preventDefault();
     try{
       const res = await axios.post("http://localhost:4000/api/login",{email,password}); 
-      console.log(res);
       navigate("/home");
     }
     catch(err){

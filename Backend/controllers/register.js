@@ -6,30 +6,36 @@ const role = "externalMember";
 const status = "enabled";
 
 async function handleMemberRegistration(req,res){
-    const {fullname, email, phoneNo, gender, dob, address, password} = req.body;
+    const {fullName, email, phoneNo, gender, dob, password} = req.body;
+    //console.log("variables",fullName, email, phoneNo, gender, dob, password);
     if (!validator.isEmail(email)) {
-        return res.status(400).json({ message: "Invalid email format" });
+        return res.status(409).json({ message: "Invalid email format" });
     }
     if (!phoneRegex.test(phoneNo)) {
-        return res.status(400).json({ message: "Invalid phone number" });
+        return res.status(409).json({ message: "Invalid phone number" });
     }
+
+    const result = await User.find({email});
+    if(result.length > 0){
+        return res.status(409).json({message: "Email already exists, do you want to login?"});
+    }
+    
 
     const salt = await bcrypt.genSalt(10); 
     const hashed = await bcrypt.hash(password, salt);
     
     try {
             await User.create({
-            fullname,
+            fullname: fullName,
             email,
             phoneNo,
             gender,
             dob,
-            address,
             role,
             passwordHash: hashed,
             status,
         });
-        return res.status(200).json("msg: success");
+        return res.status(201).json("msg: Account created successfully");
     } 
 
     catch (err) {

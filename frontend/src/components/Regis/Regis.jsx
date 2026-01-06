@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Login from "../../assets/Login.jpg";
 import COG from "../../assets/COG.png";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 const initialForm = {
   fullName: "",
@@ -28,13 +29,13 @@ const Regis = () => {
   const [formInput, setFormInput] = useState(initialForm);
   const [formError, setFormError] = useState(initialError);
 
-  const handleInput = (name,value) => {
-    setFormInput({
-      ...formInput,
-      [name]: value
-    });
-    return;
-  }
+  const handleInput = (name, value) => {
+  setFormInput(prev => ({
+    ...prev,
+    [name]: value
+  }));
+};
+
 
   const handleFormValidation = (e) => {
     e.preventDefault();
@@ -65,14 +66,21 @@ const Regis = () => {
         ...initialError,
         ...inputError
       });
-      console.log("Errors:", inputError);
 
-      console.log(Object.keys(inputError).length);
     if (Object.keys(inputError).length === 0) {
-      console.log("Form Submitted:", formInput);
-      // navigate("/login");
+      handleRegistration();
     }
 
+  }
+
+  const handleRegistration = async() => {
+    const {fullName,email,phoneNo,gender,dob,password} = formInput;
+    try{
+    const result = await axios.post("http://localhost:4000/api/register",
+        {fullName,email,phoneNo,gender,dob,password});
+      navigate("/");
+    }
+    catch(err){console.log("Error : ",err)}
   }
     
   return (
