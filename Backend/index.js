@@ -2,6 +2,7 @@ const express = require("express");
 const {restrictToLoggedinUserOnly} = require("./middlewares/auth");
 const PORT = 4000;
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const adminRoute = require("./routes/admin");
 const homeRoute = require("./routes/home");
@@ -10,14 +11,18 @@ const userRoute = require("./routes/userRoute");
 
 const {handleMemberRegistration,} = require("./controllers/register");
 const {handleUserLogin,} = require("./controllers/login");
-const {handleAdminRole,handleMemberRole} = require("./middlewares/roleCheck");
+const {handleAdminRole} = require("./middlewares/roleCheck");
 
 const app = express();
 const mongoose = require("mongoose");
 const {connectMongoDB} = require("./connection");
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
+app.use(cookieParser());
 
 connectMongoDB("mongodb://localhost:27017/ChurchDonation")
 .then(console.log("Database connected"))

@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 async function handleUserLogin(req,res){
 
     if(!req.body){
-        return res.status(401).json({msg: "Please provide email and password"});
+        return res.status(409).json({msg: "Please provide email and password"});
     }
     const {email, password} = req.body;
     const user = await User.findOne({email});
@@ -13,12 +13,15 @@ async function handleUserLogin(req,res){
     const isMatch = await bcrypt.compare(password, user.passwordHash);
 
     if(!user || !isMatch){
-        return res.status(401).json({msg: "Incorrect email or password"});
+        return res.status(409).json({msg: "Incorrect email or password"});
     }
 
     const token = setUser(user);
-    //res.cookie("uuid", token);
-    return res.json({token});
+    return res.cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax"
+        }).json({token});
 
 }
 

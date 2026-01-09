@@ -38,49 +38,89 @@ const Regis = () => {
 
 
   const handleFormValidation = (e) => {
-    e.preventDefault();
-    const inputError = {};
+  e.preventDefault();
 
-    if(!formInput.fullName)
-      inputError.fullName = "Full name is required, Please fill this field";
+  const inputError = {};
 
-    if(!formInput.email)
-      inputError.email = "Email is required";
-
-    if(!formInput.phoneNo)
-      inputError.phoneNo = "Phone Number is required";
-
-    if(formInput.password !== formInput.confirmPassword || !formInput.password || ! formInput.confirmPassword)
-      inputError.password = "Password and confirm password should be the same";
-
-    if(!/^\d{10}$/.test(formInput.phoneNo))
-      inputError.phoneNo =  "Phone Number should be of 10 digits only";
-
-    if (!formInput.gender)
-      inputError.gender = "Please select gender";
-
-    if(!formInput.dob)
-      inputError.dob = "Please enter date of birth"
-
-      setFormError({
-        ...initialError,
-        ...inputError
-      });
-
-    if (Object.keys(inputError).length === 0) {
-      handleRegistration();
-    }
-
+  if (!formInput.fullName?.trim()) {
+    inputError.fullName = "Full name is required";
+  } else if (formInput.fullName.trim().length < 3) {
+    inputError.fullName = "Full name must be at least 3 characters long";
+  } else if (!/^[a-zA-Z\s]+$/.test(formInput.fullName)) {
+    inputError.fullName = "Full name should contain only letters";
   }
+
+  if (!formInput.email?.trim()) {
+    inputError.email = "Email is required";
+  } else if (
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formInput.email)
+  ) {
+    inputError.email = "Please enter a valid email address";
+  }
+
+  if (!formInput.phoneNo?.trim()) {
+    inputError.phoneNo = "Phone number is required";
+  } else if (!/^\d{10}$/.test(formInput.phoneNo)) {
+    inputError.phoneNo = "Phone number must be exactly 10 digits";
+  }
+
+  if (!formInput.password) {
+    inputError.password = "Password is required";
+  } else if (formInput.password.length < 8) {
+    inputError.password = "Password must be at least 8 characters long";
+  } else if (
+    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/.test(formInput.password)
+  ) {
+    inputError.password =
+      "Password must contain uppercase, lowercase, number & special character";
+  }
+
+  if (!formInput.confirmPassword) {
+    inputError.Password = "Confirm password is required";
+  } else if (formInput.password !== formInput.confirmPassword) {
+    inputError.Password = "Passwords do not match";
+  }
+
+  if (!formInput.gender) {
+    inputError.gender = "Please select gender";
+  }
+
+  if (!formInput.dob) {
+    inputError.dob = "Date of birth is required";
+  } else {
+    const dob = new Date(formInput.dob);
+    const today = new Date();
+    const age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+
+    if (
+      age < 18 ||
+      (age === 18 && monthDiff < 0)
+    ) {
+      inputError.dob = "You must be at least 18 years old";
+    }
+  }
+
+  setFormError({
+    ...initialError,
+    ...inputError,
+  });
+
+  if (Object.keys(inputError).length === 0) {
+    handleRegistration();
+  }
+};
+
 
   const handleRegistration = async() => {
     const {fullName,email,phoneNo,gender,dob,password} = formInput;
-    try{
-    const result = await axios.post("http://localhost:4000/api/register",
-        {fullName,email,phoneNo,gender,dob,password});
-      navigate("/");
-    }
-    catch(err){console.log("Error : ",err)}
+    // try{
+    // const result = await axios.post("http://localhost:4000/api/register",
+    //     {fullName,email,phoneNo,gender,dob,password});
+    //   navigate("/");
+    // }
+    // catch(err){console.log("Error : ",err)}
+    console.log("Form submitted : ",formInput);
   }
     
   return (
@@ -100,7 +140,8 @@ const Regis = () => {
 
       {/* Registration Card */}
       <div className="relative z-10 h-full flex items-center justify-center">
-        <div className="w-[380px] backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl px-10 py-12 shadow-2xl">
+        <div className="w-[380px] max-h-[90vh] overflow-y-auto backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl px-10 py-12 shadow-2xl">
+
 
           <h1 className="text-3xl font-bold text-white mb-6 text-center">
             Registration
@@ -109,7 +150,7 @@ const Regis = () => {
           <form  className="flex flex-col gap-5"
                  onSubmit={handleFormValidation}
           >
-
+          <div className="flex flex-col gap-1">
           <input
               name="fullName"
               type="text"
@@ -120,9 +161,12 @@ const Regis = () => {
             />
 
             <p
-              className="px-2  text-red-600 font-medium"
+              className="min-h-[20px] text-red-600 text-sm font-medium px-2"
             >{formError.fullName}</p>
 
+            </div>
+
+            <div className="flex flex-col gap-1">
             <input
               name="email"
               type="email"
@@ -132,10 +176,12 @@ const Regis = () => {
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
-            <p
-              className="px-2  text-red-600 font-medium"
+            <p 
+            className="min-h-[20px] text-red-600 text-sm font-medium px-2"
             >{formError.email}</p>
+            </div>
 
+            <div className="flex flex-col gap-1">
             <input
               name="phoneNo"
               type="tel"
@@ -146,9 +192,12 @@ const Regis = () => {
             />
 
             <p
-              className="px-2  text-red-600 font-medium"
+              className="min-h-[20px] text-red-600 text-sm font-medium px-2"
             >{formError.phoneNo}</p>
+            </div>
 
+
+            <div className="flex flex-col gap-1">
             <select
             name="gender"
             className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
@@ -162,9 +211,12 @@ const Regis = () => {
             </select>
 
             <p
-              className="px-2  text-red-600 font-medium"
+              className="min-h-[20px] text-red-600 text-sm font-medium px-2"
             >{formError.gender}</p>
+            </div>
 
+
+            <div className="flex flex-col gap-1">
             <input
               name="dob"
               type="date"
@@ -174,9 +226,11 @@ const Regis = () => {
               className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
             <p
-              className="px-2  text-red-600 font-medium"
+              className="min-h-[20px] text-red-600 text-sm font-medium px-2"
             >{formError.dob}</p>
+            </div>
   
+            <div className="flex flex-col gap-1">
             <input
               name="password"
               type="password"
@@ -197,8 +251,10 @@ const Regis = () => {
             />
 
             <p
-              className="px-2  text-red-600 font-medium"
+              className="min-h-[20px] text-red-600 text-sm font-medium px-2"
             >{formError.password}</p>
+
+            </div>
 
             <button
               type="submit"
