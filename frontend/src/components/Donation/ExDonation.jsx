@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../NavBar/NavBar";
 import DonCard from "./DonCard";
 import Footer from "../Footer/Footer";
+import axios from "axios";
 
 const ExDonation=(props)=>{
 
@@ -48,6 +49,8 @@ const ExDonation=(props)=>{
     endDate: "2026-03-05"
   }
 ];
+// Connect to database and get request through axios
+//const donation = await axios.get();
 
 
     return(

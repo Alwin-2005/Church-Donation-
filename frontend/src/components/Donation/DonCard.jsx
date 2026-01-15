@@ -17,8 +17,6 @@ const DonCard=(props)=>
               <button  className="mt-4 text-center text-sm ml-35 font-bold w-20 border-2 hover:opacity-40 rounded">Donate</button>
 
             </div>
-            
-           
         </div>
     )
 }

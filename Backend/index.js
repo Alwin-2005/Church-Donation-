@@ -6,7 +6,6 @@ const cookieParser = require("cookie-parser");
 
 const adminRoute = require("./routes/admin");
 const homeRoute = require("./routes/home");
-const authRoute = require("./routes/auth");
 const userRoute = require("./routes/userRoute");
 
 const {handleMemberRegistration,} = require("./controllers/register");

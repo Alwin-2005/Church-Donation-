@@ -114,12 +114,13 @@ const Regis = () => {
 
   const handleRegistration = async() => {
     const {fullName,email,phoneNo,gender,dob,password} = formInput;
-    // try{
-    // const result = await axios.post("http://localhost:4000/api/register",
-    //     {fullName,email,phoneNo,gender,dob,password});
-    //   navigate("/");
-    // }
-    // catch(err){console.log("Error : ",err)}
+    try{
+    const result = await axios.post("http://localhost:4000/api/register",
+        {fullName,email,phoneNo,gender,dob,password});
+      navigate("/");
+    }
+    catch(err){console.log("Error : ",err)}
+    //navigate("/home");
     console.log("Form submitted : ",formInput);
   }
     
