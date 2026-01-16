@@ -13,8 +13,7 @@ const Log = () => {
   const handleLogin  = async (e) => {
     e.preventDefault();
     try{
-      const res = await axios.post("http://localhost:4000/api/login",{email,password}); 
-      console.log(res.data.token);
+      const res = await axios.post("http://localhost:4000/api/login",{email,password},{withCredentials: true}); 
       navigate("/home");
     }
     catch(err){

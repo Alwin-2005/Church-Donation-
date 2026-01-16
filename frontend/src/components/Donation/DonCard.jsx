@@ -5,7 +5,8 @@ const DonCard=(props)=>
 {
     return(
         <div className="flex flex-wrap justify-center gap-6">
-            <div  className="border min-h-60 w-68 p-5 shadow-lg rounded-lg m-10 ">
+           
+            <div  className="border min-h-60 w-68 p-5 shadow-lg rounded-lg m-10 bg-white opacity-95">
 
              
            <h2 className="font-bold underline">{props.title}</h2>

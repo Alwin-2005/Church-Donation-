@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../NavBar/NavBar";
-import DonCard from "./DonCard";
 import Footer from "../Footer/Footer";
+import DonCard from "./DonCard";
+import giving from "../../assets/giving.jpg"
 
-const ExDonation=(props)=>{
-
-  const externalDonations = [
+const ExtDonation = () => {
+const externalDonations = [
   {
     title: "School Library Renovation",
     description: "Renovating the local public school library with new books, furniture, and computers.",
@@ -49,23 +49,49 @@ const ExDonation=(props)=>{
   }
 ];
 
+  return (
+    <div>
+      <Navbar />
 
-    return(
-        <div>
-            <Navbar/>
-               <h1 className="text-2xl font-bold text-center pt-40">Donate for a Cause</h1> 
-               <hr/>
-            <div className="flex flex-wrap justify-center gap-6 px-6">
-               {externalDonations.map(function(elem){
-              return(<DonCard title={elem.title} desc={elem.description} gamount={elem.goalAmount} camount={elem.collectedAmount} start={elem.startDate} end={elem.endDate} />)
-            })}
-            </div>
-           
+      {/* HERO SECTION */}
+      <div className="relative min-h-screen w-full">
 
-            <Footer/>
-              
+        {/* Background image */}
+        <img
+          src={giving}
+          className="absolute inset-0 z-0 h-full w-full object-cover"
+          alt="Giving background"
+        />
+
+
+        {/* CONTENT OVER IMAGE */}
+        <div className="relative z-20 pt-40">
+
+          <h1 className="text-4xl font-bold text-center text-white">
+            Donate for Cause
+          </h1>
+          <hr className="w-40 mx-auto my-6 border-white" />
+
+          <div className="flex flex-wrap justify-center gap-6 px-6 ">
+            {externalDonations.map((elem, index) => (
+              <DonCard
+                key={index}
+                title={elem.title}
+                desc={elem.description}
+                gamount={elem.gamount}
+                camount={elem.camount}
+                start={elem.start}
+                end={elem.end}
+              />
+            ))}
+          </div>
+
         </div>
-    )
-}
+      </div>
 
-export default ExDonation
+      <Footer />
+    </div>
+  );
+};
+
+export default ExtDonation;
