@@ -12,6 +12,11 @@ import TermsCon from "./components/Footer/TermsCon";
 import NotFound from "./components/NotFound";
 import Profile from "./components/Profile";
 import Event from "./components/Events/Event";
+import AdminDonation from "./components/Admin/adminDonation";
+import AdminPayments from "./components/Admin/AdminPayments";
+import AdminProducts from "./components/Admin/AdminProducts";
+import AdminOrders from "./components/Admin/AdminOrders";
+import DonationHistory from "./components/Admin/DonationHistory";
 
 const App = () => {
   return (
@@ -20,6 +25,7 @@ const App = () => {
         <Route path="/" element={<Log />} />
         <Route path="/home" element={<Sec1 />} />
         <Route path="/events" element={<Event/>}/>
+        <Route path="/profile" element={<Profile />}/>
         <Route path="/registerNow" element={<Regis />} />
         <Route path="/TermsCon" element={<TermsCon/>}/>
         <Route path="/ExtDon" element={<ExDonation/>}/>
@@ -29,12 +35,12 @@ const App = () => {
           <Route index element={<AdminDashboard />} />
           <Route path="users" element={<Users />} />
           <Route path="settings"  />
-          <Route path="products" />
-          <Route path="merchandise" />
-          <Route path="events "/>
-          <Route path="donationCampaign" />
-          <Route path="donation" />
-          <Route path="payment" />
+          <Route path="products" element={<AdminProducts/>}/>
+          <Route path="orders" element={<AdminOrders/>}/>
+          <Route path="events" element={<Event/>}/>
+          <Route path="donationCampaign" element={<AdminDonation/>}/>
+          <Route path="donation" element={<DonationHistory/>}/>
+          <Route path="payment" element={<AdminPayments/>}/>
         </Route>
         
         <Route path="*" element={<NotFound/>}/>

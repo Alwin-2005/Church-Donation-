@@ -29,8 +29,10 @@ connectMongoDB("mongodb://localhost:27017/ChurchDonation")
 
 app.use("/api/login",handleUserLogin);
 app.use("/api/register",handleMemberRegistration);
-app.use("/api/admin",restrictToLoggedinUserOnly,handleAdminRole,adminRoute);
-app.use("/api/users",restrictToLoggedinUserOnly,userRoute);
+// app.use("/api/admin",restrictToLoggedinUserOnly,handleAdminRole,adminRoute);
+// app.use("/api/users",restrictToLoggedinUserOnly,userRoute);
+app.use("/api/admin",adminRoute);
+app.use("/api/users",userRoute);
 app.use("/home",homeRoute);
 
 

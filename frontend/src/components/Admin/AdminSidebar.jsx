@@ -28,6 +28,9 @@ const AdminSidebar = () => {
         <Link to="payment" className="hover:text-gray-300">
           Payments
         </Link>
+        <Link to="events" className="hover:text-gray-300">
+          Events
+        </Link>
         <Link to="settings" className="hover:text-gray-300">
           Settings
         </Link>

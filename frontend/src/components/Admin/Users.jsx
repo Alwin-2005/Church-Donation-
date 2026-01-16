@@ -1,4 +1,5 @@
 import UserCard from "./UserCard";
+import axios from "axios";
 const Users = () => {
     const users = [
         {
@@ -61,14 +62,26 @@ const Users = () => {
             "__v": 0
             }
     ];
-
+    // const handleGetUser = async () => {
+    //     try{
+    //         const dbUsers = await axios.get("http://localhost:4000/api/admin/users/view");
+    //         console.log(dbUsers);
+    //     }
+    //     catch(err){
+    //         console.log(err);
+    //     }
+        
+    // }
+    
+     
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {users.map((user) => (
-        <UserCard key={user._id} user={user} />
+      {users.map((user,idx) => (
+        <UserCard key={idx} user={user} />
       ))}
     </div>
+    
   );
 
 }
