@@ -17,6 +17,7 @@ import AdminPayments from "./components/Admin/AdminPayments";
 import AdminProducts from "./components/Admin/AdminProducts";
 import AdminOrders from "./components/Admin/AdminOrders";
 import DonationHistory from "./components/Admin/DonationHistory";
+import Shop from "./components/Shop/Shop";
 
 const App = () => {
   return (
@@ -30,6 +31,8 @@ const App = () => {
         <Route path="/TermsCon" element={<TermsCon/>}/>
         <Route path="/ExtDon" element={<ExDonation/>}/>
         <Route path="/IntDon" element={<IntDonation/>}/>
+        <Route path="/shop" element={<Shop/>}/>
+
         <Route path="/admin" element={<AdminPanel />}>
         
           <Route index element={<AdminDashboard />} />

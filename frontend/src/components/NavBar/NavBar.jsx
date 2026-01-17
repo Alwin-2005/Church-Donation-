@@ -8,6 +8,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [showDonate, setDonateMenu] = useState(false);
+
 
   // Check JWT token in cookies
   useEffect(() => {
@@ -37,18 +39,12 @@ const Navbar = () => {
         <Link to="/home" className="hover:scale-110 transition">
           HOME
         </Link>
+        <button className="bg-black text-white rounded px-2 hover:scale-110 transition cursor-pointer"
+        onClick={() => setDonateMenu(!showDonate)}>
+        DONATE</button>
 
-        <select
-          onChange={handleLogin}
-          className="bg-black text-white rounded border border-white px-2"
-        >
-          <option value="">DONATE</option>
-          <option value="/ExtDon">Donate for a Cause</option>
-          <option value="/IntDon">Donate for a Church</option>
-        </select>
-
-        <Link to="/shop" className="hover:text-xl">SHOP</Link>
-        <Link to="/events" className="hover:text-xl">EVENTS</Link>
+        <Link to="/shop" className="hover:scale-110 transition">SHOP</Link>
+        <Link to="/events" className="hover:scale-110 transition">EVENTS</Link>
 
         {/* Profile Section */}
         <div className="relative">
@@ -93,6 +89,28 @@ const Navbar = () => {
                   </button>
                 </>
               )}
+            </div>
+          )}
+          {/* Drop down for donation */}
+          {showDonate && (
+            <div className="absolute right-60 mt-2 w-60 bg-white text-black rounded shadow-lg ">
+                <>
+                  <button
+                    onClick={() => navigate("/extdon")}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Donate For Cause
+                  </button>
+
+                  <button
+                    onClick={() => navigate("/intdon")}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Donate For Church
+                  </button>
+
+                </>
+              
             </div>
           )}
         </div>
