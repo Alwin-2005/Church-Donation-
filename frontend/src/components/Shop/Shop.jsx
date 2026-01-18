@@ -88,8 +88,8 @@ const Shop=(props)=>{
               
             </div>
             <div className="flex flex-wrap justify-center gap-6 px-6">
-               {merchDetails.map(function(elem){
-              return(<ShopCard loc={elem.loc} name={elem.name} desc={elem.description} stock={elem.stock} price={elem.price}/>)
+               {merchDetails.map(function(elem,idx){
+              return(<ShopCard key = {idx} loc={elem.loc} name={elem.name} desc={elem.description} stock={elem.stock} price={elem.price}/>)
             })}
             </div>
             <Footer/>

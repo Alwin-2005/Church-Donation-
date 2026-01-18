@@ -26,7 +26,7 @@ const Profile = () => {
   return (
     <>
     <Navbar/>
-    <div className="min-h-screen bg-gray-100 px-6 py-10">
+    <div className="min-h-screen bg-gray-100 px-6 py-10 mt-24 px-6">
       {/* Profile Info */}
       <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-semibold">{user.fullName}</h2>

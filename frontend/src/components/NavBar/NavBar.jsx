@@ -2,51 +2,111 @@ import React, { useEffect, useState } from "react";
 import COG from "../../assets/COG.png";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { UserCircle } from "lucide-react"; // optional icon library
+import { UserCircle } from "lucide-react";
+import { getUserFromToken } from "../../../../Backend/services/getRole";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
-  const [showDonate, setDonateMenu] = useState(false);
+  const [showDonate, setShowDonate] = useState(false);
 
-
-  // Check JWT token in cookies
   useEffect(() => {
-    // const token = Cookies.get("token");
-    const token = "asdd";
-    setIsLoggedIn(!!token);
+    const decodedUser = getUserFromToken();
+    setUser(decodedUser);
   }, []);
 
-  const handleLogin = (e) => {
-    const value = e.target.value;
-    if (value) navigate(value);
-  };
+  const role = user?.role;
 
   const handleLogout = () => {
     Cookies.remove("token");
-    setIsLoggedIn(false);
+    setUser(null);
     navigate("/");
   };
 
   return (
     <div className="flex items-center py-6 px-4 md:px-16 font-sans bg-black text-white fixed top-0 left-0 w-full z-50">
+      {/* Logo */}
       <img src={COG} className="h-10 w-auto" alt="COG" />
       <h1 className="ml-2 text-lg font-semibold">Church of God</h1>
 
-      {/* Nav Links */}
+      {/* NAV LINKS */}
       <div className="ml-auto flex gap-10 items-center text-base px-4">
         <Link to="/home" className="hover:scale-110 transition">
           HOME
         </Link>
-        <button className="bg-black text-white rounded px-2 hover:scale-110 transition cursor-pointer"
-        onClick={() => setDonateMenu(!showDonate)}>
-        DONATE</button>
 
-        <Link to="/shop" className="hover:scale-110 transition">SHOP</Link>
-        <Link to="/events" className="hover:scale-110 transition">EVENTS</Link>
+        {/* ================= ADMIN NAV ================= */}
+        {role === "admin" && (
+          <>
+            {[
+              ["Dashboard", "/admin/dashboard"],
+              ["Users", "/admin/users"],
+              ["Donation Campaigns", "/admin/campaigns"],
+              ["Donations", "/admin/donations"],
+              ["Products", "/admin/products"],
+              ["Orders", "/admin/orders"],
+              ["Payments", "/admin/payments"],
+              ["Events", "/admin/events"],
+              ["Settings", "/admin/settings"],
+            ].map(([label, path]) => (
+              <Link
+                key={path}
+                to={path}
+                className="hover:scale-110 transition"
+              >
+                {label}
+              </Link>
+            ))}
+          </>
+        )}
 
-        {/* Profile Section */}
+        {/* ================= DONATE DROPDOWN (styled like first file) ================= */}
+        {(role === "churchMember" || role === "externalMember") && (
+          <div className="relative">
+            <button
+              onClick={() => setShowDonate(!showDonate)}
+              className="hover:scale-110 transition"
+            >
+              DONATE
+            </button>
+
+            {showDonate && (
+              <div className="absolute right-0 mt-2 w-56 bg-white text-black rounded shadow-lg">
+                <button
+                  onClick={() => navigate("/ExtDon")}
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                >
+                  Donate for a Cause
+                </button>
+
+                {role === "churchMember" && (
+                  <button
+                    onClick={() => navigate("/IntDon")}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Donate for Church
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ================= COMMON LINKS ================= */}
+        {(role === "churchMember" || role === "externalMember") && (
+          <Link to="/shop" className="hover:scale-110 transition">
+            SHOP
+          </Link>
+        )}
+
+        {role === "churchMember" && (
+          <Link to="/events" className="hover:scale-110 transition">
+            EVENTS
+          </Link>
+        )}
+
+        {/* ================= PROFILE DROPDOWN ================= */}
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
@@ -55,10 +115,9 @@ const Navbar = () => {
             <UserCircle size={32} />
           </button>
 
-          {/* Dropdown */}
           {showMenu && (
-            <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-lg">
-              {!isLoggedIn ? (
+            <div className="absolute right-0 mt-2 w-44 bg-white text-black rounded shadow-lg">
+              {!user ? (
                 <button
                   onClick={() => navigate("/")}
                   className="block w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -74,12 +133,14 @@ const Navbar = () => {
                     Profile
                   </button>
 
-                  <button
-                    onClick={() => navigate("/dashboard")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    Dashboard
-                  </button>
+                  {role === "admin" && (
+                    <button
+                      onClick={() => navigate("/admin/dashboard")}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Admin Dashboard
+                    </button>
+                  )}
 
                   <button
                     onClick={handleLogout}
@@ -89,28 +150,6 @@ const Navbar = () => {
                   </button>
                 </>
               )}
-            </div>
-          )}
-          {/* Drop down for donation */}
-          {showDonate && (
-            <div className="absolute right-60 mt-2 w-60 bg-white text-black rounded shadow-lg ">
-                <>
-                  <button
-                    onClick={() => navigate("/extdon")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    Donate For Cause
-                  </button>
-
-                  <button
-                    onClick={() => navigate("/intdon")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    Donate For Church
-                  </button>
-
-                </>
-              
             </div>
           )}
         </div>
