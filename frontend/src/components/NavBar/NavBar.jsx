@@ -13,6 +13,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const decodedUser = getUserFromToken();
+    console.log(decodedUser);
     setUser(decodedUser);
   }, []);
 

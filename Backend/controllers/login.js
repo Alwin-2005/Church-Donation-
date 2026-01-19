@@ -18,7 +18,7 @@ async function handleUserLogin(req,res){
 
     const token = setUser(user);
     return res.cookie("token", token, {
-        httpOnly: true,
+        httpOnly: false,
         secure: false,
         sameSite: "lax"
         }).json({token});
