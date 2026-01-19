@@ -5,7 +5,7 @@ const AdminOrders = () => {
   ];
 
   return (
-    <div className="mt-24 px-6">
+    <div className="mt-24 px-6 py-10 mt-24">
       <h1 className="text-2xl font-semibold mb-6">Orders</h1>
 
       <div className="bg-white shadow rounded-lg overflow-x-auto">

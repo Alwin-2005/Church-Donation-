@@ -1,17 +1,18 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import AdminSidebar from "./AdminSidebar";
+import Navbar from "../NavBar/NavBar"; // adjust path if needed
 
 const AdminPanel = () => {
   return (
-    <div className="flex min-h-screen">
-      <AdminSidebar />
+    <>
+      {/* Top Navbar */}
+      <Navbar />
 
-      <main className="flex-1 p-6 bg-gray-100">
-        
+      {/* Admin Content */}
+      <main className="pt-28 px-6 min-h-screen bg-gray-100">
         <Outlet />
       </main>
-    </div>
+    </>
   );
 };
 

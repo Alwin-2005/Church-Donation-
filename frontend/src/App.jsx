@@ -41,9 +41,9 @@ const App = () => {
           <Route path="products" element={<AdminProducts/>}/>
           <Route path="orders" element={<AdminOrders/>}/>
           <Route path="events" element={<Event/>}/>
-          <Route path="donationCampaign" element={<AdminDonation/>}/>
-          <Route path="donation" element={<DonationHistory/>}/>
-          <Route path="payment" element={<AdminPayments/>}/>
+          <Route path="campaigns" element={<AdminDonation/>}/>
+          <Route path="donations" element={<DonationHistory/>}/>
+          <Route path="payments" element={<AdminPayments/>}/>
         </Route>
         
         <Route path="*" element={<NotFound/>}/>

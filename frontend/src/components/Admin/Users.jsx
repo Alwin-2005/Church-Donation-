@@ -62,16 +62,6 @@ const Users = () => {
             "__v": 0
             }
     ];
-    // const handleGetUser = async () => {
-    //     try{
-    //         const dbUsers = await axios.get("http://localhost:4000/api/admin/users/view");
-    //         console.log(dbUsers);
-    //     }
-    //     catch(err){
-    //         console.log(err);
-    //     }
-        
-    // }
     
      
 
