@@ -120,7 +120,6 @@ const Regis = () => {
       navigate("/");
     }
     catch(err){console.log("Error : ",err)}
-    navigate("/");
     console.log("Form submitted : ",formInput);
   }
     

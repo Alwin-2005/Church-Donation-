@@ -19,7 +19,7 @@ const donationCampaignSchema = mongoose.Schema({
     goalAmount: {
         type: Number,
         required: true,
-        default: "0",
+        default: 0,
     },
 
     collectedAmount: {

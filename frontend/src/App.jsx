@@ -13,6 +13,7 @@ import NotFound from "./components/NotFound";
 import Profile from "./components/Profile";
 import Event from "./components/Events/Event";
 import AdminDonation from "./components/Admin/adminDonation";
+import AdminEvent from "./components/Admin/AdminEvent";
 import AdminPayments from "./components/Admin/AdminPayments";
 import AdminProducts from "./components/Admin/AdminProducts";
 import AdminOrders from "./components/Admin/AdminOrders";
@@ -35,12 +36,12 @@ const App = () => {
 
         <Route path="/admin" element={<AdminPanel />}>
         
-          <Route index element={<AdminDashboard />} />
+          
           <Route path="users" element={<Users />} />
-          <Route path="settings"  />
+          <Route path="dashboard" element={<AdminDashboard/>}  />
           <Route path="products" element={<AdminProducts/>}/>
           <Route path="orders" element={<AdminOrders/>}/>
-          <Route path="events" element={<Event/>}/>
+          <Route path="events" element={<AdminEvent/>}/>
           <Route path="campaigns" element={<AdminDonation/>}/>
           <Route path="donations" element={<DonationHistory/>}/>
           <Route path="payments" element={<AdminPayments/>}/>

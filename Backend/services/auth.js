@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const key = "ChurchDonation123";
+const key = process.env.JWT_SECRET;
 
 function setUser(User){
     const payload = {

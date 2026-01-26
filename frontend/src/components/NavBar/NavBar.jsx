@@ -13,7 +13,6 @@ const Navbar = () => {
 
   useEffect(() => {
     const decodedUser = getUserFromToken();
-    console.log(decodedUser);
     setUser(decodedUser);
   }, []);
 
@@ -49,7 +48,6 @@ const Navbar = () => {
               ["Orders", "/admin/orders"],
               ["Payments", "/admin/payments"],
               ["Events", "/admin/events"],
-              ["Settings", "/admin/settings"],
             ].map(([label, path]) => (
               <Link
                 key={path}

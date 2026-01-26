@@ -1,8 +1,12 @@
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require("express");
 const {restrictToLoggedinUserOnly} = require("./middlewares/auth");
-const PORT = 4000;
+const PORT = process.env.PORT;
+const MongoDB = process.env.MONGODB_URI;
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+
 
 const adminRoute = require("./routes/admin");
 const homeRoute = require("./routes/home");
@@ -23,7 +27,8 @@ app.use(cors({
 }));
 app.use(cookieParser());
 
-connectMongoDB("mongodb://localhost:27017/ChurchDonation")
+
+connectMongoDB(MongoDB)
 .then(console.log("Database connected"))
 .catch((err) => console.log("Error occured", err));
 

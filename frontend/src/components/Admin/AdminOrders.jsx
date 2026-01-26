@@ -5,7 +5,7 @@ const AdminOrders = () => {
   ];
 
   return (
-    <div className="mt-24 px-6 py-10 mt-24">
+    <div className="pt-[96px] px-4 md:px-16 py-10 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-semibold mb-6">Orders</h1>
 
       <div className="bg-white shadow rounded-lg overflow-x-auto">
@@ -20,9 +20,10 @@ const AdminOrders = () => {
               <th className="p-3">Status</th>
             </tr>
           </thead>
+
           <tbody>
             {orders.map(o => (
-              <tr key={o.id} className="border-t text-sm">
+              <tr key={o.id} className="border-t text-sm hover:bg-gray-50">
                 <td className="p-3">{o.id}</td>
                 <td className="p-3">{o.user}</td>
                 <td className="p-3">{o.items}</td>
