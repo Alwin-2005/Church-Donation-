@@ -19,37 +19,44 @@ import AdminProducts from "./components/Admin/AdminProducts";
 import AdminOrders from "./components/Admin/AdminOrders";
 import DonationHistory from "./components/Admin/DonationHistory";
 import Shop from "./components/Shop/Shop";
+import Cart from "./components/Shop/Cart";
+import {CartProvider} from "./components/Shop/CartContext";
 
 const App = () => {
   return (
     <div className="w-full overflow-x-hidden">
-      <Routes>
-        <Route path="/" element={<Log />} />
-        <Route path="/home" element={<Sec1 />} />
-        <Route path="/events" element={<Event/>}/>
-        <Route path="/profile" element={<Profile />}/>
-        <Route path="/registerNow" element={<Regis />} />
-        <Route path="/TermsCon" element={<TermsCon/>}/>
-        <Route path="/ExtDon" element={<ExDonation/>}/>
-        <Route path="/IntDon" element={<IntDonation/>}/>
-        <Route path="/shop" element={<Shop/>}/>
-
-        <Route path="/admin" element={<AdminPanel />}>
-        
+      
+      <CartProvider>
+          <Routes>
+            <Route path="/" element={<Log />} />
+            <Route path="/home" element={<Sec1 />} />
+            <Route path="/events" element={<Event/>}/>       
+            <Route path="/profile" element={<Profile />}/>
+            <Route path="/registerNow" element={<Regis />} />
+            <Route path="/TermsCon" element={<TermsCon/>}/>
+            <Route path="/ExtDon" element={<ExDonation/>}/>
+            <Route path="/IntDon" element={<IntDonation/>}/>
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/cart" element={<Cart />} />
           
-          <Route path="users" element={<Users />} />
-          <Route path="dashboard" element={<AdminDashboard/>}  />
-          <Route path="products" element={<AdminProducts/>}/>
-          <Route path="orders" element={<AdminOrders/>}/>
-          <Route path="events" element={<AdminEvent/>}/>
-          <Route path="campaigns" element={<AdminDonation/>}/>
-          <Route path="donations" element={<DonationHistory/>}/>
-          <Route path="payments" element={<AdminPayments/>}/>
-        </Route>
-        
-        <Route path="*" element={<NotFound/>}/>
 
-      </Routes>
+            <Route path="/admin" element={<AdminPanel />}>
+            
+              
+              <Route path="users" element={<Users />} />
+              <Route path="dashboard" element={<AdminDashboard/>}  />
+              <Route path="products" element={<AdminProducts/>}/>
+              <Route path="orders" element={<AdminOrders/>}/>
+              <Route path="events" element={<AdminEvent/>}/>
+              <Route path="campaigns" element={<AdminDonation/>}/>
+              <Route path="donations" element={<DonationHistory/>}/>
+              <Route path="payments" element={<AdminPayments/>}/>
+            </Route>
+            
+            <Route path="*" element={<NotFound/>}/>
+
+          </Routes>
+      </CartProvider>
       
     </div>
   );

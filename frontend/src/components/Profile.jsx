@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Navbar from "./NavBar/NavBar";
 import Footer from "./Footer/Footer";
-const Profile = () => {
+const Profile = (token) => {
   const [activeTab, setActiveTab] = useState("donations");
-
+  
   const user = {
     fullName: "John Doe",
     email: "john@example.com",

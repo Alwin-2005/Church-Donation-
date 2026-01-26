@@ -4,6 +4,8 @@ import AddUserModal from "./AddUserModal";
 import EditUserModal from "./EditUserModal";
 
 const Users = () => {
+
+  const [showForm, setShowForm] = useState(false);
   const [users, setUsers] = useState([
     {
       _id: "1",
