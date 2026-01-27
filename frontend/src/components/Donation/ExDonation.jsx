@@ -1,7 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../NavBar/NavBar";
-import Footer from "../Footer/Footer";
 import DonationCampaignCard from "./DonationCampaignCard";
 import giving from "../../assets/giving.jpg";
 
@@ -40,7 +38,6 @@ const ExtDonation = () => {
 
   return (
     <div>
-      <Navbar />
 
       {/* HERO SECTION */}
       <div className="relative min-h-screen w-full">
@@ -70,7 +67,6 @@ const ExtDonation = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };

@@ -1,7 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../NavBar/NavBar";
-import Footer from "../Footer/Footer";
 import DonCard from "./DonCard";
 import giving from "../../assets/giving.jpg"
 
@@ -11,7 +9,6 @@ const internalChurchDonations = [ { title: "Church Building Maintenance", descri
 
   return (
     <div>
-      <Navbar />
 
       {/* HERO SECTION */}
       <div className="relative min-h-screen w-full">
@@ -49,7 +46,6 @@ const internalChurchDonations = [ { title: "Church Building Maintenance", descri
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };

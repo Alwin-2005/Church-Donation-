@@ -8,9 +8,8 @@ const Sec1=()=>
 {
   return(
     <div className="h-screen w-screen">
-      <Navbar/>
+      
       <Center/>
-      <Footer/>
     </div>
   )
 }

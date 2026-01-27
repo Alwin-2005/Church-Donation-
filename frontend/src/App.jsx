@@ -1,5 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/NavBar/NavBar";
+import Footer from "./components/Footer/Footer";
 import Sec1 from "./components/Section1/section1";
 import Log from "./components/Login/Log";
 import Regis from "./components/Regis/Regis";
@@ -21,18 +23,24 @@ import DonationHistory from "./components/Admin/DonationHistory";
 import Shop from "./components/Shop/Shop";
 import Cart from "./components/Shop/Cart";
 import {CartProvider} from "./components/Shop/CartContext";
+import {AuthProvider} from "./context/AuthContext";
+import MainLayout from "./components/MainLayout";
 
 const App = () => {
   return (
     <div className="w-full overflow-x-hidden">
       
+      <AuthProvider>
       <CartProvider>
           <Routes>
+            
             <Route path="/" element={<Log />} />
+            <Route path="/registerNow" element={<Regis />} />
+            
+            <Route element={<MainLayout/>}>
             <Route path="/home" element={<Sec1 />} />
             <Route path="/events" element={<Event/>}/>       
             <Route path="/profile" element={<Profile />}/>
-            <Route path="/registerNow" element={<Regis />} />
             <Route path="/TermsCon" element={<TermsCon/>}/>
             <Route path="/ExtDon" element={<ExDonation/>}/>
             <Route path="/IntDon" element={<IntDonation/>}/>
@@ -52,12 +60,15 @@ const App = () => {
               <Route path="donations" element={<DonationHistory/>}/>
               <Route path="payments" element={<AdminPayments/>}/>
             </Route>
+            </Route>
             
             <Route path="*" element={<NotFound/>}/>
+            
 
           </Routes>
       </CartProvider>
       
+      </AuthProvider>
     </div>
   );
 };

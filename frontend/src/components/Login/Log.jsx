@@ -3,17 +3,24 @@ import Login from "../../assets/Login.jpg";
 import COG from "../../assets/COG.png";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { getUserFromToken } from "../../utils/auth";
+import { useAuth } from "../../context/AuthContext";
+
 
 const Log = () => {
   const navigate = useNavigate();
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
   const [loginError,setLoginError] = useState("");
+  const {setUser} = useAuth();
 
   const handleLogin  = async (e) => {
     e.preventDefault();
+    
     try{
       const res = await axios.post("http://localhost:4000/api/login",{email,password},{withCredentials: true}); 
+      const decodedUser = getUserFromToken();
+      setUser(decodedUser);
       navigate("/home");
     }
     catch(err){

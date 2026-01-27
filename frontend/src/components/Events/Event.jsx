@@ -1,13 +1,10 @@
-import Navbar from "../NavBar/NavBar";
 import EventCard from "./EventCard";
-import Footer from "../Footer/Footer";
 import React from "react";
 import evimg from "../../assets/evimg.jpg";
 
 const Event = () => {
   return (
     <div>
-      <Navbar />
 
       {/* HERO SECTION */}
       <div className="relative min-h-screen w-full">
@@ -55,7 +52,6 @@ const Event = () => {
         
       </div>
 
-       <Footer/>
     </div>
   );
 };

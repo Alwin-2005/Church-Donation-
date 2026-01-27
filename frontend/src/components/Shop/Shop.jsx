@@ -1,6 +1,4 @@
 import React from "react";
-import Navbar from "../NavBar/NavBar";
-import Footer from "../Footer/Footer";
 import ShopCard from "./Shopcard";
 import CartButton from "./CartButton";
 import { Link } from "react-router-dom";
@@ -31,7 +29,6 @@ const Shop = () => {
 
   return (
     <div>
-      <Navbar />
 
       <h1 className="text-2xl font-bold text-center mt-30 p-2 bg-black text-white">
         SHOP
@@ -47,7 +44,6 @@ const Shop = () => {
         <CartButton cart={cart} />
       </Link>
 
-      <Footer />
     </div>
   );
 };

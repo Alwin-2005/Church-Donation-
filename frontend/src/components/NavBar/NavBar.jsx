@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import COG from "../../assets/COG.png";
 import { Link, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
 import { UserCircle } from "lucide-react";
-import { getUserFromToken } from "../../../../Backend/services/getRole";
+import { useAuth } from "../../context/AuthContext";
+import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user, logout } = useAuth();
+  const role = user?.role;
+  const location = useLocation();
+
+  useEffect(() => {
+  setShowMenu(false);
+  setShowDonate(false);
+}, [location.pathname]);
+
   const [showMenu, setShowMenu] = useState(false);
   const [showDonate, setShowDonate] = useState(false);
 
-  useEffect(() => {
-    const decodedUser = getUserFromToken();
-    setUser(decodedUser);
-  }, []);
-
-  const role = user?.role;
-
   const handleLogout = () => {
-    Cookies.remove("token");
-    setUser(null);
+    logout();
     navigate("/");
   };
 
@@ -60,7 +60,7 @@ const Navbar = () => {
           </>
         )}
 
-        {/* ================= DONATE DROPDOWN (styled like first file) ================= */}
+        {/* ================= DONATE DROPDOWN ================= */}
         {(role === "churchMember" || role === "externalMember") && (
           <div className="relative">
             <button
