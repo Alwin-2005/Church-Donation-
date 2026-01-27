@@ -34,11 +34,11 @@ const App = () => {
       <CartProvider>
           <Routes>
             
-            <Route path="/" element={<Log />} />
+            <Route path="/login" element={<Log />} />
             <Route path="/registerNow" element={<Regis />} />
             
             <Route element={<MainLayout/>}>
-            <Route path="/home" element={<Sec1 />} />
+            <Route path="/" element={<Sec1 />} />
             <Route path="/events" element={<Event/>}/>       
             <Route path="/profile" element={<Profile />}/>
             <Route path="/TermsCon" element={<TermsCon/>}/>

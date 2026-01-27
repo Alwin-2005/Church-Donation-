@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from "react";
 import COG from "../../assets/COG.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserCircle } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const role = user?.role;
   const location = useLocation();
+  const { user, logout } = useAuth();
 
-  useEffect(() => {
-  setShowMenu(false);
-  setShowDonate(false);
-}, [location.pathname]);
+  const role = user ? user.role : "externalMember";
 
   const [showMenu, setShowMenu] = useState(false);
   const [showDonate, setShowDonate] = useState(false);
 
+  useEffect(() => {
+    setShowMenu(false);
+    setShowDonate(false);
+  }, [location.pathname]);
+
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/login");
   };
 
   return (
@@ -32,7 +32,7 @@ const Navbar = () => {
 
       {/* NAV LINKS */}
       <div className="ml-auto flex gap-10 items-center text-base px-4">
-        <Link to="/home" className="hover:scale-110 transition">
+        <Link to="/" className="hover:scale-110 transition">
           HOME
         </Link>
 
@@ -49,11 +49,7 @@ const Navbar = () => {
               ["Payments", "/admin/payments"],
               ["Events", "/admin/events"],
             ].map(([label, path]) => (
-              <Link
-                key={path}
-                to={path}
-                className="hover:scale-110 transition"
-              >
+              <Link key={path} to={path} className="hover:scale-110 transition">
                 {label}
               </Link>
             ))}
@@ -106,52 +102,63 @@ const Navbar = () => {
         )}
 
         {/* ================= PROFILE DROPDOWN ================= */}
-        <div className="relative">
-          <button
-            onClick={() => setShowMenu(!showMenu)}
-            className="hover:scale-110 transition"
-          >
-            <UserCircle size={32} />
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShowMenu(!showMenu)}
+              className="hover:scale-110 transition"
+            >
+              <UserCircle size={32} />
+            </button>
 
-          {showMenu && (
-            <div className="absolute right-0 mt-2 w-44 bg-white text-black rounded shadow-lg">
-              {!user ? (
-                <button
-                  onClick={() => navigate("/")}
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                >
-                  Login
-                </button>
-              ) : (
-                <>
-                  <button
-                    onClick={() => navigate("/profile")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    Profile
-                  </button>
-
-                  {role === "admin" && (
+            {showMenu && (
+              <div className="absolute right-0 mt-2 w-44 bg-white text-black rounded shadow-lg">
+                
+                {!user ? (
+                  <>
                     <button
-                      onClick={() => navigate("/admin/dashboard")}
+                      onClick={() => navigate("/login")}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
-                      Admin Dashboard
+                      Login
                     </button>
-                  )}
 
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                  >
-                    Logout
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-        </div>
+                    <button
+                      onClick={() => navigate("/register")}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Register
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => navigate("/profile")}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Profile
+                    </button>
+
+                    {role === "admin" && (
+                      <button
+                        onClick={() => navigate("/admin/dashboard")}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        Admin Dashboard
+                      </button>
+                    )}
+
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
       </div>
     </div>
   );

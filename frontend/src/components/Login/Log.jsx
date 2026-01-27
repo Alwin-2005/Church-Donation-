@@ -21,7 +21,7 @@ const Log = () => {
       const res = await axios.post("http://localhost:4000/api/login",{email,password},{withCredentials: true}); 
       const decodedUser = getUserFromToken();
       setUser(decodedUser);
-      navigate("/home");
+      navigate("/");
     }
     catch(err){
       console.log(err);
