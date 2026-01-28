@@ -2,14 +2,14 @@ import React from "react";
 
 const AdminDashboard = () => {
   return (
-    <main className="flex-1 p-8 overflow-y-auto">
+    <main className="flex-1 p-8 overflow-y-auto animate-scaleIn">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <StatCard title="Total Users" value="1,245" />
-        <StatCard title="Total Orders" value="532" />
-        <StatCard title="Revenue" value="₹2,45,000" />
+        <StatCard title="Total Users" value="2" />
+        <StatCard title="Total Orders" value="0" />
+        <StatCard title="Revenue" value="₹0" />
       </div>
 
       {/* Recent Activity */}

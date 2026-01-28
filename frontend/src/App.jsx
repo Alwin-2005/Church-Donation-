@@ -21,10 +21,11 @@ import AdminOrders from "./components/Admin/AdminOrders";
 import DonationHistory from "./components/Admin/DonationHistory";
 import Shop from "./components/Shop/Shop";
 import Cart from "./components/Shop/Cart";
+import DonatePage from "./components/Donation/Donate";
 import AdminUsers from "./components/Admin/AdminUsers";
 import {CartProvider} from "./components/Shop/CartContext";
 import {AuthProvider} from "./context/AuthContext";
-
+import ForgotPassword from "./components/ForgotPassword";
 
 
 const App = () => {
@@ -37,7 +38,8 @@ const App = () => {
             
             <Route path="/login" element={<Log />} />
             <Route path="/register" element={<Regis />} />
-            
+            <Route path="forgotpass" element={<ForgotPassword/>}/>
+
             <Route element={<MainLayout/>}>
             <Route path="/" element={<Sec1 />} />
             <Route path="/events" element={<Event/>}/>       
@@ -45,6 +47,7 @@ const App = () => {
             <Route path="/TermsCon" element={<TermsCon/>}/>
             <Route path="/ExtDon" element={<ExDonation/>}/>
             <Route path="/IntDon" element={<IntDonation/>}/>
+            <Route path="/donate/:campaignId" element={<DonatePage />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/cart" element={<Cart />} />
           
@@ -52,7 +55,7 @@ const App = () => {
             <Route path="/admin" element={<AdminPanel />}>
             
               
-              <Route path="users" element={<Users />} />
+              <Route path="users" element={<AdminUsers />} />
               <Route path="dashboard" element={<AdminDashboard/>}  />
               <Route path="products" element={<AdminProducts/>}/>
               <Route path="orders" element={<AdminOrders/>}/>

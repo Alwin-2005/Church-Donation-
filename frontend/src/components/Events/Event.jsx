@@ -1,57 +1,71 @@
-import EventCard from "./EventCard";
 import React from "react";
+import EventCard from "./EventCard";
 import evimg from "../../assets/evimg.jpg";
 
 const Event = () => {
+  const events = [
+    {
+      id: 1,
+      title: "Sunday Worship",
+      date: "2026-02-05",
+      time: "18:00",
+      note: "Join us for evening prayer",
+      verse: "Psalm 23:1",
+      status: "visible",
+    },
+    {
+      id: 2,
+      title: "Charity Drive",
+      date: "2026-02-12",
+      time: "10:00",
+      note: "Collecting donations for orphanage",
+      verse: "",
+      status: "visible",
+    },
+  ];
+
+  // Members see only visible events
+  const visibleEvents = events.filter(e => e.status === "visible");
+
   return (
-    <div>
+    <div className="pt-20"> {/* ✅ OFFSET FOR FIXED NAVBAR */}
 
       {/* HERO SECTION */}
       <div className="relative min-h-screen w-full">
 
-        {/* Background image */}
+        {/* BACKGROUND IMAGE */}
         <img
           src={evimg}
-          className="absolute inset-0 h-full w-full object-cover opacity-95  z-0 shadow-lg"
+          className="absolute inset-0 h-full w-full object-cover"
+          alt="Events background"
         />
 
-        {/* Heading */}
-        <h1 className="absolute top-44 w-full text-center text-4xl font-bold text-white z-20 [text-shadow:2px_2px_6px_rgba(0,0,0,1)]">
-          Upcoming Events
-          <hr className="w-40 mx-auto mt-2" />
-        </h1>
+        {/* CONTENT OVER IMAGE */}
+        <div className="relative z-20 pt-40 px-6">
+          <h1 className="text-4xl font-bold text-center text-white">
+            Upcoming Events
+          </h1>
 
-        {/* Event cards */}
-        <div className="relative z-20 pt-75 pb-20 flex flex-col items-center gap-12">
-          <EventCard month="MAR" day="05"
-          title="Fasting Prayer"
-          time="Monday .7:30PM"
-          note="Join this Friday"
-          verse='Joel 2:12 - ""Even now,” declares the Lord, “return to me with all your heart, with fasting and weeping and mourning""' />
-          <EventCard  month="APR"
-    day="12"
-    title="Youth Worship Night"
-    time="Friday · 6:00 PM"
-    note="Open for all youth"
-    verse='Psalm 95:1 — “Come, let us sing for joy to the Lord;
-    let us shout aloud to the Rock of our salvation.' />
+          <hr className="w-40 mx-auto my-6 border-white" />
 
-    <EventCard
-  month="MAY"
-  day="18"
-  title="Sunday Worship Service"
-  time="Sunday · 10:00 AM"
-  note="All are welcome"
-  verse='Psalm 122:1 — “I rejoiced with those who said to me, ‘Let us go to the house of the Lord.’”'
-/>
+          <div className="flex flex-wrap justify-center gap-6">
+            {visibleEvents.length === 0 ? (
+              <p className="text-white text-lg text-center w-full">
+                No events available
+              </p>
+            ) : (
+              visibleEvents.map(event => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  isAdmin={false} // member view
+                />
+              ))
+            )}
+          </div>
         </div>
-       
-      </div>
 
-      <div>
-        
       </div>
-
     </div>
   );
 };

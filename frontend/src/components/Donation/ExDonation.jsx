@@ -33,9 +33,6 @@ const ExtDonation = () => {
   if (loading) return <p>Loading campaigns...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
-  const handleDonate = (campaign) => {
-    navigate(`/donate/${campaign._id}`);
-  };
 
   return (
     <DonationLayout

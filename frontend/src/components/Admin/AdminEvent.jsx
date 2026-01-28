@@ -1,68 +1,98 @@
 import React, { useState } from "react";
-import Navbar from "../NavBar/NavBar";
-import Footer from "../Footer/Footer";
+import EventForm from "../Events/EventForm"
 import EventCard from "../Events/EventCard";
-import EventForm from "../Events/EventForm";
 
-const AdminEvent = () => {
-  const [showForm, setShowForm] = useState(false);
-
-  const events = [
+const AdminEvents = () => {
+  const [events, setEvents] = useState([
     {
       id: 1,
-      month: "MAR",
-      day: "05",
-      title: "Fasting Prayer",
-      time: "Monday · 7:30 PM",
-      note: "Join this Friday",
-      verse: "Joel 2:12 — Return to me with all your heart",
+      title: "Sunday Worship",
+      date: "2026-02-05",
+      time: "18:00",
+      note: "Join us for evening prayer",
+      verse: "Psalm 23:1",
+      status: "visible",
     },
     {
       id: 2,
-      month: "APR",
-      day: "12",
-      title: "Youth Worship Night",
-      time: "Friday · 6:00 PM",
-      note: "Open for all youth",
-      verse: "Psalm 95:1 — Come, let us sing for joy",
+      title: "Charity Drive",
+      date: "2026-02-12",
+      time: "10:00",
+      note: "Collecting donations for orphanage",
+      verse: "",
+      status: "hidden",
     },
-  ];
+  ]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [filter, setFilter] = useState("all");
+
+  const handleSave = (data) => {
+    if (editingEvent) {
+      setEvents(events.map(e => e.id === editingEvent.id ? { ...data, id: e.id } : e));
+    } else {
+      setEvents([...events, { ...data, id: Date.now() }]);
+    }
+    setEditingEvent(null);
+  };
+
+  const filteredEvents = filter === "all"
+    ? events
+    : events.filter(e => e.status === filter);
 
   return (
-    <div>
-      <Navbar />
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Manage Events</h1>
 
-      <div className="pt-32 px-10 min-h-screen bg-gray-100">
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Manage Events</h1>
+        <div className="flex gap-3">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="border rounded px-3 py-2"
+          >
+            <option value="all">All</option>
+            <option value="visible">Visible</option>
+            <option value="hidden">Hidden</option>
+          </select>
 
           <button
-            onClick={() => setShowForm(!showForm)}
-            className="px-5 py-2 bg-black text-white rounded hover:opacity-80"
+            onClick={() => setShowForm(true)}
+            className="bg-black text-white px-4 py-2 rounded"
           >
-            {showForm ? "Close Form" : "+ Add Event"}
+            Add Event
           </button>
-        </div>
-
-        {/* ADD EVENT FORM (POP OUT) */}
-        {showForm && (
-          <div className="mb-10">
-            <EventForm onClose={() => setShowForm(false)} />
-          </div>
-        )}
-
-        {/* EVENTS LIST */}
-        <div className="flex flex-col items-center gap-10">
-          {events.map((event) => (
-            <EventCard key={event.id} {...event} />
-          ))}
         </div>
       </div>
 
-      <Footer />
+      <div className="grid gap-4">
+        {filteredEvents.map(event => (
+          <EventCard
+            key={event.id}
+            event={event}
+            isAdmin={true}          // Admin sees status & edit button
+            onEdit={() => {
+              setEditingEvent(event);
+              setShowForm(true);
+            }}
+          />
+        ))}
+      </div>
+
+      {showForm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <EventForm
+            initialData={editingEvent}
+            onClose={() => {
+              setShowForm(false);
+              setEditingEvent(null);
+            }}
+            onSubmit={handleSave}
+          />
+        </div>
+      )}
     </div>
   );
 };
 
-export default AdminEvent;
+export default AdminEvents;
