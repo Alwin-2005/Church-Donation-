@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 
-const AdminDonationForm = ({ onSubmit, initialData = null }) => {
+const AdminDonationForm = ({ onSubmit, initialData = null, onClose }) => {
   const [formData, setFormData] = useState({
-    donationType: initialData?.donationType || "internal",
-    title: initialData?.title || "",
-    description: initialData?.description || "",
-    goalAmount: initialData?.goalAmount || "",
+    type: initialData?.type || "internal",
+    ctitle: initialData?.ctitle || "",
+    desc: initialData?.desc || "",
+    goalAmt: initialData?.goalAmt || "",
     startDate: initialData?.startDate
       ? initialData.startDate.split("T")[0]
       : "",
-    endDate: initialData?.endDate
-      ? initialData.endDate.split("T")[0]
+    endate: initialData?.endate
+      ? initialData.endate.split("T")[0]
       : "",
     status: initialData?.status || "active",
   });
@@ -23,19 +23,29 @@ const AdminDonationForm = ({ onSubmit, initialData = null }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.title || !formData.goalAmount || !formData.startDate) {
+    if (!formData.ctitle || !formData.goalAmt || !formData.startDate) {
       alert("Please fill all required fields");
       return;
     }
 
     onSubmit({
       ...formData,
-      goalAmount: Number(formData.goalAmount),
+      goalAmt: Number(formData.goalAmt),
     });
   };
 
   return (
-    <div className="max-w-2xl bg-white shadow rounded-xl p-6">
+    <div className="relative max-w-2xl bg-white shadow rounded-xl p-6">
+
+      {/* CLOSE BUTTON */}
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
+      >
+        ×
+      </button>
+
       <h2 className="text-xl font-semibold mb-6">
         {initialData ? "Edit Donation Campaign" : "Create Donation Campaign"}
       </h2>
@@ -48,8 +58,8 @@ const AdminDonationForm = ({ onSubmit, initialData = null }) => {
             Donation Type *
           </label>
           <select
-            name="donationType"
-            value={formData.donationType}
+            name="type"
+            value={formData.type}
             onChange={handleChange}
             className="w-full border rounded px-3 py-2"
           >
@@ -65,8 +75,8 @@ const AdminDonationForm = ({ onSubmit, initialData = null }) => {
           </label>
           <input
             type="text"
-            name="title"
-            value={formData.title}
+            name="ctitle"
+            value={formData.ctitle}
             onChange={handleChange}
             className="w-full border rounded px-3 py-2"
             placeholder="e.g. Church Building Renovation"
@@ -80,8 +90,8 @@ const AdminDonationForm = ({ onSubmit, initialData = null }) => {
             Description
           </label>
           <textarea
-            name="description"
-            value={formData.description}
+            name="desc"
+            value={formData.desc}
             onChange={handleChange}
             className="w-full border rounded px-3 py-2"
             rows="4"
@@ -96,8 +106,8 @@ const AdminDonationForm = ({ onSubmit, initialData = null }) => {
           </label>
           <input
             type="number"
-            name="goalAmount"
-            value={formData.goalAmount}
+            name="goalAmt"
+            value={formData.goalAmt}
             onChange={handleChange}
             className="w-full border rounded px-3 py-2"
             min="0"
@@ -127,8 +137,8 @@ const AdminDonationForm = ({ onSubmit, initialData = null }) => {
             </label>
             <input
               type="date"
-              name="endDate"
-              value={formData.endDate}
+              name="endate"
+              value={formData.endate}
               onChange={handleChange}
               className="w-full border rounded px-3 py-2"
             />
@@ -156,15 +166,17 @@ const AdminDonationForm = ({ onSubmit, initialData = null }) => {
         <div className="flex justify-end gap-3 pt-4">
           <button
             type="reset"
-            onClick={() => setFormData({
-              donationType: "internal",
-              title: "",
-              description: "",
-              goalAmount: "",
-              startDate: "",
-              endDate: "",
-              status: "active",
-            })}
+            onClick={() =>
+              setFormData({
+                type: "internal",
+                ctitle: "",
+                desc: "",
+                goalAmt: "",
+                startDate: "",
+                endate: "",
+                status: "active",
+              })
+            }
             className="px-4 py-2 rounded border"
           >
             Reset

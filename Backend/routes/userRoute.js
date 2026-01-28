@@ -6,7 +6,7 @@ const {handleUserMakeDonation} = require("../controllers/userDonation");
 const {handleAddToCart,handleGetCartInfo,handleUpdateCart} = require("../controllers/userCart");
 const {handleGetAllContent} = require("../controllers/userContent");
 const {handleGetUserInfo,handleUpdateProfile} = require("../controllers/userProfile");
-
+const {handleGetExternalDonation} = require("../controllers/externalDonation");
 const {handleMemberRole} = require("../middlewares/roleCheck");
 const Router = express.Router();
 
@@ -19,6 +19,8 @@ Router.get("/orders/view",handleGetOrderById);
 Router.get("/payements/view",handleGetPaymentById);
 Router.get("/cart/view",handleGetCartInfo);
 Router.get("/content/view",handleMemberRole,handleGetAllContent);
+Router.get("/exdonationcampaigns/view",handleGetExternalDonation);
+
 
 Router.post("/donations/make/:campaignId",handleUserMakeDonation);
 Router.post("/cart/add",handleAddToCart);

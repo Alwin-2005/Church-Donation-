@@ -2,8 +2,8 @@ const dc = require("../models/donationCampaign");
 
 async function handleGetExternalDonation(req,res){
     try{
-        const result = await dc.find({donationType: "external"});
-        return res.status(202).json(result);
+        const Result = await dc.find({donationType: "external"});
+        return res.status(202).json({Result});
     }
     catch(err){
         console.log(err);

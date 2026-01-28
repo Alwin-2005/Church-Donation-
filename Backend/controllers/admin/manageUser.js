@@ -1,6 +1,5 @@
 const User = require("../../models/user");
 const validator = require("validator");
-const {handleMemberRegistration} = require("../register");
 async function handleGetAllUsersInfo(req,res){
     const Result = await User.find({});
     return res.status(201).json({Result});

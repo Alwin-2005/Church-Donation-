@@ -5,6 +5,8 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { getUserFromToken } from "../../utils/auth";
 import { useAuth } from "../../context/AuthContext";
+import api from "../../api/axios";
+
 
 
 const Log = () => {
@@ -18,7 +20,7 @@ const Log = () => {
     e.preventDefault();
     
     try{
-      const res = await axios.post("http://localhost:4000/api/login",{email,password},{withCredentials: true}); 
+      await api.post("/login",{email,password},{withCredentials: true});
       const decodedUser = getUserFromToken();
       setUser(decodedUser);
       navigate("/");

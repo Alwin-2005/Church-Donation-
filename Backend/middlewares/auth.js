@@ -9,7 +9,9 @@ async function restrictToLoggedinUserOnly(req,res,next){
     const token = authHeader.split("Bearer ")[1];
     try {
         const decoded = getUser(token);
-        if(decoded == null) {res.status(401).json({ message: "Invalid token" });}
+        if (!decoded) {
+            return res.status(401).json({ message: "Invalid token" });
+        }
         req.user = decoded;
         next();
     } catch (err) {
@@ -17,17 +19,6 @@ async function restrictToLoggedinUserOnly(req,res,next){
     }
 
 }
-
-/*
-async function checkAuth(req,res,next){
-    const userUid = req.cookies?.uuid;
-    console.log(userUid);
-    const user = getUser(userUid);
-    console.log(user);
-    req.user = user;
-    next();
-}
-*/
 
 module.exports = {
     restrictToLoggedinUserOnly

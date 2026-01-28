@@ -21,7 +21,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -137,15 +137,6 @@ const Navbar = () => {
                     >
                       Profile
                     </button>
-
-                    {role === "admin" && (
-                      <button
-                        onClick={() => navigate("/admin/dashboard")}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                      >
-                        Admin Dashboard
-                      </button>
-                    )}
 
                     <button
                       onClick={handleLogout}

@@ -1,7 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/NavBar/NavBar";
-import Footer from "./components/Footer/Footer";
+import MainLayout from "./components/MainLayout";
 import Sec1 from "./components/Section1/section1";
 import Log from "./components/Login/Log";
 import Regis from "./components/Regis/Regis";
@@ -22,9 +21,11 @@ import AdminOrders from "./components/Admin/AdminOrders";
 import DonationHistory from "./components/Admin/DonationHistory";
 import Shop from "./components/Shop/Shop";
 import Cart from "./components/Shop/Cart";
+import AdminUsers from "./components/Admin/AdminUsers";
 import {CartProvider} from "./components/Shop/CartContext";
 import {AuthProvider} from "./context/AuthContext";
-import MainLayout from "./components/MainLayout";
+
+
 
 const App = () => {
   return (
@@ -35,7 +36,7 @@ const App = () => {
           <Routes>
             
             <Route path="/login" element={<Log />} />
-            <Route path="/registerNow" element={<Regis />} />
+            <Route path="/register" element={<Regis />} />
             
             <Route element={<MainLayout/>}>
             <Route path="/" element={<Sec1 />} />

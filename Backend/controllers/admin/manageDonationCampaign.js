@@ -15,7 +15,7 @@ async function handleAddNewDonationCampaign(req,res){
             endDate: endate,
             createdBy: userId,
         });
-        return res.status(201).json("msg: created successfully");
+        return res.status(200).json("msg: created successfully");
     }
 
     catch(err){
@@ -26,7 +26,7 @@ async function handleAddNewDonationCampaign(req,res){
 
 async function handleGetAllDonationCampaignInfo(req,res){
     const Result = await donationC.find({});
-    return res.status(201).json({Result});
+    return res.status(200).json({Result});
 }
 
 async function handleUpdateDonationCampaign(req,res){
