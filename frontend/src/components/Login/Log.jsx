@@ -6,30 +6,35 @@ import axios from "axios";
 import { getUserFromToken } from "../../utils/auth";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../api/axios";
+import Cookies from "js-cookie";
 
 
 
 const Log = () => {
   const navigate = useNavigate();
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const [loginError,setLoginError] = useState("");
-  const {setUser} = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const { setUser } = useAuth();
 
-  const handleLogin  = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    
-    try{
-      await api.post("/login",{email,password},{withCredentials: true});
+
+    try {
+      const res = await api.post("/login", { email, password }, { withCredentials: true });
+      const token = res.data.token;
+      if (token) {
+        Cookies.set("token", token, { expires: 1 }); // Expires in 1 day
+      }
       const decodedUser = getUserFromToken();
       setUser(decodedUser);
       navigate("/");
     }
-    catch(err){
+    catch (err) {
       console.log(err);
       setLoginError("Invalid email or password");
     }
-    
+
 
   };
 
@@ -98,7 +103,7 @@ const Log = () => {
               to="/forgotpass"
               className="text-sm text-gray-300 hover:text-white transition"
             >
-             Forgot Password???
+              Forgot Password???
             </Link>
           </div>
 

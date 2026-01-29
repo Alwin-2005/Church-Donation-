@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "./CartContext";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { ShoppingBag, Plus, Minus } from "lucide-react";
 
 const ShopCard = (props) => {
   const { cart, updateCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [qty, setQty] = useState(0);
 
   useEffect(() => {
@@ -11,61 +16,88 @@ const ShopCard = (props) => {
   }, [cart, props.id]);
 
   const handleQtyChange = (newQty) => {
+    // Check if user is logged in
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     setQty(newQty);
     updateCart(props, newQty);
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-6">
-      <div className="bg-blue-200 text-black border border-black min-h-60 w-68 p-4 m-5 rounded-xl shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <div className="group relative bg-white w-[280px] rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col">
 
-        <img src={props.loc} className="mx-auto mb-4 transition-transform duration-300 hover:scale-105"/>
+      {/* IMAGE CONTAINER */}
+      <div className="h-[260px] w-full bg-gray-50 flex items-center justify-center relative overflow-hidden">
+        {props.url ? (
+          <img
+            src={props.url}
+            alt={props.itemName}
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+        ) : (
+          <div className="text-gray-300">No Image</div>
+        )}
 
-        <h2 className="font-extrabold uppercase tracking-wide border-b border-black pb-2">
-          {props.name}
+        {/* ABSOLUTE PRICE BADGE */}
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+          ₹{props.price}
+        </div>
+      </div>
+
+      {/* CONTENT */}
+      <div className="p-5 flex-1 flex flex-col">
+        <h2 className="font-bold text-lg text-gray-900 leading-tight mb-1 group-hover:text-amber-600 transition-colors">
+          {props.itemName}
         </h2>
 
-        <h4 className="mt-4 text-sm text-gray-700">{props.description}</h4>
+        <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">
+          {props.category}
+        </p>
 
-        <h5 className="mt-4 font-semibold text-sm">
-          Stock Available: {props.stock}
-        </h5>
+        <p className="text-gray-500 text-sm mb-4 line-clamp-2 leading-relaxed flex-1">
+          {props.description}
+        </p>
 
-        <h5 className="mt-3 font-bold text-lg">
-          Price : ₹{props.price}
-        </h5>
+        {/* FOOTER ACTIONS */}
+        <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+          <span className={`text-xs font-medium ${props.stockQuantity > 0 ? "text-emerald-600" : "text-red-500"}`}>
+            {props.stockQuantity > 0 ? `${props.stockQuantity} in stock` : "Out of Stock"}
+          </span>
 
-        <div className="mt-5 flex justify-end">
           {qty === 0 ? (
             <button
               onClick={() => handleQtyChange(1)}
-              className="text-sm font-bold px-4 py-1.5 border border-black rounded-full transition-all duration-300 hover:bg-black hover:text-white"
+              disabled={props.stockQuantity === 0}
+              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
             >
-              Add to Cart
+              <ShoppingBag className="w-4 h-4" /> Add
             </button>
           ) : (
-            <div className="flex items-center gap-4 border border-black rounded-full px-4 py-1">
-              <button onClick={() => handleQtyChange(qty - 1)}>-</button>
-              <span className="font-bold">{qty}</span>
+            <div className="flex items-center gap-3 bg-gray-100 rounded-full px-1 py-1">
+              <button
+                onClick={() => handleQtyChange(qty - 1)}
+                className="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-black hover:bg-gray-200 transition-colors"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <span className="font-bold text-sm min-w-[20px] text-center">{qty}</span>
               <button
                 onClick={() => handleQtyChange(qty + 1)}
-                disabled={qty === props.stock}
-                className={`${qty === props.stock ? "opacity-40" : ""}`}
+                disabled={qty >= props.stockQuantity}
+                className="w-8 h-8 flex items-center justify-center bg-black rounded-full shadow-sm text-white hover:bg-gray-800 disabled:opacity-50 transition-colors"
               >
-                +
+                <Plus className="w-4 h-4" />
               </button>
             </div>
           )}
         </div>
 
-        <div className="mt-4 flex justify-end">
-          <button className="text-sm font-bold px-4 py-1.5 border border-black rounded-full transition-all duration-300 hover:bg-black hover:text-white">
-            Buy Now
-          </button>
-        </div>
       </div>
     </div>
   );
 };
 
 export default ShopCard;
+

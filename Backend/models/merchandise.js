@@ -23,18 +23,23 @@ const merchandiseSchema = mongoose.Schema({
 
     status: {
         type: String,
-        enum: ['visible','hidden'],
+        enum: ['visible', 'hidden'],
         default: 'visible',
+    },
+
+    url: {
+        type: String,
+        required: true,
     },
 
     description: {
         type: String,
     },
 },
-{
-    timestamps:true,
-});
+    {
+        timestamps: true,
+    });
 
-const merch = mongoose.model("Merchandise",merchandiseSchema);
+const merch = mongoose.model("Merchandise", merchandiseSchema);
 
 module.exports = merch;
