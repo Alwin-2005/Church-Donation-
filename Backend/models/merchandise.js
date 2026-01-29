@@ -16,11 +16,13 @@ const merchandiseSchema = mongoose.Schema({
     price: {
         type: Number,
         required: true,
+        min: 0,
     },
 
     stockQuantity: {
         type: Number,
         required: true,
+        min: 0,
     },
 
     status: {

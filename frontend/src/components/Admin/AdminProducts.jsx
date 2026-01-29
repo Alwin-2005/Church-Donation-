@@ -398,6 +398,8 @@ const AdminProducts = () => {
                     value={formData.price}
                     onChange={handleChange}
                     placeholder="0.00"
+                    min="0"
+                    step="0.01"
                     className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm"
                     required
                   />
@@ -410,6 +412,7 @@ const AdminProducts = () => {
                     value={formData.stockQuantity}
                     onChange={handleChange}
                     placeholder="0"
+                    min="0"
                     className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm"
                     required
                   />

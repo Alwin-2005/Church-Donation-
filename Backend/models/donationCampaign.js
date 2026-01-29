@@ -18,11 +18,13 @@ const donationCampaignSchema = mongoose.Schema({
 
     goalAmount: {
         type: Number,
+        min: 0,
     },
 
     collectedAmount: {
         type: Number,
         default: 0,
+        min: 0,
     },
 
     startDate: {
