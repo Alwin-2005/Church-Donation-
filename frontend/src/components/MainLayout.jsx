@@ -5,12 +5,16 @@ import Footer from "./Footer/Footer";
 const MainLayout = () => {
   return (
     <>
-      <Navbar />
-      <div >
+      <div className="relative z-50">
+        <Navbar />
+      </div>
+      <div className="relative z-10">
         {/* prevents content going behind fixed navbar */}
         <Outlet />
       </div>
-      <Footer />
+      <div className="relative z-50">
+        <Footer />
+      </div>
     </>
   );
 };

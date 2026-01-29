@@ -28,7 +28,12 @@ const Log = () => {
       }
       const decodedUser = getUserFromToken();
       setUser(decodedUser);
-      navigate("/");
+
+      if (decodedUser?.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     }
     catch (err) {
       console.log(err);

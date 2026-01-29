@@ -4,6 +4,7 @@ import MainLayout from "./components/MainLayout";
 import Sec1 from "./components/Section1/section1";
 import Log from "./components/Login/Log";
 import Regis from "./components/Regis/Regis";
+import ResetPass from "./components/Login/ResetPass";
 import Users from "./components/Admin/Users";
 import AdminPanel from "./components/Admin/adminPanel";
 import AdminDashboard from "./components/Admin/AdminDashboard";
@@ -22,56 +23,59 @@ import DonationHistory from "./components/Admin/DonationHistory";
 import Shop from "./components/Shop/Shop";
 import Cart from "./components/Shop/Cart";
 import DonatePage from "./components/Donation/Donate";
+import Tithe from "./components/Donation/Tithe";
 import AdminUsers from "./components/Admin/AdminUsers";
-import {CartProvider} from "./components/Shop/CartContext";
-import {AuthProvider} from "./context/AuthContext";
+import { CartProvider } from "./components/Shop/CartContext";
+import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./components/ForgotPassword";
 
 
 const App = () => {
   return (
     <div className="w-full overflow-x-hidden">
-      
+
       <AuthProvider>
-      <CartProvider>
+        <CartProvider>
           <Routes>
-            
+
             <Route path="/login" element={<Log />} />
             <Route path="/register" element={<Regis />} />
-            <Route path="forgotpass" element={<ForgotPassword/>}/>
+            <Route path="forgotpass" element={<ForgotPassword />} />
+            <Route path="/resetpassword/:token" element={<ResetPass />} />
 
-            <Route element={<MainLayout/>}>
-            <Route path="/" element={<Sec1 />} />
-            <Route path="/events" element={<Event/>}/>       
-            <Route path="/profile" element={<Profile />}/>
-            <Route path="/TermsCon" element={<TermsCon/>}/>
-            <Route path="/ExtDon" element={<ExDonation/>}/>
-            <Route path="/IntDon" element={<IntDonation/>}/>
-            <Route path="/donate/:campaignId" element={<DonatePage />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/cart" element={<Cart />} />
-          
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Sec1 />} />
+              <Route path="/announcements" element={<Event />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/TermsCon" element={<TermsCon />} />
+              <Route path="/ExtDon" element={<ExDonation />} />
+              <Route path="/IntDon" element={<IntDonation />} />
+              <Route path="/tithe" element={<Tithe />} />
+              <Route path="/donate/:campaignId" element={<DonatePage />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/cart" element={<Cart />} />
 
-            <Route path="/admin" element={<AdminPanel />}>
-            
-              
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="dashboard" element={<AdminDashboard/>}  />
-              <Route path="products" element={<AdminProducts/>}/>
-              <Route path="orders" element={<AdminOrders/>}/>
-              <Route path="events" element={<AdminEvent/>}/>
-              <Route path="campaigns" element={<AdminDonation/>}/>
-              <Route path="donations" element={<DonationHistory/>}/>
-              <Route path="payments" element={<AdminPayments/>}/>
+
+              <Route path="/admin" element={<AdminPanel />}>
+
+
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="announcements" element={<AdminEvent />} />
+                <Route path="campaigns" element={<AdminDonation />} />
+                <Route path="donations" element={<DonationHistory />} />
+                <Route path="payments" element={<AdminPayments />} />
+              </Route>
             </Route>
-            </Route>
-            
-            <Route path="*" element={<NotFound/>}/>
-            
+
+            <Route path="*" element={<NotFound />} />
+
 
           </Routes>
-      </CartProvider>
-      
+        </CartProvider>
+
       </AuthProvider>
     </div>
   );

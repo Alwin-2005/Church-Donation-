@@ -1,6 +1,6 @@
 const donation = require("../../models/donation");
-async function handleGetDonationInfo(req,res){
-    const result = await donation.find({});
+async function handleGetDonationInfo(req, res) {
+    const result = await donation.find({}).populate("userId").populate("donationCampaignId");
     return res.status(201).json(result);
 }
 

@@ -6,8 +6,9 @@ import Cookies from "js-cookie";
 import api from "../api/axios";
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState("donations");
   const { user, setUser, logout } = useAuth();
+  const isAdmin = user?.role === "admin";
+  const [activeTab, setActiveTab] = useState(isAdmin ? "edit" : "donations");
   const navigate = useNavigate();
 
   const [profileData, setProfileData] = useState(null);
@@ -15,6 +16,8 @@ const Profile = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState("");
+  const [passwordMsg, setPasswordMsg] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   // FETCH DATA
   useEffect(() => {
@@ -30,22 +33,18 @@ const Profile = () => {
 
         // 1. User Profile
         const userRes = await api.get("/users/profile/view", { headers });
-        const userData = userRes.data;
+        const userData = Array.isArray(userRes.data) ? userRes.data[0] : userRes.data;
+        setProfileData(userData);
 
-        if (Array.isArray(userData) && userData.length > 0) {
-          setProfileData(userData[0]);
-        } else {
-          setProfileData(userData);
+        // 2. Fetch donations/orders ONLY if not admin
+        if (!isAdmin) {
+          const [donRes, ordRes] = await Promise.all([
+            api.get("/users/donations/view", { headers }),
+            api.get("/users/orders/view", { headers })
+          ]);
+          setDonations(donRes.data.result || []);
+          setOrders(ordRes.data.Result || []);
         }
-
-        // 2. Donations
-        const donRes = await api.get("/users/donations/view", { headers });
-        setDonations(donRes.data.result || []);
-
-        // 3. Orders
-        const ordRes = await api.get("/users/orders/view", { headers });
-        // Backend key is { Result: [...] }
-        setOrders(ordRes.data.Result || []);
 
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -56,7 +55,7 @@ const Profile = () => {
     };
 
     fetchData();
-  }, [user]);
+  }, [user, isAdmin]);
 
   // UPDATE PROFILE
   const handleUpdate = async (e) => {
@@ -79,6 +78,36 @@ const Profile = () => {
     } catch (err) {
       console.error(err);
       setMsg("Error updating profile.");
+    }
+  };
+
+  // CHANGE PASSWORD
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    const token = Cookies.get("token");
+    setPasswordMsg("");
+    setPasswordLoading(true);
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    if (data.newPassword !== data.confirmPassword) {
+      setPasswordMsg("New passwords do not match");
+      setPasswordLoading(false);
+      return;
+    }
+
+    try {
+      await api.patch("/users/profile/change-password", data, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPasswordMsg("Password changed successfully!");
+      e.target.reset();
+    } catch (err) {
+      console.error(err);
+      setPasswordMsg(err.response?.data?.msg || "Error changing password.");
+    } finally {
+      setPasswordLoading(false);
     }
   };
 
@@ -118,6 +147,9 @@ const Profile = () => {
             </div>
             <div className="flex-1 space-y-2">
               <h2 className="text-2xl font-bold text-gray-900">{profileData.fullname}</h2>
+              <p className="text-xs font-black uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full w-fit">
+                {profileData.role || "Member"}
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500 mt-4">
                 <p><span className="font-semibold text-gray-900">Email:</span> {profileData.email}</p>
                 <p><span className="font-semibold text-gray-900">Phone:</span> {profileData.phoneNo || "N/A"}</p>
@@ -129,20 +161,22 @@ const Profile = () => {
 
           {/* Tabs */}
           <div className="mt-10">
-            <div className="flex border-b border-gray-200">
-              {["donations", "orders", "edit"].map(tab => (
+            <div className="flex border-b border-gray-200 overflow-x-auto">
+              {[
+                ...(!isAdmin ? [{ id: "donations", label: "Donations" }, { id: "orders", label: "Orders" }] : []),
+                { id: "edit", label: "Edit Profile" },
+                { id: "security", label: "Security" }
+              ].map(tab => (
                 <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-8 py-4 font-medium transition-all relative ${activeTab === tab
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-8 py-4 font-medium transition-all relative whitespace-nowrap ${activeTab === tab.id
                     ? "text-black"
                     : "text-gray-400 hover:text-gray-600"
                     }`}
                 >
-                  {tab === "donations" && "Donations"}
-                  {tab === "orders" && "Orders"}
-                  {tab === "edit" && "Edit Profile"}
-                  {activeTab === tab && (
+                  {tab.label}
+                  {activeTab === tab.id && (
                     <div className="absolute bottom-0 left-0 w-full h-0.5 bg-black" />
                   )}
                 </button>
@@ -151,7 +185,7 @@ const Profile = () => {
 
             {/* Tab Content */}
             <div className="bg-white min-h-[400px] border border-gray-100 border-t-0 rounded-b-2xl p-8 shadow-sm">
-              {activeTab === "donations" && (
+              {activeTab === "donations" && !isAdmin && (
                 <div className="space-y-4">
                   {donations.length === 0 ? <p className="text-gray-400 text-center py-10">No donations found.</p> :
                     donations.map(d => (
@@ -171,7 +205,7 @@ const Profile = () => {
                 </div>
               )}
 
-              {activeTab === "orders" && (
+              {activeTab === "orders" && !isAdmin && (
                 <div className="space-y-6">
                   {orders.length === 0 ? <p className="text-gray-400 text-center py-10">No orders found.</p> :
                     orders.map(o => (
@@ -186,11 +220,7 @@ const Profile = () => {
                             {o.status}
                           </span>
                         </div>
-
-                        <div className="space-y-2">
-                          {/* Order Endpoint returns populated items? Usually need to check. Assuming simple structure for now. */}
-                          <p className="text-sm text-gray-600">Total Amount: <span className="font-bold text-gray-900">₹{o.totalAmount}</span></p>
-                        </div>
+                        <p className="text-sm text-gray-600">Total Amount: <span className="font-bold text-gray-900">₹{o.totalAmount}</span></p>
                       </div>
                     ))}
                 </div>
@@ -250,6 +280,30 @@ const Profile = () => {
                       Save Changes
                     </button>
                     {msg && <p className="text-center mt-4 text-sm font-medium text-emerald-600 animate-pulse">{msg}</p>}
+                  </div>
+                </form>
+              )}
+
+              {activeTab === "security" && (
+                <form onSubmit={handleChangePassword} className="max-w-sm mx-auto space-y-6">
+                  <h3 className="text-lg font-bold text-gray-900 border-b pb-2 mb-6 uppercase tracking-widest text-xs text-gray-400">Security Credentials</h3>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-gray-400 mb-1">Current Password</label>
+                    <input type="password" name="currentPassword" required className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-gray-400 mb-1">New Password</label>
+                    <input type="password" name="newPassword" required className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase text-gray-400 mb-1">Confirm New Password</label>
+                    <input type="password" name="confirmPassword" required className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+                  </div>
+                  <div className="pt-4">
+                    <button disabled={passwordLoading} className="w-full bg-black text-white p-4 rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-transform active:scale-95 disabled:bg-gray-400">
+                      {passwordLoading ? "Processing..." : "Update Password"}
+                    </button>
+                    {passwordMsg && <p className={`text-center mt-4 text-sm font-medium ${passwordMsg.includes("successfully") ? "text-emerald-600" : "text-rose-600"} animate-pulse`}>{passwordMsg}</p>}
                   </div>
                 </form>
               )}

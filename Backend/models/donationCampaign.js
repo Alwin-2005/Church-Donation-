@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const donationCampaignSchema = mongoose.Schema({
     donationType: {
         type: String,
-        enum: ['internal','external'],
+        enum: ['internal', 'external'],
         required: true,
     },
 
@@ -18,7 +18,6 @@ const donationCampaignSchema = mongoose.Schema({
 
     goalAmount: {
         type: Number,
-        required: true,
     },
 
     collectedAmount: {
@@ -35,9 +34,9 @@ const donationCampaignSchema = mongoose.Schema({
         type: Date,
     },
 
-    status:{
+    status: {
         type: String,
-        enum: ['active','closed','paused'],
+        enum: ['active', 'closed', 'paused'],
         default: 'active',
     },
 
@@ -47,11 +46,16 @@ const donationCampaignSchema = mongoose.Schema({
         ref: "User",
     },
 
-},
-{
-    timestamps: true,
-});
+    isTithe: {
+        type: Boolean,
+        default: false,
+    },
 
-const donationCampaign = mongoose.model("DonationCampaign",donationCampaignSchema);
+},
+    {
+        timestamps: true,
+    });
+
+const donationCampaign = mongoose.model("DonationCampaign", donationCampaignSchema);
 
 module.exports = donationCampaign;

@@ -1,41 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import api from "../../api/axios";
 
 const DonationHistory = () => {
-  // mock data shaped exactly like populated backend response
-  const donations = [
-    {
-      _id: "65fabc12e9a1",
-      user: {
-        name: "John D",
-        email: "john@gmail.com",
-      },
-      campaign: {
-        title: "Church Building Fund",
-        donationType: "internal",
-        status: "active",
-      },
-      amount: 2000,
-      paymentStatus: "paid",
-      receiptNo: "RCT-10231",
-      createdAt: "2026-01-12T10:30:00",
-    },
-    {
-      _id: "65fabd98aa21",
-      user: {
-        name: "Maria S",
-        email: "maria@gmail.com",
-      },
-      campaign: {
-        title: "Flood Relief",
-        donationType: "external",
-        status: "closed",
-      },
-      amount: 1000,
-      paymentStatus: "failed",
-      receiptNo: "RCT-10245",
-      createdAt: "2026-02-02T14:15:00",
-    },
-  ];
+  const [donations, setDonations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchDonations();
+  }, []);
+
+  const fetchDonations = async () => {
+    try {
+      const res = await api.get("admin/donations/view");
+      setDonations(res.data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch donation history");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatDate = date =>
     new Date(date).toLocaleDateString("en-IN", {
@@ -43,6 +28,9 @@ const DonationHistory = () => {
       month: "short",
       year: "numeric",
     });
+
+  if (loading) return <div className="mt-24 px-6 text-center">Loading donations...</div>;
+  if (error) return <div className="mt-24 px-6 text-center text-red-500">{error}</div>;
 
   return (
     <div className="mt-24 px-6">
@@ -70,21 +58,20 @@ const DonationHistory = () => {
                 <td className="p-3 font-mono text-xs">{d._id}</td>
 
                 <td className="p-3">
-                  <div className="font-medium">{d.user.name}</div>
-                  <div className="text-xs text-gray-500">{d.user.email}</div>
+                  <div className="font-medium">{d.userId?.fullname || "Unknown Donor"}</div>
+                  <div className="text-xs text-gray-500">{d.userId?.email || "N/A"}</div>
                 </td>
 
-                <td className="p-3">{d.campaign.title}</td>
+                <td className="p-3">{d.donationCampaignId?.title || "N/A"}</td>
 
                 <td className="p-3 capitalize">
                   <span
-                    className={`px-2 py-1 rounded text-xs ${
-                      d.campaign.donationType === "internal"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-purple-100 text-purple-700"
-                    }`}
+                    className={`px-2 py-1 rounded text-xs ${d.donationCampaignId?.donationType === "internal"
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-purple-100 text-purple-700"
+                      }`}
                   >
-                    {d.campaign.donationType}
+                    {d.donationCampaignId?.donationType || "N/A"}
                   </span>
                 </td>
 
@@ -93,13 +80,12 @@ const DonationHistory = () => {
                 <td className="p-3">{formatDate(d.createdAt)}</td>
 
                 <td
-                  className={`p-3 font-medium ${
-                    d.paymentStatus === "paid"
-                      ? "text-green-600"
-                      : d.paymentStatus === "failed"
+                  className={`p-3 font-medium ${d.paymentStatus === "paid"
+                    ? "text-green-600"
+                    : d.paymentStatus === "failed"
                       ? "text-red-500"
                       : "text-yellow-600"
-                  }`}
+                    }`}
                 >
                   {d.paymentStatus}
                 </td>

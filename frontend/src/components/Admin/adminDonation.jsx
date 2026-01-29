@@ -28,50 +28,50 @@ const AdminDonation = () => {
     } finally {
       setLoading(false);
     }
-    
+
   };
 
   const handleCreate = async (data) => {
-  try {
-    let res;
+    try {
+      let res;
 
-    if (editingCampaign) {
-      res = await api.put(
-        `admin/donationcampaigns/update/${editingCampaign._id}`,
-        data,
-        { withCredentials: true }
+      if (editingCampaign) {
+        res = await api.put(
+          `admin/donationcampaigns/update/${editingCampaign._id}`,
+          data,
+          { withCredentials: true }
+        );
+      } else {
+        res = await api.post(
+          "admin/donationcampaigns/add",
+          data,
+          { withCredentials: true }
+        );
+      }
+
+      const campaign =
+        res.data?.Result ||
+        res.data?.campaign ||
+        res.data?.data;
+
+      if (!campaign || !campaign._id) {
+        fetchCampaigns(); // fallback to server truth
+        throw new Error("Invalid API response");
+      }
+
+      setCampaigns(prev =>
+        editingCampaign
+          ? prev.map(c => (c?._id === campaign._id ? campaign : c))
+          : [...prev, campaign]
       );
-    } else {
-      res = await api.post(
-        "admin/donationcampaigns/add",
-        data,
-        { withCredentials: true }
-      );
+
+      setEditingCampaign(null);
+      setShowForm(false);
+    } catch (err) {
+      console.error(err);
+      alert("Saved successfully. Refresh fixed UI sync.");
     }
-
-    const campaign =
-      res.data?.Result ||
-      res.data?.campaign ||
-      res.data?.data;
-
-    if (!campaign || !campaign._id) {
-      fetchCampaigns(); // fallback to server truth
-      throw new Error("Invalid API response");
-    }
-
-    setCampaigns(prev =>
-      editingCampaign
-        ? prev.map(c => (c?._id === campaign._id ? campaign : c))
-        : [...prev, campaign]
-    );
-
-    setEditingCampaign(null);
-    setShowForm(false);
-  } catch (err) {
-    console.error(err);
-    alert("Saved successfully. Refresh fixed UI sync.");
-  }
-};
+  };
 
 
 
@@ -81,9 +81,15 @@ const AdminDonation = () => {
     setShowForm(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (!window.confirm("Delete this campaign?")) return;
-    setCampaigns(prev => prev.filter(c => c._id !== id));
+    try {
+      await api.delete(`admin/donationcampaigns/delete/${id}`, { withCredentials: true });
+      setCampaigns(prev => prev.filter(c => c._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete campaign. Please try again.");
+    }
   };
 
   if (loading) return <p>Loading campaigns...</p>;
@@ -118,31 +124,31 @@ const AdminDonation = () => {
 
       {/* FORM */}
       {showForm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
 
-            {/* BACKDROP */}
-            <div
-              className="absolute inset-0 bg-black/40"
-              onClick={() => {
+          {/* BACKDROP */}
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => {
+              setShowForm(false);
+              setEditingCampaign(null);
+            }}
+          />
+
+          {/* MODAL CONTENT */}
+          <div className="relative z-10">
+            <AdminDonationForm
+              initialData={editingCampaign}
+              onSubmit={handleCreate}
+              onClose={() => {
                 setShowForm(false);
                 setEditingCampaign(null);
               }}
             />
-
-            {/* MODAL CONTENT */}
-            <div className="relative z-10">
-              <AdminDonationForm
-                initialData={editingCampaign}
-                onSubmit={handleCreate}
-                onClose={() => {
-                  setShowForm(false);
-                  setEditingCampaign(null);
-                }}
-              />
-            </div>
-
           </div>
-        )}
+
+        </div>
+      )}
 
 
       {/* INTERNAL DONATIONS */}

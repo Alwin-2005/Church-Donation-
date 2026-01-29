@@ -9,6 +9,8 @@ const merchandiseSchema = mongoose.Schema({
     category: {
         type: String,
         required: true,
+        enum: ['Books & Bibles', 'Apparel', 'Accessories', 'Home Decor', 'Stationery', 'Other'],
+        default: 'Other',
     },
 
     price: {

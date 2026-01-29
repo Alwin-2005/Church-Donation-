@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Upload, AlertCircle } from "lucide-react";
+import api from "../../api/axios";
 
 const AdminProducts = () => {
   const [showForm, setShowForm] = useState(false);
@@ -8,6 +9,8 @@ const AdminProducts = () => {
   // DRAG DROP STATE
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState("");
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   /* ---------- DRAG & MATCH LOGIC ---------- */
   const handleDrag = (e) => {
@@ -48,7 +51,8 @@ const AdminProducts = () => {
         if (img.width < 500 || img.height < 500) {
           setError(`Image is too small (${img.width}x${img.height}). Min size is 500x500.`);
         } else {
-          // Success - mimic upload by setting data URL as the "url"
+          // Store file for upload and preview URL
+          setUploadedFile(file);
           setFormData(prev => ({ ...prev, url: reader.result }));
         }
       };
@@ -56,38 +60,25 @@ const AdminProducts = () => {
   };
 
   /* ---------- MOCK DATA ---------- */
-  const [products, setProducts] = useState([
-    {
-      _id: "PRD001",
-      url: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=800&auto=format&fit=crop",
-      itemName: "Holy Bible",
-      category: "Books",
-      price: 799,
-      stockQuantity: 25,
-      status: "visible",
-      description: "Standard edition holy bible.",
-    },
-    {
-      _id: "PRD002",
-      url: "https://images.unsplash.com/photo-1576774659427-0c58b52f6f4e?q=80&w=800&auto=format&fit=crop",
-      itemName: "Cross Pendant",
-      category: "Accessories",
-      price: 499,
-      stockQuantity: 40,
-      status: "visible",
-      description: "Silver cross pendant.",
-    },
-    {
-      _id: "PRD003",
-      url: "",
-      itemName: "Prayer Book",
-      category: "Books",
-      price: 299,
-      stockQuantity: 0,
-      status: "hidden",
-      description: "Out of stock item.",
-    },
-  ]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch products on mount
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await api.get('/admin/merch/view');
+      setProducts(res.data.result || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setError('Failed to load products');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [formData, setFormData] = useState({
     itemName: "",
@@ -134,36 +125,72 @@ const AdminProducts = () => {
   };
 
   /* ---------- SUBMIT ---------- */
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true);
+    setError("");
 
-    if (editingProduct) {
-      // UPDATE
-      setProducts(products.map(p =>
-        p._id === editingProduct._id
-          ? {
-            ...p,
-            ...formData,
-            price: Number(formData.price),
-            stockQuantity: Number(formData.stockQuantity),
+    try {
+      let imageUrl = formData.url;
+
+      // If there's a new file to upload
+      if (uploadedFile) {
+        const formDataToUpload = new FormData();
+        formDataToUpload.append('image', uploadedFile);
+
+        const uploadRes = await api.post('/upload/upload', formDataToUpload, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
           }
-          : p
-      ));
-    } else {
-      // CREATE
-      setProducts([
-        ...products,
-        {
-          _id: `PRD${products.length + 1}`,
-          ...formData,
-          price: Number(formData.price),
-          stockQuantity: Number(formData.stockQuantity),
-        },
-      ]);
-    }
+        });
 
-    setShowForm(false);
-    setEditingProduct(null);
+        imageUrl = uploadRes.data.url;
+      }
+
+      const productData = {
+        itemName: formData.itemName,
+        category: formData.category,
+        price: Number(formData.price),
+        stockQuantity: Number(formData.stockQuantity),
+        description: formData.description,
+        url: imageUrl,
+        status: formData.status,
+      };
+
+      if (editingProduct) {
+        // UPDATE
+        await api.patch(`/admin/merch/update/${editingProduct._id}`, productData);
+        alert("Product updated successfully!");
+      } else {
+        // CREATE
+        await api.post('/admin/merch/add', productData);
+        alert("Product added successfully!");
+      }
+
+      setShowForm(false);
+      setEditingProduct(null);
+      setUploadedFile(null);
+      fetchProducts(); // Refresh list
+    } catch (error) {
+      console.error("Error saving product:", error);
+      setError(error.response?.data?.msg || "Failed to save product");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  /* ---------- DELETE ---------- */
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    try {
+      await api.delete(`/admin/merch/delete/${id}`);
+      alert('Product deleted successfully!');
+      fetchProducts(); // Refresh list
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert(error.response?.data?.msg || 'Failed to delete product');
+    }
   };
 
   return (
@@ -245,6 +272,7 @@ const AdminProducts = () => {
                         Edit
                       </button>
                       <button
+                        onClick={() => handleDelete(p._id)}
                         className="text-gray-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete"
                       >
@@ -343,14 +371,21 @@ const AdminProducts = () => {
 
                 <div className="col-span-2 sm:col-span-1">
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Category</label>
-                  <input
+                  <select
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    placeholder="e.g. Books"
-                    className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm"
+                    className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm bg-white font-medium"
                     required
-                  />
+                  >
+                    <option value="" disabled>Select Category</option>
+                    <option value="Books & Bibles">Books & Bibles</option>
+                    <option value="Apparel">Apparel</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Home Decor">Home Decor</option>
+                    <option value="Stationery">Stationery</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
               </div>
 

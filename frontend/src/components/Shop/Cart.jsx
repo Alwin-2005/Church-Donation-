@@ -1,16 +1,104 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../NavBar/NavBar";
 import { useCart } from "./CartContext";
-import { Trash2, Smartphone, ShieldCheck, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { Trash2, Smartphone, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
 const Cart = () => {
-  const { cart, updateCart } = useCart();
+  const { cart, updateCart, clearCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const total = cart.reduce((sum, i) => sum + i.qty * i.price, 0);
 
   const handleRemove = (item) => {
     updateCart(item, 0);
+  };
+
+  const handleCheckout = async () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      // 0. Check if user has an address
+      const { data: profile } = await api.get("/users/profile/view");
+      const userData = profile[0]; // Controller returns an array
+
+      if (!userData || !userData.address) {
+        alert("Please provide a delivery address in your profile before checking out.");
+        navigate("/profile");
+        return;
+      }
+
+      // 1. Create Order in Backend
+      const itemsToOrder = cart.map(item => ({
+        itemId: item.id || item._id, // Ensure we use the correct ID field
+        quantity: item.qty,
+        price: item.price
+      }));
+
+      const { data: order } = await api.post("/payment/merch/create-order", {
+        items: itemsToOrder,
+        totalAmount: total,
+        userId: user._id
+      });
+
+      // 2. Open Razorpay Modal
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_S9mLYwTd390Rjg",
+        amount: order.amount,
+        currency: order.currency,
+        name: "Church Donation Store",
+        description: "Purchase of Merchandise",
+        order_id: order.id,
+        handler: async function (response) {
+          try {
+            // 3. Verify Payment
+            const verificationData = {
+              ...response,
+              items: itemsToOrder,
+              totalAmount: total,
+              userId: user._id
+            };
+
+            await api.post("/payment/merch/verify", verificationData);
+
+            alert("Payment Successful! Your order has been placed.");
+            clearCart();
+            navigate("/shop");
+          } catch (err) {
+            console.error("Verification failed:", err);
+            alert("Payment verification failed. Please contact support.");
+          }
+        },
+        prefill: {
+          name: user.fullname,
+          email: user.email,
+          contact: user.phoneNo
+        },
+        theme: {
+          color: "#000000"
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        alert("Payment Failed: " + response.error.description);
+      });
+      rzp.open();
+
+    } catch (err) {
+      console.error("Checkout error:", err);
+      alert(err.response?.data?.msg || "Failed to initiate checkout");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -35,8 +123,7 @@ const Cart = () => {
             {/* LEFT: CART ITEMS */}
             <div className="lg:col-span-2 space-y-6">
               {cart.map((item) => (
-                <div key={item.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-6 items-center hover:shadow-md transition-shadow">
-                  {/* Item Image (if available or placeholder) */}
+                <div key={item.id || item._id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-6 items-center hover:shadow-md transition-shadow">
                   <div className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0 border border-gray-200">
                     {item.url ? (
                       <img src={item.url} alt={item.itemName} className="w-full h-full object-cover" />
@@ -45,14 +132,12 @@ const Cart = () => {
                     )}
                   </div>
 
-                  {/* Details */}
                   <div className="flex-1 text-center sm:text-left">
                     <h3 className="font-bold text-lg text-gray-900">{item.itemName}</h3>
                     <p className="text-sm text-gray-500 mb-2">{item.category}</p>
                     <p className="font-semibold text-gray-900">₹{item.price}</p>
                   </div>
 
-                  {/* Actions */}
                   <div className="flex flex-col items-center sm:items-end gap-3">
                     <div className="flex items-center gap-3 bg-gray-100 rounded-full px-2 py-1">
                       <button
@@ -96,18 +181,30 @@ const Cart = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-gray-900 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
-                  Checkout <ArrowRight className="w-5 h-5" />
+                <button
+                  onClick={handleCheckout}
+                  disabled={isProcessing}
+                  className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-gray-900 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-wait"
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" /> Processing...
+                    </>
+                  ) : (
+                    <>
+                      Checkout <ArrowRight className="w-5 h-5" />
+                    </>
+                  )}
                 </button>
 
                 <div className="mt-6 space-y-3 border-t border-gray-100 pt-6">
                   <div className="flex items-center gap-3 text-xs text-gray-500 font-medium">
                     <ShieldCheck className="w-4 h-4 text-gray-400" />
-                    Secure Encryption Payment
+                    Secure Razorpay Payment
                   </div>
                   <div className="flex items-center gap-3 text-xs text-gray-500 font-medium">
                     <Smartphone className="w-4 h-4 text-gray-400" />
-                    Top-Up via Mobile App
+                    Supports UPI, Cards & NetBanking
                   </div>
                 </div>
               </div>

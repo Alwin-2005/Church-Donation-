@@ -1,42 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import api from "../../api/axios";
 
 const STATUS_FILTERS = ["all", "paid", "pending", "failed", "refunded"];
 
 const AdminPayments = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const payments = [
-    {
-      _id: "PMT001",
-      transactionNo: "TXN_101",
-      orderId: "ORD001",
-      user: { name: "John Doe", email: "john@gmail.com" },
-      amount: 2000,
-      method: "UPI",
-      paymentDate: "2026-01-12T10:30:00",
-      status: "paid",
-    },
-    {
-      _id: "PMT002",
-      transactionNo: "TXN_102",
-      orderId: "ORD002",
-      user: { name: "Mary Smith", email: "mary@gmail.com" },
-      amount: 1500,
-      method: "card",
-      paymentDate: "2026-01-15T12:00:00",
-      status: "paid",
-    },
-    {
-      _id: "PMT003",
-      transactionNo: "TXN_103",
-      orderId: "ORD003",
-      user: { name: "Paul Raj", email: "paul@gmail.com" },
-      amount: 1000,
-      method: "UPI",
-      paymentDate: "2026-01-20T14:45:00",
-      status: "failed",
-    },
-  ];
+  useEffect(() => {
+    fetchPayments();
+  }, []);
+
+  const fetchPayments = async () => {
+    try {
+      const res = await api.get("admin/payments/view");
+      setPayments(res.data.result || []);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch payments");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredPayments =
     selectedStatus === "all"
@@ -64,6 +51,9 @@ const AdminPayments = () => {
         return "";
     }
   };
+
+  if (loading) return <div className="pt-[96px] px-4 md:px-16 min-h-screen">Loading payments...</div>;
+  if (error) return <div className="pt-[96px] px-4 md:px-16 text-red-500">{error}</div>;
 
   return (
     <div className="pt-[96px] px-4 md:px-16 py-10 bg-gray-100 min-h-screen">
@@ -115,11 +105,11 @@ const AdminPayments = () => {
                 <tr key={p._id} className="border-t hover:bg-gray-50">
                   <td className="p-3 font-mono text-xs">{p.transactionNo}</td>
 
-                  <td className="p-3 font-mono text-xs">{p.orderId}</td>
+                  <td className="p-3 font-mono text-xs">{p.orderId?._id || "N/A"}</td>
 
                   <td className="p-3">
-                    <div className="font-medium">{p.user.name}</div>
-                    <div className="text-xs text-gray-500">{p.user.email}</div>
+                    <div className="font-medium">{p.orderId?.userId?.fullname || "Unknown User"}</div>
+                    <div className="text-xs text-gray-500">{p.orderId?.userId?.email || "N/A"}</div>
                   </td>
 
                   <td className="p-3 font-semibold">₹{p.amount}</td>

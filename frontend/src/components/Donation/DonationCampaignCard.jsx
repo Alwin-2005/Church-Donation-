@@ -105,34 +105,44 @@ const DonationCampaignCard = ({
         )}
 
         {/* PROGRESS SECTION */}
-        <div className={compact ? "mt-auto mb-4" : "mb-6"}>
-          <div className="flex justify-between text-sm mb-2">
-            <span className="text-gray-600 font-medium">Raised</span>
-            <span className="text-black font-bold">{percentage}%</span>
+        {campaign.isTithe ? (
+          <div className="mb-6 p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+            <div className="flex items-center gap-2 text-yellow-800">
+              <TrendingUp className="w-5 h-5" />
+              <span className="font-bold text-sm uppercase tracking-wider">Monthly Tithe</span>
+            </div>
+            <p className="text-xs text-yellow-700 mt-1 font-medium">Supporting our church's mission monthly</p>
           </div>
+        ) : (
+          <div className={compact ? "mt-auto mb-4" : "mb-6"}>
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-gray-600 font-medium">Raised</span>
+              <span className="text-black font-bold">{percentage}%</span>
+            </div>
 
-          {/* Progress Bar Background */}
-          <div className="h-3 w-full bg-gray-200 rounded-full overflow-hidden">
-            {/* Progress Bar Fill */}
-            <div
-              className="h-full bg-black rounded-full transition-all duration-1000 ease-out relative"
-              style={{ width: `${percentage}%` }}
-            >
-              <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]" />
+            {/* Progress Bar Background */}
+            <div className="h-3 w-full bg-gray-200 rounded-full overflow-hidden">
+              {/* Progress Bar Fill */}
+              <div
+                className="h-full bg-black rounded-full transition-all duration-1000 ease-out relative"
+                style={{ width: `${percentage}%` }}
+              >
+                <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]" />
+              </div>
             </div>
-          </div>
 
-          <div className="flex justify-between mt-2 text-xs text-gray-500">
-            <div>
-              <span className="block text-gray-400 uppercase tracking-wider text-[10px]">Raised</span>
-              <span className="font-bold text-gray-900">{formatCurrency(collectedAmount)}</span>
-            </div>
-            <div className="text-right">
-              <span className="block text-gray-400 uppercase tracking-wider text-[10px]">Goal</span>
-              <span className="font-bold text-gray-900">{formatCurrency(goalAmount)}</span>
+            <div className="flex justify-between mt-2 text-xs text-gray-500">
+              <div>
+                <span className="block text-gray-400 uppercase tracking-wider text-[10px]">Raised</span>
+                <span className="font-bold text-gray-900">{formatCurrency(collectedAmount)}</span>
+              </div>
+              <div className="text-right">
+                <span className="block text-gray-400 uppercase tracking-wider text-[10px]">Goal</span>
+                <span className="font-bold text-gray-900">{formatCurrency(goalAmount)}</span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* DATES GRID */}
         {!compact && (

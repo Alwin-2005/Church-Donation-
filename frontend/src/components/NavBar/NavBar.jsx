@@ -32,9 +32,11 @@ const Navbar = () => {
 
       {/* NAV LINKS */}
       <div className="ml-auto flex gap-10 items-center text-base px-4">
-        <Link to="/" className="hover:scale-110 transition">
-          HOME
-        </Link>
+        {role !== "admin" && (
+          <Link to="/" className="hover:scale-110 transition">
+            HOME
+          </Link>
+        )}
 
         {/* ================= ADMIN NAV ================= */}
         {role === "admin" && (
@@ -47,7 +49,7 @@ const Navbar = () => {
               ["Products", "/admin/products"],
               ["Orders", "/admin/orders"],
               ["Payments", "/admin/payments"],
-              ["Events", "/admin/events"],
+              ["Announcements", "/admin/announcements"],
             ].map(([label, path]) => (
               <Link key={path} to={path} className="hover:scale-110 transition">
                 {label}
@@ -95,60 +97,62 @@ const Navbar = () => {
           </Link>
         )}
 
+
+
         {role === "churchMember" && (
-          <Link to="/events" className="hover:scale-110 transition">
-            EVENTS
+          <Link to="/announcements" className="hover:scale-110 transition">
+            ANNOUNCEMENTS
           </Link>
         )}
 
         {/* ================= PROFILE DROPDOWN ================= */}
-          <div className="relative">
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="hover:scale-110 transition"
-            >
-              <UserCircle size={32} />
-            </button>
+        <div className="relative">
+          <button
+            onClick={() => setShowMenu(!showMenu)}
+            className="hover:scale-110 transition"
+          >
+            <UserCircle size={32} />
+          </button>
 
-            {showMenu && (
-              <div className="absolute right-0 mt-2 w-44 bg-white text-black rounded shadow-lg">
-                
-                {!user ? (
-                  <>
-                    <button
-                      onClick={() => navigate("/login")}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
-                      Login
-                    </button>
+          {showMenu && (
+            <div className="absolute right-0 mt-2 w-44 bg-white text-black rounded shadow-lg">
 
-                    <button
-                      onClick={() => navigate("/register")}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
-                      Register
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => navigate("/profile")}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
-                      Profile
-                    </button>
+              {!user ? (
+                <>
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Login
+                  </button>
 
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                    >
-                      Logout
-                    </button>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+                  <button
+                    onClick={() => navigate("/register")}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Register
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate("/profile")}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Profile
+                  </button>
+
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
       </div>
     </div>

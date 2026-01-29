@@ -5,8 +5,28 @@ import giving from "../../assets/giving.jpg";
 
 
 
-const DonationLayout = ({ title, campaigns = [], role }) => {
+const DonationLayout = ({ title, campaigns = [], role, simple = false }) => {
   const navigate = useNavigate();
+
+  if (simple) {
+    return (
+      <div className="flex flex-wrap justify-center gap-8 py-8">
+        {campaigns.length === 0 ? (
+          <p className="text-white/50 text-lg font-medium italic">No streams available at this time.</p>
+        ) : (
+          campaigns.map((campaign) => (
+            <DonationCampaignCard
+              key={campaign._id}
+              campaign={campaign}
+              role={role}
+              onDonate={(c) => navigate(`/donate/${c._id}`)}
+            />
+          ))
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="pt-20"> {/* ✅ OFFSET FOR FIXED NAVBAR */}
 

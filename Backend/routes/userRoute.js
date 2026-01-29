@@ -5,7 +5,7 @@ const { handleGetPaymentById } = require("../controllers/userPayment");
 const { handleUserMakeDonation, handleGetUserDonations } = require("../controllers/userDonation");
 const { handleAddToCart, handleGetCartInfo, handleUpdateCart } = require("../controllers/userCart");
 const { handleGetAllContent } = require("../controllers/userContent");
-const { handleGetUserInfo, handleUpdateProfile } = require("../controllers/userProfile");
+const { handleGetUserInfo, handleUpdateProfile, handleChangePassword } = require("../controllers/userProfile");
 const { handleGetExternalDonation, handleGetDonationCampaignById, handleGetInternaDonation } = require("../controllers/externalDonation");
 const { handleMemberRole } = require("../middlewares/roleCheck");
 const { restrictToLoggedinUserOnly } = require("../middlewares/auth");
@@ -34,6 +34,7 @@ Router.post("/orders/place", restrictToLoggedinUserOnly, handlePlaceOrder);
 
 Router.patch("/cart/update", restrictToLoggedinUserOnly, handleUpdateCart);
 Router.patch("/profile/update", restrictToLoggedinUserOnly, handleUpdateProfile);
+Router.patch("/profile/change-password", restrictToLoggedinUserOnly, handleChangePassword);
 
 
 module.exports = Router;

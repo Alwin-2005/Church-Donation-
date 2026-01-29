@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import api from "../../api/axios";
 
 const STATUS_OPTIONS = [
   "all",
@@ -11,40 +12,38 @@ const STATUS_OPTIONS = [
 
 const AdminOrders = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const [orders, setOrders] = useState([
-    {
-      _id: "ORD001",
-      user: { name: "John Doe", email: "john@gmail.com" },
-      items: 2,
-      totalAmount: 1298,
-      orderDate: "2026-01-18T10:30:00",
-      status: "completed",
-    },
-    {
-      _id: "ORD002",
-      user: { name: "Mary Smith", email: "mary@gmail.com" },
-      items: 1,
-      totalAmount: 799,
-      orderDate: "2026-01-20T12:00:00",
-      status: "pending",
-    },
-    {
-      _id: "ORD003",
-      user: { name: "Alex Paul", email: "alex@gmail.com" },
-      items: 3,
-      totalAmount: 1599,
-      orderDate: "2026-01-22T15:10:00",
-      status: "confirmed",
-    },
-  ]);
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
-  const handleStatusChange = (orderId, newStatus) => {
-    setOrders(orders.map(order =>
-      order._id === orderId
-        ? { ...order, status: newStatus }
-        : order
-    ));
+  const fetchOrders = async () => {
+    try {
+      const res = await api.get("admin/orders/view");
+      setOrders(res.data.Result || []);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch orders");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await api.patch(`admin/orders/update/${orderId}`, { status: newStatus });
+      setOrders(orders.map(order =>
+        order._id === orderId
+          ? { ...order, status: newStatus }
+          : order
+      ));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update status");
+    }
   };
 
   const filteredOrders =
@@ -75,6 +74,9 @@ const AdminOrders = () => {
         return "";
     }
   };
+
+  if (loading) return <div className="pt-[96px] px-4 md:px-16 min-h-screen">Loading orders...</div>;
+  if (error) return <div className="pt-[96px] px-4 md:px-16 text-red-500">{error}</div>;
 
   return (
     <div className="pt-[96px] px-4 md:px-16 py-10 bg-gray-100 min-h-screen">
@@ -126,11 +128,11 @@ const AdminOrders = () => {
                   <td className="p-3 font-mono text-xs">{o._id}</td>
 
                   <td className="p-3">
-                    <div className="font-medium">{o.user.name}</div>
-                    <div className="text-xs text-gray-500">{o.user.email}</div>
+                    <div className="font-medium">{o.userId?.fullname || "Unknown Customer"}</div>
+                    <div className="text-xs text-gray-500">{o.userId?.email || "N/A"}</div>
                   </td>
 
-                  <td className="p-3">{o.items}</td>
+                  <td className="p-3">{o.items?.length || 0}</td>
 
                   <td className="p-3 font-semibold">₹{o.totalAmount}</td>
 

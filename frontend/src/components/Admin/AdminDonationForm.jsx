@@ -13,6 +13,7 @@ const AdminDonationForm = ({ onSubmit, initialData = null, onClose }) => {
       ? initialData.endate.split("T")[0]
       : "",
     status: initialData?.status || "active",
+    isTithe: initialData?.isTithe || false,
   });
 
   const handleChange = (e) => {
@@ -23,14 +24,15 @@ const AdminDonationForm = ({ onSubmit, initialData = null, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.ctitle || !formData.goalAmt || !formData.startDate) {
+    if (!formData.ctitle || (!formData.isTithe && !formData.goalAmt) || !formData.startDate) {
       alert("Please fill all required fields");
       return;
     }
 
     onSubmit({
       ...formData,
-      goalAmt: Number(formData.goalAmt),
+      goalAmt: formData.isTithe ? 0 : Number(formData.goalAmt),
+      donationType: formData.type // Sync naming with model if needed, though form uses 'type'
     });
   };
 
@@ -52,20 +54,44 @@ const AdminDonationForm = ({ onSubmit, initialData = null, onClose }) => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
 
-        {/* Donation Type */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Donation Type *
-          </label>
-          <select
-            name="type"
-            value={formData.type}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-          >
-            <option value="internal">Internal (Church)</option>
-            <option value="external">External</option>
-          </select>
+        {/* Donation Type & Tithe Toggle */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Donation Type *
+            </label>
+            <select
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              disabled={formData.isTithe}
+              className="w-full border rounded px-3 py-2 disabled:bg-gray-100"
+            >
+              <option value="internal">Internal (Church)</option>
+              <option value="external">External</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2 mt-6">
+            <input
+              type="checkbox"
+              id="isTithe"
+              name="isTithe"
+              checked={formData.isTithe}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setFormData(prev => ({
+                  ...prev,
+                  isTithe: checked,
+                  type: checked ? "internal" : prev.type
+                }));
+              }}
+              className="w-5 h-5 accent-green-600"
+            />
+            <label htmlFor="isTithe" className="text-sm font-bold text-gray-700">
+              Is Monthly Tithe?
+            </label>
+          </div>
         </div>
 
         {/* Title */}
@@ -79,7 +105,7 @@ const AdminDonationForm = ({ onSubmit, initialData = null, onClose }) => {
             value={formData.ctitle}
             onChange={handleChange}
             className="w-full border rounded px-3 py-2"
-            placeholder="e.g. Church Building Renovation"
+            placeholder={formData.isTithe ? "e.g. Monthly Tithes" : "e.g. Church Building Renovation"}
             required
           />
         </div>
@@ -95,25 +121,27 @@ const AdminDonationForm = ({ onSubmit, initialData = null, onClose }) => {
             onChange={handleChange}
             className="w-full border rounded px-3 py-2"
             rows="4"
-            placeholder="Describe the purpose of this campaign"
+            placeholder={formData.isTithe ? "General fund for church members monthly contributions" : "Describe the purpose of this campaign"}
           />
         </div>
 
         {/* Goal Amount */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Goal Amount (₹) *
-          </label>
-          <input
-            type="number"
-            name="goalAmt"
-            value={formData.goalAmt}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            min="0"
-            required
-          />
-        </div>
+        {!formData.isTithe && (
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Goal Amount (₹) *
+            </label>
+            <input
+              type="number"
+              name="goalAmt"
+              value={formData.goalAmt}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+              min="0"
+              required
+            />
+          </div>
+        )}
 
         {/* Dates */}
         <div className="grid grid-cols-2 gap-4">
@@ -133,7 +161,7 @@ const AdminDonationForm = ({ onSubmit, initialData = null, onClose }) => {
 
           <div>
             <label className="block text-sm font-medium mb-1">
-              End Date
+              End Date {formData.isTithe ? "(Optional)" : ""}
             </label>
             <input
               type="date"
