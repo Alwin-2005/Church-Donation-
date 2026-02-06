@@ -24,7 +24,7 @@ const AdminUsers = () => {
     dob: "",
     address: "",
     role: "churchMember",
-    password: ""
+
   });
 
   // CSV state
@@ -66,7 +66,7 @@ const AdminUsers = () => {
         dob: "",
         address: "",
         role: "churchMember",
-        password: ""
+
       });
       fetchUsers();
     } catch (error) {
@@ -335,16 +335,9 @@ const AdminUsers = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Password *</label>
-                <input
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-black outline-none"
-                />
+              <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 border border-blue-200">
+                <p className="font-semibold">Password Auto-Generation</p>
+                <p>A secure password will be automatically generated and emailed to the user upon creation.</p>
               </div>
 
               <button

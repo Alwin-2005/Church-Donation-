@@ -1,6 +1,8 @@
 const User = require("../../models/user");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const sendEmail = require("../../utils/email");
 
 async function handleGetAllUsersInfo(req, res) {
     const Result = await User.find({});
@@ -10,7 +12,9 @@ async function handleGetAllUsersInfo(req, res) {
 async function handleAddNewUsers(req, res) {
     const phoneRegex = /^[6-9]\d{9}$/;
     const status = "enabled";
-    const { fullname, email, phoneNo, gender, dob, address, password, role } = req.body;
+    const { fullname, email, phoneNo, gender, dob, address, role } = req.body;
+    let { password } = req.body;
+
     if (!validator.isEmail(email)) {
         return res.status(400).json({ message: "Invalid email format" });
     }
@@ -19,6 +23,14 @@ async function handleAddNewUsers(req, res) {
     }
 
     try {
+        let generatedPassword = null;
+
+        // Auto-generate password if not provided
+        if (!password) {
+            generatedPassword = crypto.randomBytes(4).toString("hex"); // 8 characters
+            password = generatedPassword;
+        }
+
         // Hash password
         const passwordHash = await bcrypt.hash(password, 10);
 
@@ -33,7 +45,26 @@ async function handleAddNewUsers(req, res) {
             passwordHash,
             status,
         });
-        return res.status(200).json({ msg: "User created successfully" });
+
+        // Send email with credentials if password was generated
+        if (generatedPassword) {
+            const message = `Welcome to Church Donation App!\n\nYour account has been created by the admin.\n\nUsername: ${email}\nPassword: ${generatedPassword}\n\nPlease login and change your password immediately.`;
+
+            try {
+                await sendEmail({
+                    email: email,
+                    subject: "Your Account Credentials",
+                    message: message,
+                });
+                console.log(`Email sent to ${email}`);
+            } catch (emailErr) {
+                console.error("Failed to send welcome email:", emailErr);
+            }
+        }
+
+        return res.status(200).json({
+            msg: "User created successfully" + (generatedPassword ? ". Credentials sent to email." : "")
+        });
     }
 
     catch (err) {
