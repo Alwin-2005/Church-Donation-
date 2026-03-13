@@ -60,9 +60,9 @@ const Log = () => {
 
       {/* Login Card */}
       <div className="relative z-10 h-full flex items-center justify-center">
-        <div className="w-[380px] backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl px-10 py-12 shadow-2xl">
+        <div className="w-[380px] backdrop-blur-xl bg-card/10 border border-white/20 rounded-2xl px-10 py-12 shadow-2xl">
 
-          <h1 className="text-3xl font-bold text-white mb-6 text-center">
+          <h1 className="text-3xl font-bold text-primary-foreground mb-6 text-center">
             Welcome Back
           </h1>
 
@@ -72,7 +72,7 @@ const Log = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+              className="px-4 py-2 rounded bg-card/90 text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
             <input
@@ -80,7 +80,7 @@ const Log = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+              className="px-4 py-2 rounded bg-card/90 text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
             <p
@@ -89,7 +89,7 @@ const Log = () => {
 
             <button
               type="submit"
-              className="mt-2 bg-black text-white rounded py-2 font-semibold hover:bg-gray-900 active:scale-95 transition-all"
+              className="mt-2 bg-black text-primary-foreground rounded py-2 font-semibold hover:bg-foreground active:scale-95 transition-all"
             >
               Login
             </button>
@@ -99,14 +99,14 @@ const Log = () => {
           <div className="text-center mt-5">
             <Link
               to="/register"
-              className="text-sm text-gray-300 hover:text-white transition"
+              className="text-sm text-gray-300 hover:text-primary-foreground transition"
             >
               Register Now
             </Link>
             <br></br>
             <Link
               to="/forgotpass"
-              className="text-sm text-gray-300 hover:text-white transition"
+              className="text-sm text-gray-300 hover:text-primary-foreground transition"
             >
               Forgot Password???
             </Link>

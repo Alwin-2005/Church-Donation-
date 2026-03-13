@@ -63,7 +63,7 @@ const AdminOrders = () => {
       case "pending":
         return "bg-yellow-100 text-yellow-700";
       case "confirmed":
-        return "bg-blue-100 text-blue-700";
+        return "bg-blue-100 text-primary";
       case "shipped":
         return "bg-purple-100 text-purple-700";
       case "completed":
@@ -79,7 +79,7 @@ const AdminOrders = () => {
   if (error) return <div className="pt-[96px] px-4 md:px-16 text-red-500">{error}</div>;
 
   return (
-    <div className="pt-[96px] px-4 md:px-16 py-10 bg-gray-100 min-h-screen">
+    <div className="pt-[96px] px-4 md:px-16 py-10 bg-muted min-h-screen">
       {/* Header + Filter */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <h1 className="text-2xl font-semibold">Orders Status</h1>
@@ -101,9 +101,9 @@ const AdminOrders = () => {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-white shadow rounded-lg overflow-x-auto animate-scaleIn">
+      <div className="bg-card shadow rounded-lg overflow-x-auto animate-scaleIn">
         <table className="w-full text-left text-sm">
-          <thead className="bg-gray-100">
+          <thead className="bg-muted">
             <tr>
               <th className="p-3">Order ID</th>
               <th className="p-3">Customer</th>
@@ -118,18 +118,18 @@ const AdminOrders = () => {
           <tbody>
             {filteredOrders.length === 0 ? (
               <tr>
-                <td colSpan="7" className="p-6 text-center text-gray-500">
+                <td colSpan="7" className="p-6 text-center text-muted-foreground">
                   No orders found for this status
                 </td>
               </tr>
             ) : (
               filteredOrders.map(o => (
-                <tr key={o._id} className="border-t hover:bg-gray-50">
+                <tr key={o._id} className="border-t hover:bg-background">
                   <td className="p-3 font-mono text-xs">{o._id}</td>
 
                   <td className="p-3">
                     <div className="font-medium">{o.userId?.fullname || "Unknown Customer"}</div>
-                    <div className="text-xs text-gray-500">{o.userId?.email || "N/A"}</div>
+                    <div className="text-xs text-muted-foreground">{o.userId?.email || "N/A"}</div>
                   </td>
 
                   <td className="p-3">{o.items?.length || 0}</td>
@@ -157,7 +157,7 @@ const AdminOrders = () => {
                       className="border rounded px-2 py-1 text-sm"
                     >
                       {STATUS_OPTIONS.filter(s => s !== "all").map(s => (
-                        <option key={s} value={s}>
+                        <option key={s} value={s} disabled={s === "confirmed"}>
                           {s}
                         </option>
                       ))}

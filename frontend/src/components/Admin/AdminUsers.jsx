@@ -151,10 +151,10 @@ const AdminUsers = () => {
         {/* Header */}
         <div className="mb-6 flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">
+            <h1 className="text-2xl font-bold text-foreground">
               User Management
             </h1>
-            <p className="text-gray-600 text-sm">
+            <p className="text-muted-foreground text-sm">
               Manage church members and external users
             </p>
           </div>
@@ -163,20 +163,20 @@ const AdminUsers = () => {
           <div className="relative">
             <button
               onClick={() => setShowAddMenu(prev => !prev)}
-              className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition flex items-center gap-2"
+              className="bg-black text-primary-foreground px-4 py-2 rounded-lg hover:bg-secondary transition flex items-center gap-2"
             >
               <UserPlus className="w-4 h-4" />
               Add User
             </button>
 
             {showAddMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
+              <div className="absolute right-0 mt-2 w-48 bg-card border rounded-lg shadow-lg z-10">
                 <button
                   onClick={() => {
                     setShowSingleUserModal(true);
                     setShowAddMenu(false);
                   }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm rounded-t-lg"
+                  className="w-full text-left px-4 py-2 hover:bg-muted text-sm rounded-t-lg"
                 >
                   Add Single User
                 </button>
@@ -186,7 +186,7 @@ const AdminUsers = () => {
                     setShowCSVModal(true);
                     setShowAddMenu(false);
                   }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm rounded-b-lg"
+                  className="w-full text-left px-4 py-2 hover:bg-muted text-sm rounded-b-lg"
                 >
                   Upload CSV
                 </button>
@@ -229,7 +229,7 @@ const AdminUsers = () => {
               />
             ))
           ) : (
-            <p className="text-gray-500">No users found.</p>
+            <p className="text-muted-foreground">No users found.</p>
           )}
         </div>
 
@@ -238,8 +238,8 @@ const AdminUsers = () => {
       {/* Single User Modal */}
       {showSingleUserModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-white">
+          <div className="bg-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-card">
               <h2 className="text-xl font-bold">Add Single User</h2>
               <button onClick={() => setShowSingleUserModal(false)}>
                 <X className="w-5 h-5" />
@@ -335,14 +335,14 @@ const AdminUsers = () => {
                 />
               </div>
 
-              <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 border border-blue-200">
+              <div className="bg-blue-50 p-3 rounded-lg text-sm text-primary border border-blue-200">
                 <p className="font-semibold">Password Auto-Generation</p>
                 <p>A secure password will be automatically generated and emailed to the user upon creation.</p>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition"
+                className="w-full bg-black text-primary-foreground py-3 rounded-lg font-bold hover:bg-secondary transition"
               >
                 Create User
               </button>
@@ -354,8 +354,8 @@ const AdminUsers = () => {
       {/* CSV Upload Modal */}
       {showCSVModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-white">
+          <div className="bg-card rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-card">
               <h2 className="text-xl font-bold">Upload Users via CSV</h2>
               <button onClick={() => {
                 setShowCSVModal(false);
@@ -368,7 +368,7 @@ const AdminUsers = () => {
             </div>
 
             <div className="p-6 space-y-4">
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
                 <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                 <input
                   type="file"
@@ -379,19 +379,19 @@ const AdminUsers = () => {
                 />
                 <label
                   htmlFor="csv-upload"
-                  className="cursor-pointer text-black font-medium hover:underline"
+                  className="cursor-pointer text-foreground font-medium hover:underline"
                 >
                   Click to upload CSV
                 </label>
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-muted-foreground mt-2">
                   Required columns: fullname, email, phoneNo, gender, dob, address, role, password
                 </p>
               </div>
 
               {csvFile && (
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-background p-4 rounded-lg">
                   <p className="font-medium">File: {csvFile.name}</p>
-                  <p className="text-sm text-gray-600">Rows: {csvData.length}</p>
+                  <p className="text-sm text-muted-foreground">Rows: {csvData.length}</p>
                 </div>
               )}
 
@@ -399,7 +399,7 @@ const AdminUsers = () => {
                 <div className="border rounded-lg overflow-hidden">
                   <div className="max-h-64 overflow-y-auto">
                     <table className="w-full text-sm">
-                      <thead className="bg-gray-100 sticky top-0">
+                      <thead className="bg-muted sticky top-0">
                         <tr>
                           <th className="px-4 py-2 text-left">Name</th>
                           <th className="px-4 py-2 text-left">Email</th>
@@ -418,7 +418,7 @@ const AdminUsers = () => {
                     </table>
                   </div>
                   {csvData.length > 10 && (
-                    <div className="bg-gray-50 px-4 py-2 text-sm text-gray-600">
+                    <div className="bg-background px-4 py-2 text-sm text-muted-foreground">
                       Showing 10 of {csvData.length} rows
                     </div>
                   )}
@@ -444,7 +444,7 @@ const AdminUsers = () => {
               <button
                 onClick={handleBulkUpload}
                 disabled={csvData.length === 0}
-                className="w-full bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-black text-primary-foreground py-3 rounded-lg font-bold hover:bg-secondary transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Upload {csvData.length} Users
               </button>

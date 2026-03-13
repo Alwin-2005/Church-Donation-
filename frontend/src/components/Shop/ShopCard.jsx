@@ -26,10 +26,10 @@ const ShopCard = (props) => {
   };
 
   return (
-    <div className="group relative bg-white w-[280px] rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col">
+    <div className="group relative bg-card w-[280px] rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col">
 
       {/* IMAGE CONTAINER */}
-      <div className="h-[260px] w-full bg-gray-50 flex items-center justify-center relative overflow-hidden">
+      <div className="h-[260px] w-full bg-background flex items-center justify-center relative overflow-hidden">
         {props.url ? (
           <img
             src={props.url}
@@ -41,22 +41,22 @@ const ShopCard = (props) => {
         )}
 
         {/* ABSOLUTE PRICE BADGE */}
-        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+        <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold shadow-sm">
           ₹{props.price}
         </div>
       </div>
 
       {/* CONTENT */}
       <div className="p-5 flex-1 flex flex-col">
-        <h2 className="font-bold text-lg text-gray-900 leading-tight mb-1 group-hover:text-amber-600 transition-colors">
+        <h2 className="font-bold text-lg text-foreground leading-tight mb-1 group-hover:text-amber-600 transition-colors">
           {props.itemName}
         </h2>
 
-        <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">
+        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">
           {props.category}
         </p>
 
-        <p className="text-gray-500 text-sm mb-4 line-clamp-2 leading-relaxed flex-1">
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-2 leading-relaxed flex-1">
           {props.description}
         </p>
 
@@ -70,15 +70,15 @@ const ShopCard = (props) => {
             <button
               onClick={() => handleQtyChange(1)}
               disabled={props.stockQuantity === 0}
-              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
+              className="flex items-center gap-2 bg-black text-primary-foreground px-4 py-2 rounded-full text-sm font-bold hover:bg-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
             >
               <ShoppingBag className="w-4 h-4" /> Add
             </button>
           ) : (
-            <div className="flex items-center gap-3 bg-gray-100 rounded-full px-1 py-1">
+            <div className="flex items-center gap-3 bg-muted rounded-full px-1 py-1">
               <button
                 onClick={() => handleQtyChange(qty - 1)}
-                className="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-black hover:bg-gray-200 transition-colors"
+                className="w-8 h-8 flex items-center justify-center bg-card rounded-full shadow-sm text-foreground hover:bg-gray-200 transition-colors"
               >
                 <Minus className="w-4 h-4" />
               </button>
@@ -86,7 +86,7 @@ const ShopCard = (props) => {
               <button
                 onClick={() => handleQtyChange(qty + 1)}
                 disabled={qty >= props.stockQuantity}
-                className="w-8 h-8 flex items-center justify-center bg-black rounded-full shadow-sm text-white hover:bg-gray-800 disabled:opacity-50 transition-colors"
+                className="w-8 h-8 flex items-center justify-center bg-black rounded-full shadow-sm text-primary-foreground hover:bg-secondary disabled:opacity-50 transition-colors"
               >
                 <Plus className="w-4 h-4" />
               </button>

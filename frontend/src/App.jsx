@@ -32,7 +32,7 @@ import ForgotPassword from "./components/ForgotPassword";
 
 const App = () => {
   return (
-    <div className="w-full overflow-x-hidden">
+    <div className="w-full min-h-screen bg-background text-foreground overflow-x-hidden">
 
       <AuthProvider>
         <CartProvider>

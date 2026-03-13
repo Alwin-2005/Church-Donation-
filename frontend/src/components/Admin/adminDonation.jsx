@@ -152,7 +152,7 @@ const AdminDonation = () => {
   };
 
   if (loading) return (
-    <div className="pt-24 px-6 text-center text-gray-500 animate-pulse">
+    <div className="pt-24 px-6 text-center text-muted-foreground animate-pulse">
       Loading campaigns...
     </div>
   );
@@ -161,17 +161,17 @@ const AdminDonation = () => {
   const externalCampaigns = campaigns.filter(c => c.donationType === "external");
 
   return (
-    <div className="pt-24 px-6 md:px-16 min-h-screen bg-gray-50 pb-20">
+    <div className="pt-24 px-6 md:px-16 min-h-screen bg-background pb-20">
 
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Donation Campaigns</h1>
-          <p className="text-gray-500 mt-1">Manage church and external fundraising causes</p>
+          <h1 className="text-3xl font-bold text-foreground">Donation Campaigns</h1>
+          <p className="text-muted-foreground mt-1">Manage church and external fundraising causes</p>
         </div>
         <button
           onClick={handleAddClick}
-          className="bg-black hover:bg-gray-800 text-white px-6 py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all font-medium flex items-center gap-2"
+          className="bg-black hover:bg-secondary text-primary-foreground px-6 py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all font-medium flex items-center gap-2"
         >
           <span>+</span> Add Campaign
         </button>
@@ -184,7 +184,7 @@ const AdminDonation = () => {
 
         {/* INTERNAL */}
         <section>
-          <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
             <span className="w-2 h-6 bg-black rounded-full"></span>
             Church Campaigns & Tithes
           </h2>
@@ -207,7 +207,7 @@ const AdminDonation = () => {
 
         {/* EXTERNAL */}
         <section>
-          <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
             <span className="w-2 h-6 bg-gray-400 rounded-full"></span>
             External Causes
           </h2>
@@ -233,15 +233,15 @@ const AdminDonation = () => {
       {/* MODAL FORM */}
       {showForm && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden scale-100 animate-scaleIn max-h-[90vh] overflow-y-auto">
+          <div className="bg-card rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden scale-100 animate-scaleIn max-h-[90vh] overflow-y-auto">
 
-            <div className="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center sticky top-0 z-10">
-              <h2 className="text-lg font-bold text-gray-900">
+            <div className="px-6 py-4 border-b border-gray-100 bg-background flex justify-between items-center sticky top-0 z-10">
+              <h2 className="text-lg font-bold text-foreground">
                 {editingCampaign ? "Edit Campaign" : "Create New Campaign"}
               </h2>
               <button
                 onClick={() => setShowForm(false)}
-                className="text-gray-400 hover:text-black transition-colors text-xl"
+                className="text-gray-400 hover:text-foreground transition-colors text-xl"
               >
                 ✕
               </button>
@@ -250,15 +250,15 @@ const AdminDonation = () => {
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
 
               {/* Type & Tithe */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-background rounded-xl border border-gray-100">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Campaign Type</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Campaign Type</label>
                   <select
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
                     disabled={formData.isTithe}
-                    className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm bg-white font-medium disabled:bg-gray-100 disabled:text-gray-400"
+                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm bg-card font-medium disabled:bg-muted disabled:text-gray-400"
                   >
                     <option value="internal">Internal (Church)</option>
                     <option value="external">External (Cause)</option>
@@ -274,7 +274,7 @@ const AdminDonation = () => {
                     onChange={handleInputChange}
                     className="w-5 h-5 accent-black rounded cursor-pointer"
                   />
-                  <label htmlFor="isTithe" className="text-sm font-bold text-gray-800 cursor-pointer select-none">
+                  <label htmlFor="isTithe" className="text-sm font-bold text-foreground cursor-pointer select-none">
                     Is Monthly Tithe?
                   </label>
                 </div>
@@ -282,14 +282,14 @@ const AdminDonation = () => {
 
               {/* Title */}
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Campaign Title *</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Campaign Title *</label>
                 <input
                   type="text"
                   name="ctitle"
                   value={formData.ctitle}
                   onChange={handleInputChange}
                   placeholder={formData.isTithe ? "e.g. Monthly Tithes" : "e.g. Church Building Fund"}
-                  className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
+                  className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
                   required
                 />
               </div>
@@ -297,7 +297,7 @@ const AdminDonation = () => {
               {/* Goal Amount - Hidden for Tithe */}
               {!formData.isTithe && (
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Goal Amount (₹) *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Goal Amount (₹) *</label>
                   <input
                     type="number"
                     name="goalAmt"
@@ -305,7 +305,7 @@ const AdminDonation = () => {
                     onChange={handleInputChange}
                     placeholder="0"
                     min="0"
-                    className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
+                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
                     required
                   />
                 </div>
@@ -314,36 +314,36 @@ const AdminDonation = () => {
               {/* Dates */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Start Date *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Start Date *</label>
                   <input
                     type="date"
                     name="startDate"
                     value={formData.startDate}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
+                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">End Date {formData.isTithe && "(Optional)"}</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">End Date {formData.isTithe && "(Optional)"}</label>
                   <input
                     type="date"
                     name="endate"
                     value={formData.endate}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
+                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
                   />
                 </div>
               </div>
 
               {/* Status */}
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Status</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Status</label>
                 <select
                   name="status"
                   value={formData.status}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm bg-white"
+                  className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm bg-card"
                 >
                   <option value="active">Active</option>
                   <option value="paused">Paused</option>
@@ -353,14 +353,14 @@ const AdminDonation = () => {
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Description</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Description</label>
                 <textarea
                   name="desc"
                   value={formData.desc}
                   onChange={handleInputChange}
                   rows="3"
                   placeholder="Describe the purpose of this campaign..."
-                  className="w-full border border-gray-200 p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm min-h-[80px]"
+                  className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm min-h-[80px]"
                 />
               </div>
 
@@ -369,13 +369,13 @@ const AdminDonation = () => {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-5 py-2.5 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 font-medium text-sm transition-colors"
+                  className="px-5 py-2.5 border border-border text-muted-foreground rounded-lg hover:bg-background font-medium text-sm transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-black text-white rounded-lg hover:bg-gray-900 font-bold text-sm shadow-md transition-transform active:scale-95"
+                  className="px-5 py-2.5 bg-black text-primary-foreground rounded-lg hover:bg-foreground font-bold text-sm shadow-md transition-transform active:scale-95"
                 >
                   {editingCampaign ? "Update Campaign" : "Create Campaign"}
                 </button>

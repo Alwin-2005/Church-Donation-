@@ -103,9 +103,9 @@ const AdminDashboard = () => {
   }
 
   return (
-    <main className="flex-1 p-8 overflow-y-auto bg-gray-50">
+    <main className="flex-1 p-8 overflow-y-auto bg-background">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-gray-900">Dashboard Overview</h1>
+        <h1 className="text-3xl font-bold mb-8 text-foreground">Dashboard Overview</h1>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
@@ -148,12 +148,12 @@ const AdminDashboard = () => {
         </div>
 
         {/* Recent Activity */}
-        <section className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <section className="bg-card rounded-2xl shadow-sm border border-border p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Recent Activity</h2>
+            <h2 className="text-xl font-bold text-foreground">Recent Activity</h2>
             <button
               onClick={fetchDashboardData}
-              className="text-sm text-gray-600 hover:text-black transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               Refresh
             </button>
@@ -166,12 +166,12 @@ const AdminDashboard = () => {
               {recentActivity.map((activity, index) => (
                 <li
                   key={index}
-                  className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-start gap-3 p-3 rounded-lg hover:bg-background transition-colors"
                 >
                   <span className="text-2xl">{activity.icon}</span>
                   <div className="flex-1">
-                    <p className="text-sm text-gray-900 font-medium">{activity.text}</p>
-                    <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                    <p className="text-sm text-foreground font-medium">{activity.text}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{activity.time}</p>
                   </div>
                 </li>
               ))}
@@ -185,23 +185,23 @@ const AdminDashboard = () => {
 
 const StatCard = ({ title, value, icon, color }) => {
   const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600',
+    blue: 'bg-blue-50 text-primary',
     green: 'bg-emerald-50 text-emerald-600',
     purple: 'bg-purple-50 text-purple-600',
     red: 'bg-red-50 text-red-600',
     orange: 'bg-orange-50 text-orange-600',
-    indigo: 'bg-indigo-50 text-indigo-600'
+    indigo: 'bg-indigo-50 text-primary'
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-card rounded-2xl shadow-sm border border-border p-6 hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between mb-4">
         <div className={`p-3 rounded-xl ${colorClasses[color]}`}>
           {icon}
         </div>
       </div>
-      <h3 className="text-sm text-gray-500 font-medium uppercase tracking-wider">{title}</h3>
-      <p className="text-3xl font-bold mt-2 text-gray-900">{value}</p>
+      <h3 className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{title}</h3>
+      <p className="text-3xl font-bold mt-2 text-foreground">{value}</p>
     </div>
   );
 };

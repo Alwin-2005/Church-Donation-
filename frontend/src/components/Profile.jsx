@@ -116,12 +116,32 @@ const Profile = () => {
     navigate("/");
   };
 
+  const handleDownloadReceipt = async (type, id) => {
+    const token = Cookies.get("token");
+    try {
+      const response = await api.get(`/users/receipts/${type}/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${type}_receipt_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading receipt:", error);
+      alert("Failed to download receipt.");
+    }
+  };
 
-  if (loading) return <div className="mt-32 text-center text-gray-500 animate-pulse">Loading profile...</div>;
+
+  if (loading) return <div className="mt-32 text-center text-muted-foreground animate-pulse">Loading profile...</div>;
   if (!profileData) return (
     <div className="mt-32 text-center">
-      <p className="text-gray-500 mb-4">Please log in to view your profile.</p>
-      <button onClick={() => navigate("/login")} className="bg-black text-white px-6 py-2 rounded-lg font-bold">
+      <p className="text-muted-foreground mb-4">Please log in to view your profile.</p>
+      <button onClick={() => navigate("/login")} className="bg-black text-primary-foreground px-6 py-2 rounded-lg font-bold">
         Go to Login
       </button>
     </div>
@@ -130,7 +150,7 @@ const Profile = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-50 px-6 pt-32 pb-20">
+      <div className="min-h-screen bg-background px-6 pt-32 pb-20">
 
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-between items-center mb-8">
@@ -141,27 +161,27 @@ const Profile = () => {
           </div>
 
           {/* Profile Info Card */}
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-8 items-start animate-scaleIn">
+          <div className="bg-card p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-8 items-start animate-scaleIn">
             <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-bold text-gray-400 uppercase">
               {profileData.fullname ? profileData.fullname[0] : "U"}
             </div>
             <div className="flex-1 space-y-2">
-              <h2 className="text-2xl font-bold text-gray-900">{profileData.fullname}</h2>
-              <p className="text-xs font-black uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full w-fit">
+              <h2 className="text-2xl font-bold text-foreground">{profileData.fullname}</h2>
+              <p className="text-xs font-black uppercase tracking-widest text-primary bg-blue-50 px-3 py-1 rounded-full w-fit">
                 {profileData.role || "Member"}
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500 mt-4">
-                <p><span className="font-semibold text-gray-900">Email:</span> {profileData.email}</p>
-                <p><span className="font-semibold text-gray-900">Phone:</span> {profileData.phoneNo || "N/A"}</p>
-                <p><span className="font-semibold text-gray-900">Address:</span> {profileData.address || "N/A"}</p>
-                <p><span className="font-semibold text-gray-900">DOB:</span> {profileData.dob ? new Date(profileData.dob).toDateString() : "N/A"}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground mt-4">
+                <p><span className="font-semibold text-foreground">Email:</span> {profileData.email}</p>
+                <p><span className="font-semibold text-foreground">Phone:</span> {profileData.phoneNo || "N/A"}</p>
+                <p><span className="font-semibold text-foreground">Address:</span> {profileData.address || "N/A"}</p>
+                <p><span className="font-semibold text-foreground">DOB:</span> {profileData.dob ? new Date(profileData.dob).toDateString() : "N/A"}</p>
               </div>
             </div>
           </div>
 
           {/* Tabs */}
           <div className="mt-10">
-            <div className="flex border-b border-gray-200 overflow-x-auto">
+            <div className="flex border-b border-border overflow-x-auto">
               {[
                 ...(!isAdmin ? [{ id: "donations", label: "Donations" }, { id: "orders", label: "Orders" }] : []),
                 { id: "edit", label: "Edit Profile" },
@@ -171,8 +191,8 @@ const Profile = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-8 py-4 font-medium transition-all relative whitespace-nowrap ${activeTab === tab.id
-                    ? "text-black"
-                    : "text-gray-400 hover:text-gray-600"
+                    ? "text-foreground"
+                    : "text-gray-400 hover:text-muted-foreground"
                     }`}
                 >
                   {tab.label}
@@ -184,21 +204,36 @@ const Profile = () => {
             </div>
 
             {/* Tab Content */}
-            <div className="bg-white min-h-[400px] border border-gray-100 border-t-0 rounded-b-2xl p-8 shadow-sm">
+            <div className="bg-card min-h-[400px] border border-gray-100 border-t-0 rounded-b-2xl p-8 shadow-sm">
               {activeTab === "donations" && !isAdmin && (
                 <div className="space-y-4">
                   {donations.length === 0 ? <p className="text-gray-400 text-center py-10">No donations found.</p> :
                     donations.map(d => (
-                      <div key={d._id} className="border border-gray-100 p-6 rounded-xl flex justify-between items-center hover:bg-gray-50 transition-colors">
+                      <div key={d._id} className="border border-gray-100 p-6 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center hover:bg-background transition-colors gap-4">
                         <div>
-                          <p className="font-bold text-gray-900 text-lg">
+                          <p className="font-bold text-foreground text-lg">
                             {d.donationCampaignId ? d.donationCampaignId.title : "General Donation"}
                           </p>
-                          <p className="text-xs text-gray-400 uppercase tracking-wider mt-1">Receipt: {d.receiptNo}</p>
+                          {d.donationCampaignId && (
+                            <div className="flex gap-2 mt-1">
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-600 uppercase">
+                                {d.donationCampaignId.donationType} Account
+                              </span>
+                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${d.donationCampaignId.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-600'}`}>
+                                Campaign: {d.donationCampaignId.status}
+                              </span>
+                            </div>
+                          )}
+                          <p className="text-xs text-gray-400 uppercase tracking-wider mt-2">Receipt: {d.receiptNo}</p>
+                          <p className={`text-xs font-bold uppercase tracking-wider mt-1 ${d.paymentStatus === 'paid' ? 'text-emerald-500' : 'text-amber-500'}`}>Payment: {d.paymentStatus}</p>
                         </div>
-                        <div className="text-right">
+                        <div className="text-left sm:text-right">
                           <p className="font-bold text-xl text-emerald-600">₹{d.amount}</p>
-                          <p className="text-xs text-gray-400">{new Date(d.createdAt).toLocaleDateString()}</p>
+                          <p className="text-xs text-gray-400 mt-1">{new Date(d.createdAt).toLocaleDateString()}</p>
+                          <button onClick={() => handleDownloadReceipt('donation', d._id)} className="mt-2 text-xs font-bold text-primary hover:underline flex items-center gap-1 sm:justify-end">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                            Download Receipt
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -212,15 +247,46 @@ const Profile = () => {
                       <div key={o._id} className="border border-gray-100 p-6 rounded-xl">
                         <div className="flex justify-between items-center mb-4 border-b border-gray-50 pb-4">
                           <div>
-                            <p className="text-sm font-bold text-gray-900">Order #{o._id.slice(-6).toUpperCase()}</p>
+                            <p className="text-sm font-bold text-foreground">Order #{o._id.slice(-6).toUpperCase()}</p>
                             <p className="text-xs text-gray-400">{new Date(o.createdAt).toLocaleDateString()}</p>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${o.status === 'completed' || o.status === 'confirmed' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${o.status === 'completed' || o.status === 'confirmed' ? 'bg-emerald-100 text-emerald-700' : 'bg-muted text-muted-foreground'
                             }`}>
                             {o.status}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600">Total Amount: <span className="font-bold text-gray-900">₹{o.totalAmount}</span></p>
+
+                        {/* Order Items */}
+                        <div className="space-y-3 mb-4">
+                          {o.items?.map((item, idx) => (
+                            <div key={idx} className="flex items-center gap-4 border-b border-gray-50 pb-3 last:border-0 last:pb-0">
+                              {item.itemId?.url ? (
+                                <img src={item.itemId.url} alt={item.itemId.itemName} className="w-12 h-12 object-cover rounded bg-gray-100" />
+                              ) : (
+                                <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">IMG</div>
+                              )}
+                              <div className="flex-1">
+                                <p className="text-sm font-semibold">{item.itemId?.itemName || "Unknown Item"}</p>
+                                <p className="text-xs text-gray-400">{item.itemId?.category || "Unknown Category"}</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm font-medium">₹{item.price} x {item.quantity}</p>
+                                <p className="text-sm font-bold text-foreground">₹{item.price * item.quantity}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="flex justify-between items-center pt-2 border-t border-gray-50 border-dashed mt-2">
+                          <div>
+                            <p className="text-sm text-muted-foreground">Total Amount</p>
+                            <button onClick={() => handleDownloadReceipt('order', o._id)} className="text-xs font-bold text-primary hover:underline flex items-center gap-1 mt-1">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                              Download Receipt
+                            </button>
+                          </div>
+                          <p className="font-bold text-lg text-foreground">₹{o.totalAmount}</p>
+                        </div>
                       </div>
                     ))}
                 </div>
@@ -234,7 +300,7 @@ const Profile = () => {
                       <input
                         name="fullname"
                         defaultValue={profileData.fullname}
-                        className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-black outline-none"
+                        className="w-full border border-border p-3 rounded-lg focus:ring-2 focus:ring-black outline-none"
                       />
                     </div>
                     <div>
@@ -243,7 +309,7 @@ const Profile = () => {
                         name="email"
                         defaultValue={profileData.email}
                         readOnly
-                        className="w-full border border-gray-200 p-3 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                        className="w-full border border-border p-3 rounded-lg bg-background text-muted-foreground cursor-not-allowed"
                       />
                     </div>
                     <div>
@@ -251,7 +317,7 @@ const Profile = () => {
                       <input
                         name="phoneNo"
                         defaultValue={profileData.phoneNo}
-                        className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-black outline-none"
+                        className="w-full border border-border p-3 rounded-lg focus:ring-2 focus:ring-black outline-none"
                       />
                     </div>
                     <div>
@@ -261,7 +327,7 @@ const Profile = () => {
                         name="dob"
                         type="date"
                         defaultValue={profileData.dob ? new Date(profileData.dob).toISOString().split('T')[0] : ""}
-                        className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-black outline-none"
+                        className="w-full border border-border p-3 rounded-lg focus:ring-2 focus:ring-black outline-none"
                       />
                     </div>
                   </div>
@@ -271,12 +337,12 @@ const Profile = () => {
                     <textarea
                       name="address"
                       defaultValue={profileData.address}
-                      className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-black outline-none min-h-[100px]"
+                      className="w-full border border-border p-3 rounded-lg focus:ring-2 focus:ring-black outline-none min-h-[100px]"
                     />
                   </div>
 
                   <div className="pt-4">
-                    <button className="w-full bg-black text-white p-4 rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-transform active:scale-95">
+                    <button className="w-full bg-black text-primary-foreground p-4 rounded-xl font-bold shadow-lg hover:bg-secondary transition-transform active:scale-95">
                       Save Changes
                     </button>
                     {msg && <p className="text-center mt-4 text-sm font-medium text-emerald-600 animate-pulse">{msg}</p>}
@@ -286,21 +352,21 @@ const Profile = () => {
 
               {activeTab === "security" && (
                 <form onSubmit={handleChangePassword} className="max-w-sm mx-auto space-y-6">
-                  <h3 className="text-lg font-bold text-gray-900 border-b pb-2 mb-6 uppercase tracking-widest text-xs text-gray-400">Security Credentials</h3>
+                  <h3 className="text-lg font-bold text-foreground border-b pb-2 mb-6 uppercase tracking-widest text-xs text-gray-400">Security Credentials</h3>
                   <div>
                     <label className="block text-xs font-bold uppercase text-gray-400 mb-1">Current Password</label>
-                    <input type="password" name="currentPassword" required className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+                    <input type="password" name="currentPassword" required className="w-full border border-border p-3 rounded-lg focus:ring-2 focus:ring-black outline-none" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase text-gray-400 mb-1">New Password</label>
-                    <input type="password" name="newPassword" required className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+                    <input type="password" name="newPassword" required className="w-full border border-border p-3 rounded-lg focus:ring-2 focus:ring-black outline-none" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase text-gray-400 mb-1">Confirm New Password</label>
-                    <input type="password" name="confirmPassword" required className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+                    <input type="password" name="confirmPassword" required className="w-full border border-border p-3 rounded-lg focus:ring-2 focus:ring-black outline-none" />
                   </div>
                   <div className="pt-4">
-                    <button disabled={passwordLoading} className="w-full bg-black text-white p-4 rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-transform active:scale-95 disabled:bg-gray-400">
+                    <button disabled={passwordLoading} className="w-full bg-black text-primary-foreground p-4 rounded-xl font-bold shadow-lg hover:bg-secondary transition-transform active:scale-95 disabled:bg-gray-400">
                       {passwordLoading ? "Processing..." : "Update Password"}
                     </button>
                     {passwordMsg && <p className={`text-center mt-4 text-sm font-medium ${passwordMsg.includes("successfully") ? "text-emerald-600" : "text-rose-600"} animate-pulse`}>{passwordMsg}</p>}

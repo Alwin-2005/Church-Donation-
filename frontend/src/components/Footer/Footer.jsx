@@ -21,7 +21,7 @@ const Footer = () => {
 
         {/* Contact Section */}
         <div>
-          <h2 className="text-white text-lg font-semibold mb-4">
+          <h2 className="text-primary-foreground text-lg font-semibold mb-4">
             Contact Us
           </h2>
           <p className="text-sm mb-2">
@@ -34,10 +34,10 @@ const Footer = () => {
 
         {/* Legal / Links */}
         <div>
-          <h2 className="text-white text-lg font-semibold mb-4">
+          <h2 className="text-primary-foreground text-lg font-semibold mb-4">
             Legal
           </h2>
-          <Link to="/TermsCon" className="text-sm hover:text-white cursor-pointer transition">
+          <Link to="/TermsCon" className="text-sm hover:text-primary-foreground cursor-pointer transition">
             Terms & Conditions
           </Link>
         </div>
@@ -45,7 +45,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-700 py-4 text-center text-sm text-gray-500">
+      <div className="border-t border-gray-700 py-4 text-center text-sm text-muted-foreground">
         © {new Date().getFullYear()} All rights reserved.
       </div>
 

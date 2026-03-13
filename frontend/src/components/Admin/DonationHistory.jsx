@@ -36,9 +36,9 @@ const DonationHistory = () => {
     <div className="mt-24 px-6">
       <h1 className="text-2xl font-semibold mb-6">Donation History </h1>
 
-      <div className="bg-white rounded-lg shadow overflow-x-auto animate-scaleIn">
+      <div className="bg-card rounded-lg shadow overflow-x-auto animate-scaleIn">
         <table className="w-full text-left text-sm">
-          <thead className="bg-gray-100 font-medium">
+          <thead className="bg-muted font-medium">
             <tr>
               <th className="p-3">Donation ID</th>
               <th className="p-3">Donor</th>
@@ -54,12 +54,12 @@ const DonationHistory = () => {
 
           <tbody>
             {donations.map(d => (
-              <tr key={d._id} className="border-t hover:bg-gray-50">
+              <tr key={d._id} className="border-t hover:bg-background">
                 <td className="p-3 font-mono text-xs">{d._id}</td>
 
                 <td className="p-3">
                   <div className="font-medium">{d.userId?.fullname || "Unknown Donor"}</div>
-                  <div className="text-xs text-gray-500">{d.userId?.email || "N/A"}</div>
+                  <div className="text-xs text-muted-foreground">{d.userId?.email || "N/A"}</div>
                 </td>
 
                 <td className="p-3">{d.donationCampaignId?.title || "N/A"}</td>
@@ -67,7 +67,7 @@ const DonationHistory = () => {
                 <td className="p-3 capitalize">
                   <span
                     className={`px-2 py-1 rounded text-xs ${d.donationCampaignId?.donationType === "internal"
-                      ? "bg-blue-100 text-blue-700"
+                      ? "bg-blue-100 text-primary"
                       : "bg-purple-100 text-purple-700"
                       }`}
                   >
@@ -94,11 +94,11 @@ const DonationHistory = () => {
 
                 <td className="p-3 space-x-2">
                   {d.paymentStatus === "paid" && (
-                    <button className="text-blue-600 underline">
+                    <button className="text-primary underline">
                       Receipt
                     </button>
                   )}
-                  <button className="text-gray-600 underline">
+                  <button className="text-muted-foreground underline">
                     View
                   </button>
                 </td>

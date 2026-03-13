@@ -39,13 +39,13 @@ const CommonUserForm = ({
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md relative">
+    <div className="bg-card p-6 rounded-lg shadow-md w-full max-w-md relative">
 
       {/* Admin Close Button */}
       {isAdmin && (
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-black"
+          className="absolute top-2 right-2 text-muted-foreground hover:text-foreground"
         >
           ✕
         </button>
@@ -90,7 +90,7 @@ const CommonUserForm = ({
 
         <button
           type="submit"
-          className="bg-black text-white w-full py-2 rounded"
+          className="bg-black text-primary-foreground w-full py-2 rounded"
         >
           {submitText}
         </button>

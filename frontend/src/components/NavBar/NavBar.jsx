@@ -25,7 +25,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex items-center py-6 px-4 md:px-16 font-sans bg-black text-white fixed top-0 left-0 w-full z-50">
+    <div className="flex items-center py-6 px-4 md:px-16 font-sans bg-black text-primary-foreground fixed top-0 left-0 w-full z-50">
       {/* Logo */}
       <img src={COG} className="h-10 w-auto" alt="COG" />
       <h1 className="ml-2 text-lg font-semibold">Church of God</h1>
@@ -69,10 +69,10 @@ const Navbar = () => {
             </button>
 
             {showDonate && (
-              <div className="absolute right-0 mt-2 w-56 bg-white text-black rounded shadow-lg">
+              <div className="absolute right-0 mt-2 w-56 bg-card text-foreground rounded shadow-lg">
                 <button
                   onClick={() => navigate("/ExtDon")}
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  className="block w-full text-left px-4 py-2 hover:bg-muted"
                 >
                   Donate for a Cause
                 </button>
@@ -80,7 +80,7 @@ const Navbar = () => {
                 {role === "churchMember" && (
                   <button
                     onClick={() => navigate("/IntDon")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 hover:bg-muted"
                   >
                     Donate for Church
                   </button>
@@ -115,20 +115,20 @@ const Navbar = () => {
           </button>
 
           {showMenu && (
-            <div className="absolute right-0 mt-2 w-44 bg-white text-black rounded shadow-lg">
+            <div className="absolute right-0 mt-2 w-44 bg-card text-foreground rounded shadow-lg">
 
               {!user ? (
                 <>
                   <button
                     onClick={() => navigate("/login")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 hover:bg-muted"
                   >
                     Login
                   </button>
 
                   <button
                     onClick={() => navigate("/register")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 hover:bg-muted"
                   >
                     Register
                   </button>
@@ -137,14 +137,14 @@ const Navbar = () => {
                 <>
                   <button
                     onClick={() => navigate("/profile")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 hover:bg-muted"
                   >
                     Profile
                   </button>
 
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-muted"
                   >
                     Logout
                   </button>

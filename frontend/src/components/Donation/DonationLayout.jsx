@@ -12,7 +12,7 @@ const DonationLayout = ({ title, campaigns = [], role, simple = false }) => {
     return (
       <div className="flex flex-wrap justify-center gap-8 py-8">
         {campaigns.length === 0 ? (
-          <p className="text-white/50 text-lg font-medium italic">No streams available at this time.</p>
+          <p className="text-primary-foreground/50 text-lg font-medium italic">No streams available at this time.</p>
         ) : (
           campaigns.map((campaign) => (
             <DonationCampaignCard
@@ -42,7 +42,7 @@ const DonationLayout = ({ title, campaigns = [], role, simple = false }) => {
 
         {/* CONTENT OVER IMAGE */}
         <div className="relative z-20 pt-40">
-          <h1 className="text-4xl font-bold text-center text-white">
+          <h1 className="text-4xl font-bold text-center text-primary-foreground">
             {title}
           </h1>
 
@@ -50,7 +50,7 @@ const DonationLayout = ({ title, campaigns = [], role, simple = false }) => {
 
           <div className="flex flex-wrap justify-center gap-6 px-6">
             {campaigns.length === 0 ? (
-              <p className="text-white text-lg">
+              <p className="text-primary-foreground text-lg">
                 No campaigns available
               </p>
             ) : (

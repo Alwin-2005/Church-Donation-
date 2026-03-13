@@ -41,13 +41,13 @@ const ForgotPassword = () => {
 
       {/* Forgot Password Card */}
       <div className="relative z-10 h-full flex items-center justify-center">
-        <div className="w-[380px] backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl px-10 py-12 shadow-2xl">
+        <div className="w-[380px] backdrop-blur-xl bg-card/10 border border-white/20 rounded-2xl px-10 py-12 shadow-2xl">
 
-          <h1 className="text-3xl font-bold text-white mb-6 text-center">
+          <h1 className="text-3xl font-bold text-primary-foreground mb-6 text-center">
             Forgot Password
           </h1>
 
-          <p className="text-white/80 text-center mb-4">
+          <p className="text-primary-foreground/80 text-center mb-4">
             Enter your email to receive a password reset link
           </p>
 
@@ -57,7 +57,7 @@ const ForgotPassword = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+              className="px-4 py-2 rounded bg-card/90 text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-white"
               required
             />
 
@@ -66,7 +66,7 @@ const ForgotPassword = () => {
 
             <button
               type="submit"
-              className="mt-2 bg-black text-white rounded py-2 font-semibold hover:bg-gray-900 active:scale-95 transition-all"
+              className="mt-2 bg-black text-primary-foreground rounded py-2 font-semibold hover:bg-foreground active:scale-95 transition-all"
             >
               Send Reset Link
             </button>
@@ -76,14 +76,14 @@ const ForgotPassword = () => {
           <div className="text-center mt-5">
             <Link
               to="/login"
-              className="text-sm text-gray-300 hover:text-white transition"
+              className="text-sm text-gray-300 hover:text-primary-foreground transition"
             >
               Back to Login
             </Link>
             <br />
             <Link
               to="/register"
-              className="text-sm text-gray-300 hover:text-white transition"
+              className="text-sm text-gray-300 hover:text-primary-foreground transition"
             >
               Register Now
             </Link>

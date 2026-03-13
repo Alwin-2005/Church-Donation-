@@ -50,7 +50,7 @@ const ProfileCard = ({
 
   const getRoleBadge = (role) => {
     if (role === 'churchMember') {
-      return <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">Church Member</span>;
+      return <span className="px-3 py-1 bg-blue-100 text-primary rounded-full text-sm font-semibold">Church Member</span>;
     } else if (role === 'externalMember') {
       return <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">External Member</span>;
     } else if (role === 'admin') {
@@ -67,14 +67,14 @@ const ProfileCard = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 max-w-2xl">
+    <div className="bg-card rounded-lg shadow-md p-6 max-w-2xl">
       <div className="flex justify-between items-start mb-6">
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-primary-foreground text-2xl font-bold">
             {user?.fullname?.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">{user?.fullname}</h2>
+            <h2 className="text-2xl font-bold text-foreground">{user?.fullname}</h2>
             <div className="flex gap-2 mt-2">
               {getRoleBadge(user?.role)}
               {isAdmin && getStatusBadge(user?.status)}
@@ -85,7 +85,7 @@ const ProfileCard = ({
         {isEditable && !isEditMode && (
           <button
             onClick={() => setIsEditMode(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary transition"
           >
             Edit Profile
           </button>
@@ -95,64 +95,64 @@ const ProfileCard = ({
       {!isEditMode ? (
         // View Mode
         <div className="space-y-4">
-          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-            <Mail className="w-5 h-5 text-gray-600" />
+          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+            <Mail className="w-5 h-5 text-muted-foreground" />
             <div>
-              <p className="text-xs text-gray-500">Email</p>
-              <p className="text-gray-800 font-medium">{user?.email}</p>
+              <p className="text-xs text-muted-foreground">Email</p>
+              <p className="text-foreground font-medium">{user?.email}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-            <Phone className="w-5 h-5 text-gray-600" />
+          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+            <Phone className="w-5 h-5 text-muted-foreground" />
             <div>
-              <p className="text-xs text-gray-500">Phone Number</p>
-              <p className="text-gray-800 font-medium">{user?.phoneNo || 'Not provided'}</p>
+              <p className="text-xs text-muted-foreground">Phone Number</p>
+              <p className="text-foreground font-medium">{user?.phoneNo || 'Not provided'}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-            <UserCircle className="w-5 h-5 text-gray-600" />
+          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+            <UserCircle className="w-5 h-5 text-muted-foreground" />
             <div>
-              <p className="text-xs text-gray-500">Gender</p>
-              <p className="text-gray-800 font-medium">{user?.gender || 'Not provided'}</p>
+              <p className="text-xs text-muted-foreground">Gender</p>
+              <p className="text-foreground font-medium">{user?.gender || 'Not provided'}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-            <Calendar className="w-5 h-5 text-gray-600" />
+          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+            <Calendar className="w-5 h-5 text-muted-foreground" />
             <div>
-              <p className="text-xs text-gray-500">Date of Birth</p>
-              <p className="text-gray-800 font-medium">
+              <p className="text-xs text-muted-foreground">Date of Birth</p>
+              <p className="text-foreground font-medium">
                 {user?.dob ? new Date(user.dob).toLocaleDateString() : 'Not provided'}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-            <MapPin className="w-5 h-5 text-gray-600" />
+          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+            <MapPin className="w-5 h-5 text-muted-foreground" />
             <div>
-              <p className="text-xs text-gray-500">Address</p>
-              <p className="text-gray-800 font-medium">{user?.address || 'Not provided'}</p>
+              <p className="text-xs text-muted-foreground">Address</p>
+              <p className="text-foreground font-medium">{user?.address || 'Not provided'}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-            <Calendar className="w-5 h-5 text-gray-600" />
+          <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+            <Calendar className="w-5 h-5 text-muted-foreground" />
             <div>
-              <p className="text-xs text-gray-500">Member Since</p>
-              <p className="text-gray-800 font-medium">
+              <p className="text-xs text-muted-foreground">Member Since</p>
+              <p className="text-foreground font-medium">
                 {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
               </p>
             </div>
           </div>
 
           {isAdmin && (
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <Shield className="w-5 h-5 text-gray-600" />
+            <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+              <Shield className="w-5 h-5 text-muted-foreground" />
               <div>
-                <p className="text-xs text-gray-500">User ID</p>
-                <p className="text-gray-800 font-medium font-mono text-sm">{user?._id}</p>
+                <p className="text-xs text-muted-foreground">User ID</p>
+                <p className="text-foreground font-medium font-mono text-sm">{user?._id}</p>
               </div>
             </div>
           )}
@@ -161,48 +161,48 @@ const ProfileCard = ({
         // Edit Mode
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+            <label className="block text-sm font-medium text-foreground mb-2">Full Name</label>
             <input
               type="text"
               name="fullname"
               value={formData.fullname}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <label className="block text-sm font-medium text-foreground mb-2">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
               required
               disabled={!isAdmin}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+            <label className="block text-sm font-medium text-foreground mb-2">Phone Number</label>
             <input
               type="tel"
               name="phoneNo"
               value={formData.phoneNo}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+            <label className="block text-sm font-medium text-foreground mb-2">Gender</label>
             <select
               name="gender"
               value={formData.gender}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
               required
             >
               <option value="">Select Gender</option>
@@ -213,36 +213,36 @@ const ProfileCard = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+            <label className="block text-sm font-medium text-foreground mb-2">Date of Birth</label>
             <input
               type="date"
               name="dob"
               value={formData.dob}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+            <label className="block text-sm font-medium text-foreground mb-2">Address</label>
             <textarea
               name="address"
               value={formData.address}
               onChange={handleChange}
               rows="3"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
             />
           </div>
 
           {isAdmin && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+                <label className="block text-sm font-medium text-foreground mb-2">Role</label>
                 <select
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
                   required
                 >
                   <option value="externalMember">External Member</option>
@@ -252,12 +252,12 @@ const ProfileCard = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <label className="block text-sm font-medium text-foreground mb-2">Status</label>
                 <select
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent"
                   required
                 >
                   <option value="enabled">Enabled</option>
@@ -270,14 +270,14 @@ const ProfileCard = ({
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary transition"
             >
               Save Changes
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+              className="flex-1 px-4 py-2 bg-gray-200 text-foreground rounded-lg hover:bg-gray-300 transition"
             >
               Cancel
             </button>

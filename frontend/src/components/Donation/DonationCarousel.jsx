@@ -96,12 +96,12 @@ const DonationCarousel = () => {
                 {/* Header */}
                 <div className="flex justify-between items-end mb-8">
                     <div className="text-left">
-                        <h2 className="text-3xl font-bold text-white drop-shadow-md">Make a Difference</h2>
+                        <h2 className="text-3xl font-bold text-primary-foreground drop-shadow-md">Make a Difference</h2>
                         <p className="text-gray-200 mt-2 font-medium drop-shadow-sm">Support our latest campaigns and causes</p>
                     </div>
                     <Link
                         to={seeMoreLink}
-                        className="hidden sm:flex items-center gap-2 text-white font-semibold hover:text-yellow-400 transition-colors drop-shadow-md"
+                        className="hidden sm:flex items-center gap-2 text-primary-foreground font-semibold hover:text-yellow-400 transition-colors drop-shadow-md"
                     >
                         {seeMoreText} <ArrowRight className="w-4 h-4" />
                     </Link>
@@ -137,13 +137,13 @@ const DonationCarousel = () => {
                         <>
                             <button
                                 onClick={handlePrev}
-                                className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 bg-black/50 hover:bg-indigo-600 p-2 rounded-full shadow-lg text-white backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+                                className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 bg-black/50 hover:bg-primary p-2 rounded-full shadow-lg text-primary-foreground backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
                             >
                                 <ChevronLeft className="w-6 h-6" />
                             </button>
                             <button
                                 onClick={handleNext}
-                                className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 bg-black/50 hover:bg-indigo-600 p-2 rounded-full shadow-lg text-white backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+                                className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 bg-black/50 hover:bg-primary p-2 rounded-full shadow-lg text-primary-foreground backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
                             >
                                 <ChevronRight className="w-6 h-6" />
                             </button>
@@ -156,7 +156,7 @@ const DonationCarousel = () => {
                 <div className="mt-8 text-center sm:hidden">
                     <Link
                         to={seeMoreLink}
-                        className="inline-flex items-center gap-2 text-white font-semibold hover:text-yellow-400 drop-shadow-md"
+                        className="inline-flex items-center gap-2 text-primary-foreground font-semibold hover:text-yellow-400 drop-shadow-md"
                     >
                         {seeMoreText} <ArrowRight className="w-4 h-4" />
                     </Link>

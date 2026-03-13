@@ -48,7 +48,7 @@ const Users = () => {
 
         <button
           onClick={() => setOpenAdd(true)}
-          className="bg-black text-white px-4 py-2 rounded-md hover:scale-105 transition"
+          className="bg-black text-primary-foreground px-4 py-2 rounded-md hover:scale-105 transition"
         >
           + Add Member
         </button>

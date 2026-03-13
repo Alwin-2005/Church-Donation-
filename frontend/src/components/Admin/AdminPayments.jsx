@@ -46,7 +46,7 @@ const AdminPayments = () => {
       case "failed":
         return "bg-red-100 text-red-700";
       case "refunded":
-        return "bg-gray-200 text-gray-700";
+        return "bg-gray-200 text-foreground";
       default:
         return "";
     }
@@ -56,7 +56,7 @@ const AdminPayments = () => {
   if (error) return <div className="pt-[96px] px-4 md:px-16 text-red-500">{error}</div>;
 
   return (
-    <div className="pt-[96px] px-4 md:px-16 py-10 bg-gray-100 min-h-screen">
+    <div className="pt-[96px] px-4 md:px-16 py-10 bg-muted min-h-screen">
       {/* Header + Filter */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <h1 className="text-2xl font-semibold">Payments</h1>
@@ -78,9 +78,9 @@ const AdminPayments = () => {
       </div>
 
       {/* Payments Table */}
-      <div className="bg-white shadow rounded-lg overflow-x-auto animate-scaleIn">
+      <div className="bg-card shadow rounded-lg overflow-x-auto animate-scaleIn">
         <table className="w-full text-left text-sm">
-          <thead className="bg-gray-100">
+          <thead className="bg-muted">
             <tr>
               <th className="p-3">Transaction</th>
               <th className="p-3">Order</th>
@@ -96,20 +96,20 @@ const AdminPayments = () => {
           <tbody>
             {filteredPayments.length === 0 ? (
               <tr>
-                <td colSpan="8" className="p-6 text-center text-gray-500">
+                <td colSpan="8" className="p-6 text-center text-muted-foreground">
                   No payments found
                 </td>
               </tr>
             ) : (
               filteredPayments.map(p => (
-                <tr key={p._id} className="border-t hover:bg-gray-50">
+                <tr key={p._id} className="border-t hover:bg-background">
                   <td className="p-3 font-mono text-xs">{p.transactionNo}</td>
 
                   <td className="p-3 font-mono text-xs">{p.orderId?._id || "N/A"}</td>
 
                   <td className="p-3">
                     <div className="font-medium">{p.orderId?.userId?.fullname || "Unknown User"}</div>
-                    <div className="text-xs text-gray-500">{p.orderId?.userId?.email || "N/A"}</div>
+                    <div className="text-xs text-muted-foreground">{p.orderId?.userId?.email || "N/A"}</div>
                   </td>
 
                   <td className="p-3 font-semibold">₹{p.amount}</td>
@@ -130,7 +130,7 @@ const AdminPayments = () => {
 
                   <td className="p-3">
                     {p.status === "paid" && (
-                      <button className="text-blue-600 underline text-xs">
+                      <button className="text-primary underline text-xs">
                         Refund
                       </button>
                     )}

@@ -29,7 +29,7 @@ const Shop = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen text-white">
+    <div className="relative min-h-screen text-primary-foreground">
       {/* Immersive Background */}
       <div className="fixed inset-0 z-0">
         <img
@@ -43,7 +43,7 @@ const Shop = () => {
       <div className="relative z-10">
         {/* HERO HEADER */}
         <div className="pt-32 pb-14 px-6 text-center">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-4 text-white uppercase italic">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-4 text-primary-foreground uppercase italic">
             SHOP
           </h1>
           <p className="text-gray-400 max-w-2xl mx-auto text-xl font-medium tracking-wide">
@@ -54,8 +54,8 @@ const Shop = () => {
         {/* GRID */}
         <div className="max-w-7xl mx-auto px-6 pb-32">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 bg-white/5 backdrop-blur-xl rounded-[40px] border border-white/10 shadow-2xl">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-6"></div>
+            <div className="flex flex-col items-center justify-center py-20 bg-card/5 backdrop-blur-xl rounded-[40px] border border-white/10 shadow-2xl">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary mb-6"></div>
               <p className="text-gray-400 font-black tracking-widest uppercase text-xs">Unboxing the Sanctuary...</p>
             </div>
           ) : error ? (
@@ -63,7 +63,7 @@ const Shop = () => {
               <p className="font-black italic text-xl uppercase tracking-tighter">{error}</p>
             </div>
           ) : merchItems.length === 0 ? (
-            <div className="bg-white/5 backdrop-blur-md text-gray-400 p-20 rounded-[40px] text-center border border-white/10 max-w-2xl mx-auto shadow-inner">
+            <div className="bg-card/5 backdrop-blur-md text-gray-400 p-20 rounded-[40px] text-center border border-white/10 max-w-2xl mx-auto shadow-inner">
               <p className="text-3xl font-black uppercase italic tracking-tighter">Coming Soon!</p>
               <p className="mt-4 font-medium text-lg">Our store is currently being restocked. Check back later!</p>
             </div>

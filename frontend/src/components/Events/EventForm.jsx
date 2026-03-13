@@ -34,18 +34,18 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden border border-white animate-scaleIn">
+    <div className="bg-card/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden border border-white animate-scaleIn">
       {/* Header */}
-      <div className="px-8 py-6 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center">
+      <div className="px-8 py-6 bg-background/50 border-b border-gray-100 flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-black text-gray-900 tracking-tight">
+          <h2 className="text-2xl font-black text-foreground tracking-tight">
             {initialData ? "Edit Announcement" : "New Announcement"}
           </h2>
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-1">Announcement Configuration</p>
         </div>
         <button
           onClick={onClose}
-          className="p-2 hover:bg-white hover:shadow-sm rounded-full transition-all text-gray-400 hover:text-black"
+          className="p-2 hover:bg-card hover:shadow-sm rounded-full transition-all text-gray-400 hover:text-foreground"
         >
           <X size={20} />
         </button>
@@ -54,14 +54,14 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
       <form onSubmit={handleSubmit} className="p-8 space-y-6">
         <div>
           <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-            <FileText size={14} className="text-blue-500" /> Announcement Title
+            <FileText size={14} className="text-primary" /> Announcement Title
           </label>
           <input
             name="title"
             placeholder="e.g. Grand Sunday Celebration"
             value={formData.title}
             onChange={handleChange}
-            className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-gray-900"
+            className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-foreground"
             required
           />
         </div>
@@ -76,7 +76,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
               name="date"
               value={formData.date}
               onChange={handleChange}
-              className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
+              className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
               required
             />
           </div>
@@ -89,7 +89,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
               name="time"
               value={formData.time}
               onChange={handleChange}
-              className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
+              className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
               required
             />
           </div>
@@ -102,7 +102,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
             placeholder="e.g. Main Sanctuary"
             value={formData.note}
             onChange={handleChange}
-            className="w-full bg-gray-50 border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
+            className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
           />
         </div>
 
@@ -115,7 +115,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full bg-white border border-gray-200 rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-bold"
+              className="w-full bg-card border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-bold"
             >
               <option value="visible">Public Exposure</option>
               <option value="hidden">Draft Context</option>
@@ -124,7 +124,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
 
           <button
             type="submit"
-            className="mt-6 px-10 py-4 bg-black hover:bg-gray-800 text-white rounded-2xl font-black text-sm tracking-widest uppercase transition-all shadow-xl hover:shadow-black/20 active:scale-95 flex items-center gap-2"
+            className="mt-6 px-10 py-4 bg-black hover:bg-secondary text-primary-foreground rounded-2xl font-black text-sm tracking-widest uppercase transition-all shadow-xl hover:shadow-black/20 active:scale-95 flex items-center gap-2"
           >
             <Check size={18} /> {initialData ? "Apply" : "Create"}
           </button>

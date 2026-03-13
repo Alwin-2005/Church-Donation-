@@ -140,10 +140,10 @@ const Regis = () => {
 
       {/* Registration Card */}
       <div className="relative z-10 h-full flex items-center justify-center">
-        <div className="w-[380px] max-h-[90vh] overflow-y-auto backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl px-10 py-12 shadow-2xl">
+        <div className="w-[380px] max-h-[90vh] overflow-y-auto backdrop-blur-xl bg-card/10 border border-white/20 rounded-2xl px-10 py-12 shadow-2xl">
 
 
-          <h1 className="text-3xl font-bold text-white mb-6 text-center">
+          <h1 className="text-3xl font-bold text-primary-foreground mb-6 text-center">
             Registration
           </h1>
 
@@ -157,7 +157,7 @@ const Regis = () => {
               placeholder="Full Name"
               value= {formInput.fullName}
               onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
-              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+              className="px-4 py-2 rounded bg-card/90 text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
             <p
@@ -173,7 +173,7 @@ const Regis = () => {
               placeholder="Email"
               value= {formInput.email}
               onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
-              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+              className="px-4 py-2 rounded bg-card/90 text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
             <p 
@@ -188,7 +188,7 @@ const Regis = () => {
               placeholder="Phone No."
               value = {formInput.phoneNo}
               onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
-              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+              className="px-4 py-2 rounded bg-card/90 text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
             <p
@@ -200,7 +200,7 @@ const Regis = () => {
             <div className="flex flex-col gap-1">
             <select
             name="gender"
-            className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+            className="px-4 py-2 rounded bg-card/90 text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-white"
             value={formInput.gender}
             onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
             >
@@ -223,7 +223,7 @@ const Regis = () => {
               placeholder="DOB"
               value = {formInput.dob}
               onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
-              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+              className="px-4 py-2 rounded bg-card/90 text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
             <p
               className="min-h-[20px] text-red-600 text-sm font-medium px-2"
@@ -237,7 +237,7 @@ const Regis = () => {
               placeholder="Create Password"
               value = {formInput.password}
               onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
-              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+              className="px-4 py-2 rounded bg-card/90 text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
 
@@ -247,7 +247,7 @@ const Regis = () => {
               placeholder="Confirm Password"
               value = {formInput.confirmPassword}
               onChange = {(e) => {handleInput(e.target.name,e.target.value)}}
-              className="px-4 py-2 rounded bg-white/90 text-black font-medium focus:outline-none focus:ring-2 focus:ring-white"
+              className="px-4 py-2 rounded bg-card/90 text-foreground font-medium focus:outline-none focus:ring-2 focus:ring-white"
             />
 
             <p
@@ -258,7 +258,7 @@ const Regis = () => {
 
             <button
               type="submit"
-              className="mt-2 bg-black text-white rounded py-2 font-semibold hover:bg-gray-900 active:scale-95 transition-all"
+              className="mt-2 bg-black text-primary-foreground rounded py-2 font-semibold hover:bg-foreground active:scale-95 transition-all"
             >
               Register
             </button>

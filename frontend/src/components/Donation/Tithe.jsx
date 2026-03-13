@@ -30,7 +30,7 @@ const Tithe = () => {
 
     if (loading) return (
         <div className="pt-32 flex justify-center min-h-screen bg-black">
-            <div className="animate-pulse text-white/50 font-medium flex items-center gap-2">
+            <div className="animate-pulse text-primary-foreground/50 font-medium flex items-center gap-2">
                 <Heart className="animate-bounce" /> Loading Tithe streams...
             </div>
         </div>
@@ -51,11 +51,11 @@ const Tithe = () => {
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
                 {/* Intro Section */}
-                <div className="bg-black/40 backdrop-blur-xl text-white rounded-[40px] p-10 mb-12 border border-white/10 shadow-2xl relative overflow-hidden group">
+                <div className="bg-black/40 backdrop-blur-xl text-primary-foreground rounded-[40px] p-10 mb-12 border border-white/10 shadow-2xl relative overflow-hidden group">
                     <div className="relative z-10 max-w-2xl">
                         <div className="flex items-center gap-3 mb-4">
                             <span className="bg-yellow-500 p-3 rounded-2xl shadow-lg shadow-yellow-500/20">
-                                <Heart className="w-8 h-8 fill-white text-white" />
+                                <Heart className="w-8 h-8 fill-white text-primary-foreground" />
                             </span>
                             <h1 className="text-4xl font-black tracking-tight uppercase">Monthly Tithes</h1>
                         </div>
@@ -71,11 +71,11 @@ const Tithe = () => {
                 </div>
 
                 {titheCampaigns.length === 0 ? (
-                    <div className="bg-white/5 backdrop-blur-md rounded-[40px] p-20 text-center border border-white/10 shadow-xl">
-                        <div className="bg-white/10 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/20">
+                    <div className="bg-card/5 backdrop-blur-md rounded-[40px] p-20 text-center border border-white/10 shadow-xl">
+                        <div className="bg-card/10 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/20">
                             <Info className="w-12 h-12 text-gray-300" />
                         </div>
-                        <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tight">No Active Tithe Stream</h2>
+                        <h2 className="text-3xl font-black text-primary-foreground mb-2 uppercase tracking-tight">No Active Tithe Stream</h2>
                         <p className="text-gray-400 max-w-sm mx-auto font-medium">
                             The sanctuary administration has not activated a Tithe stream yet. Please check back later.
                         </p>
@@ -93,8 +93,8 @@ const Tithe = () => {
                 )}
 
                 {/* Info Card */}
-                <div className="mt-12 bg-white/5 backdrop-blur-xl rounded-[30px] p-8 border border-white/10 shadow-xl">
-                    <h3 className="text-xl font-black text-white mb-4 flex items-center gap-2 uppercase tracking-wide">
+                <div className="mt-12 bg-card/5 backdrop-blur-xl rounded-[30px] p-8 border border-white/10 shadow-xl">
+                    <h3 className="text-xl font-black text-primary-foreground mb-4 flex items-center gap-2 uppercase tracking-wide">
                         <Info className="w-6 h-6 text-yellow-500" /> Sanctuary Stewardship
                     </h3>
                     <p className="text-gray-300 text-base leading-relaxed font-medium">

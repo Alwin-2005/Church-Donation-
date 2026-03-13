@@ -65,14 +65,14 @@ const DonationCampaignCard = ({
 
   const getStatusColor = (s) => {
     switch (s) {
-      case 'active': return 'bg-gray-100 text-gray-800 border-gray-200';
-      case 'paused': return 'bg-gray-100 text-gray-500 border-gray-200';
+      case 'active': return 'bg-muted text-foreground border-border';
+      case 'paused': return 'bg-muted text-muted-foreground border-border';
       default: return 'bg-red-50 text-red-600 border-red-100'; // Keep Error red for critical alerts only
     }
   };
 
   return (
-    <div className={`group relative w-full ${compact ? "sm:w-[280px]" : "sm:w-[350px]"} bg-white/95 backdrop-blur-sm rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden flex flex-col ${compact ? "h-[320px]" : ""}`}>
+    <div className={`group relative w-full ${compact ? "sm:w-[280px]" : "sm:w-[350px]"} bg-card/95 backdrop-blur-sm rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-300 border border-border overflow-hidden flex flex-col ${compact ? "h-[320px]" : ""}`}>
 
       {/* DECORATIVE HEADER / STATUS */}
       <div className="h-2 bg-black w-full" />
@@ -81,7 +81,7 @@ const DonationCampaignCard = ({
         {/* HEADER SECTION */}
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1 pr-2">
-            <h2 className={`font-bold text-gray-900 leading-tight group-hover:text-black transition-colors ${compact ? "text-lg line-clamp-2" : "text-xl"}`}>
+            <h2 className={`font-bold text-foreground leading-tight group-hover:text-foreground transition-colors ${compact ? "text-lg line-clamp-2" : "text-xl"}`}>
               {title}
             </h2>
             {role === "admin" && !compact && (
@@ -91,7 +91,7 @@ const DonationCampaignCard = ({
             )}
           </div>
           {!compact && (
-            <div className="bg-gray-100 p-2 rounded-lg text-black">
+            <div className="bg-muted p-2 rounded-lg text-foreground">
               <CreditCard className="w-5 h-5" />
             </div>
           )}
@@ -99,7 +99,7 @@ const DonationCampaignCard = ({
 
         {/* DESCRIPTION */}
         {!compact && (
-          <p className="text-gray-500 text-sm mb-6 line-clamp-3 leading-relaxed flex-1">
+          <p className="text-muted-foreground text-sm mb-6 line-clamp-3 leading-relaxed flex-1">
             {description}
           </p>
         )}
@@ -116,8 +116,8 @@ const DonationCampaignCard = ({
         ) : (
           <div className={compact ? "mt-auto mb-4" : "mb-6"}>
             <div className="flex justify-between text-sm mb-2">
-              <span className="text-gray-600 font-medium">Raised</span>
-              <span className="text-black font-bold">{percentage}%</span>
+              <span className="text-muted-foreground font-medium">Raised</span>
+              <span className="text-foreground font-bold">{percentage}%</span>
             </div>
 
             {/* Progress Bar Background */}
@@ -127,18 +127,18 @@ const DonationCampaignCard = ({
                 className="h-full bg-black rounded-full transition-all duration-1000 ease-out relative"
                 style={{ width: `${percentage}%` }}
               >
-                <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]" />
+                <div className="absolute inset-0 bg-card/20 animate-[shimmer_2s_infinite]" />
               </div>
             </div>
 
-            <div className="flex justify-between mt-2 text-xs text-gray-500">
+            <div className="flex justify-between mt-2 text-xs text-muted-foreground">
               <div>
                 <span className="block text-gray-400 uppercase tracking-wider text-[10px]">Raised</span>
-                <span className="font-bold text-gray-900">{formatCurrency(collectedAmount)}</span>
+                <span className="font-bold text-foreground">{formatCurrency(collectedAmount)}</span>
               </div>
               <div className="text-right">
                 <span className="block text-gray-400 uppercase tracking-wider text-[10px]">Goal</span>
-                <span className="font-bold text-gray-900">{formatCurrency(goalAmount)}</span>
+                <span className="font-bold text-foreground">{formatCurrency(goalAmount)}</span>
               </div>
             </div>
           </div>
@@ -147,20 +147,20 @@ const DonationCampaignCard = ({
         {/* DATES GRID */}
         {!compact && (
           <div className="grid grid-cols-2 gap-3 mb-6 pt-4 border-t border-gray-100">
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <Calendar className="w-4 h-4 text-gray-900" />
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Calendar className="w-4 h-4 text-foreground" />
               <div className="flex flex-col">
                 <span className="text-[10px] uppercase tracking-wider text-gray-400">Starts</span>
-                <span className="font-medium text-gray-900">{formatDate(startDate)}</span>
+                <span className="font-medium text-foreground">{formatDate(startDate)}</span>
               </div>
             </div>
 
             {endDate && (
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <Clock className="w-4 h-4 text-gray-900" />
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Clock className="w-4 h-4 text-foreground" />
                 <div className="flex flex-col">
                   <span className="text-[10px] uppercase tracking-wider text-gray-400">Ends</span>
-                  <span className="font-medium text-gray-900">{formatDate(endDate)}</span>
+                  <span className="font-medium text-foreground">{formatDate(endDate)}</span>
                 </div>
               </div>
             )}
@@ -172,7 +172,7 @@ const DonationCampaignCard = ({
           {(role === "churchMember" || role === "externalMember" || !role) && (
             <button
               onClick={handleDonateClick}
-              className={`w-full flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white font-bold tracking-wide rounded-xl transition-all shadow-md hover:shadow-xl focus:ring-4 focus:ring-gray-300 ${compact ? "py-2 text-sm" : "py-2.5 px-4"}`}
+              className={`w-full flex items-center justify-center gap-2 bg-black hover:bg-secondary text-primary-foreground font-bold tracking-wide rounded-xl transition-all shadow-md hover:shadow-xl focus:ring-4 focus:ring-gray-300 ${compact ? "py-2 text-sm" : "py-2.5 px-4"}`}
             >
               Donate
               <TrendingUp className="w-4 h-4" />
@@ -183,13 +183,13 @@ const DonationCampaignCard = ({
             <div className="flex gap-2">
               <button
                 onClick={() => onEdit?.(campaign)}
-                className="flex-1 flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-900 font-bold py-2 px-4 rounded-lg border-2 border-gray-200 hover:border-black transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 bg-card hover:bg-background text-foreground font-bold py-2 px-4 rounded-lg border-2 border-border hover:border-black transition-colors"
               >
                 <Edit className="w-4 h-4" /> Edit
               </button>
               <button
                 onClick={() => onDelete?.(campaign._id)}
-                className="flex-1 flex items-center justify-center gap-2 bg-white hover:bg-red-50 text-red-600 font-bold py-2 px-4 rounded-lg border-2 border-red-100 hover:border-red-200 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 bg-card hover:bg-red-50 text-red-600 font-bold py-2 px-4 rounded-lg border-2 border-red-100 hover:border-red-200 transition-colors"
               >
                 <Trash2 className="w-4 h-4" /> Delete
               </button>

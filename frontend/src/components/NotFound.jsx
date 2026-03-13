@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+    <div className="min-h-screen flex items-center justify-center bg-black text-primary-foreground">
       <div className="text-center animate-fadeIn">
         
-        <h1 className="text-9xl font-extrabold text-gray-700 animate-pulse">
+        <h1 className="text-9xl font-extrabold text-foreground animate-pulse">
           404
         </h1>
 
@@ -19,7 +19,7 @@ export default function NotFound() {
 
         <Link
           to="/"
-          className="inline-block px-6 py-3 rounded-full bg-white text-black font-bold
+          className="inline-block px-6 py-3 rounded-full bg-card text-foreground font-bold
                      hover:bg-gray-200 transition duration-300 active:scale-95"
         >
           Go Back Home

@@ -102,18 +102,18 @@ const Cart = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-20">
+    <div className="bg-background min-h-screen pb-20">
       <Navbar />
 
       <div className="pt-28 max-w-7xl mx-auto px-6">
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-8 border-b pb-4">
+        <h1 className="text-3xl font-extrabold text-foreground mb-8 border-b pb-4">
           Shopping Cart ({cart.reduce((a, c) => a + c.qty, 0)})
         </h1>
 
         {cart.length === 0 ? (
           <div className="text-center py-20 animate-fadeIn">
             <h2 className="text-2xl font-bold text-gray-400 mb-4">Your cart is empty</h2>
-            <Link to="/shop" className="text-black font-semibold underline hover:text-amber-600 transition-colors">
+            <Link to="/shop" className="text-foreground font-semibold underline hover:text-amber-600 transition-colors">
               Continue Shopping
             </Link>
           </div>
@@ -123,8 +123,8 @@ const Cart = () => {
             {/* LEFT: CART ITEMS */}
             <div className="lg:col-span-2 space-y-6">
               {cart.map((item) => (
-                <div key={item.id || item._id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-6 items-center hover:shadow-md transition-shadow">
-                  <div className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0 border border-gray-200">
+                <div key={item.id || item._id} className="bg-card p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-6 items-center hover:shadow-md transition-shadow">
+                  <div className="w-24 h-24 bg-muted rounded-xl overflow-hidden flex-shrink-0 border border-border">
                     {item.url ? (
                       <img src={item.url} alt={item.itemName} className="w-full h-full object-cover" />
                     ) : (
@@ -133,21 +133,21 @@ const Cart = () => {
                   </div>
 
                   <div className="flex-1 text-center sm:text-left">
-                    <h3 className="font-bold text-lg text-gray-900">{item.itemName}</h3>
-                    <p className="text-sm text-gray-500 mb-2">{item.category}</p>
-                    <p className="font-semibold text-gray-900">₹{item.price}</p>
+                    <h3 className="font-bold text-lg text-foreground">{item.itemName}</h3>
+                    <p className="text-sm text-muted-foreground mb-2">{item.category}</p>
+                    <p className="font-semibold text-foreground">₹{item.price}</p>
                   </div>
 
                   <div className="flex flex-col items-center sm:items-end gap-3">
-                    <div className="flex items-center gap-3 bg-gray-100 rounded-full px-2 py-1">
+                    <div className="flex items-center gap-3 bg-muted rounded-full px-2 py-1">
                       <button
                         onClick={() => updateCart(item, item.qty - 1)}
-                        className="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-black hover:bg-gray-200 transition-colors"
+                        className="w-8 h-8 flex items-center justify-center bg-card rounded-full shadow-sm text-foreground hover:bg-gray-200 transition-colors"
                       >-</button>
                       <span className="font-bold w-4 text-center text-sm">{item.qty}</span>
                       <button
                         onClick={() => updateCart(item, item.qty + 1)}
-                        className="w-8 h-8 flex items-center justify-center bg-black rounded-full shadow-sm text-white hover:bg-gray-800 transition-colors"
+                        className="w-8 h-8 flex items-center justify-center bg-black rounded-full shadow-sm text-primary-foreground hover:bg-secondary transition-colors"
                       >+</button>
                     </div>
                     <button
@@ -163,19 +163,19 @@ const Cart = () => {
 
             {/* RIGHT: SUMMARY */}
             <div className="lg:col-span-1">
-              <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 sticky top-32">
-                <h2 className="text-xl font-bold mb-6 text-gray-900">Order Summary</h2>
+              <div className="bg-card p-8 rounded-2xl shadow-lg border border-gray-100 sticky top-32">
+                <h2 className="text-xl font-bold mb-6 text-foreground">Order Summary</h2>
 
                 <div className="space-y-4 mb-6 text-sm">
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
                     <span>₹{total}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-muted-foreground">
                     <span>Shipping</span>
                     <span className="text-emerald-600 font-medium">Free</span>
                   </div>
-                  <div className="border-t border-gray-100 pt-4 flex justify-between font-bold text-xl text-gray-900">
+                  <div className="border-t border-gray-100 pt-4 flex justify-between font-bold text-xl text-foreground">
                     <span>Total</span>
                     <span>₹{total}</span>
                   </div>
@@ -184,7 +184,7 @@ const Cart = () => {
                 <button
                   onClick={handleCheckout}
                   disabled={isProcessing}
-                  className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-gray-900 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-wait"
+                  className="w-full bg-black text-primary-foreground py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-foreground hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-wait"
                 >
                   {isProcessing ? (
                     <>
@@ -198,11 +198,11 @@ const Cart = () => {
                 </button>
 
                 <div className="mt-6 space-y-3 border-t border-gray-100 pt-6">
-                  <div className="flex items-center gap-3 text-xs text-gray-500 font-medium">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground font-medium">
                     <ShieldCheck className="w-4 h-4 text-gray-400" />
                     Secure Razorpay Payment
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-gray-500 font-medium">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground font-medium">
                     <Smartphone className="w-4 h-4 text-gray-400" />
                     Supports UPI, Cards & NetBanking
                   </div>

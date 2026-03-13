@@ -9,7 +9,7 @@ const AdminPanel = () => {
       <Navbar />
 
       {/* Admin Content */}
-      <main className="pt-28 px-6 min-h-screen bg-gray-100">
+      <main className="pt-28 px-6 min-h-screen bg-muted">
         <Outlet />
       </main>
     </>

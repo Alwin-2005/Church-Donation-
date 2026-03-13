@@ -109,25 +109,25 @@ const DonatePage = () => {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center">
-        <Loader2 className="w-12 h-12 animate-spin mx-auto text-black mb-4" />
-        <p className="text-gray-500 font-medium">Loading campaign details...</p>
+        <Loader2 className="w-12 h-12 animate-spin mx-auto text-foreground mb-4" />
+        <p className="text-muted-foreground font-medium">Loading campaign details...</p>
       </div>
     </div>
   );
 
   if (error) return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-      <div className="bg-white p-8 rounded-3xl shadow-xl text-center max-w-md border border-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-background p-6">
+      <div className="bg-card p-8 rounded-3xl shadow-xl text-center max-w-md border border-gray-100">
         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
           <span className="text-red-500 text-2xl">⚠️</span>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Campaign Not Found</h2>
-        <p className="text-gray-500 mb-6">{error}</p>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Campaign Not Found</h2>
+        <p className="text-muted-foreground mb-6">{error}</p>
         <button
           onClick={() => navigate(-1)}
-          className="w-full bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-all"
+          className="w-full bg-black text-primary-foreground py-3 rounded-xl font-bold hover:bg-secondary transition-all"
         >
           Go Back
         </button>
@@ -140,7 +140,7 @@ const DonatePage = () => {
   const progress = Math.min((campaign.collectedAmount / campaign.goalAmount) * 100, 100);
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-20">
+    <div className="bg-background min-h-screen pb-20">
       <Navbar />
 
       <div className="pt-28 max-w-4xl mx-auto px-6">
@@ -148,16 +148,16 @@ const DonatePage = () => {
 
           {/* LEFT: DETAILS */}
           <div className="md:col-span-3 space-y-6">
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-card rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="h-2 bg-black w-full" />
               <div className="p-8">
-                <span className="bg-gray-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-gray-500 mb-4 inline-block">
+                <span className="bg-muted px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4 inline-block">
                   {campaign.donationType} Campaign
                 </span>
-                <h1 className="text-3xl font-extrabold text-gray-900 mb-4 leading-tight">
+                <h1 className="text-3xl font-extrabold text-foreground mb-4 leading-tight">
                   {campaign.title}
                 </h1>
-                <p className="text-gray-600 text-lg leading-relaxed">
+                <p className="text-muted-foreground text-lg leading-relaxed">
                   {campaign.description}
                 </p>
 
@@ -165,7 +165,7 @@ const DonatePage = () => {
                   <div className="flex justify-between items-end mb-3">
                     <div>
                       <p className="text-gray-400 uppercase text-[10px] font-bold tracking-[0.2em] mb-1">Total Raised</p>
-                      <p className="text-3xl font-black text-black">₹{campaign.collectedAmount.toLocaleString()}</p>
+                      <p className="text-3xl font-black text-foreground">₹{campaign.collectedAmount.toLocaleString()}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-gray-400 uppercase text-[10px] font-bold tracking-[0.2em] mb-1">Goal</p>
@@ -173,20 +173,20 @@ const DonatePage = () => {
                     </div>
                   </div>
 
-                  <div className="w-full bg-gray-100 rounded-full h-4 overflow-hidden relative">
+                  <div className="w-full bg-muted rounded-full h-4 overflow-hidden relative">
                     <div
                       className="bg-black h-full rounded-full transition-all duration-1000 ease-out"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
-                  <p className="text-right text-sm font-bold mt-2 text-black">{Math.round(progress)}% of goal reached</p>
+                  <p className="text-right text-sm font-bold mt-2 text-foreground">{Math.round(progress)}% of goal reached</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-black rounded-3xl p-8 text-white shadow-xl flex items-center gap-6">
-              <div className="p-4 bg-white/10 rounded-2xl">
-                <ShieldCheck className="w-8 h-8 text-white" />
+            <div className="bg-black rounded-3xl p-8 text-primary-foreground shadow-xl flex items-center gap-6">
+              <div className="p-4 bg-card/10 rounded-2xl">
+                <ShieldCheck className="w-8 h-8 text-primary-foreground" />
               </div>
               <div>
                 <h3 className="text-lg font-bold">Secure Contribution</h3>
@@ -197,8 +197,8 @@ const DonatePage = () => {
 
           {/* RIGHT: DONATION FORM */}
           <div className="md:col-span-2">
-            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 sticky top-28">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <div className="bg-card rounded-3xl shadow-xl border border-gray-100 p-8 sticky top-28">
+              <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                 <Heart className="w-5 h-5 text-red-500 fill-red-500" /> Support this Cause
               </h2>
 
@@ -210,7 +210,7 @@ const DonatePage = () => {
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="Enter amount"
-                    className="w-full bg-gray-50 border-2 border-transparent focus:border-black focus:bg-white rounded-2xl px-10 py-4 outline-none transition-all text-2xl font-black"
+                    className="w-full bg-background border-2 border-transparent focus:border-black focus:bg-card rounded-2xl px-10 py-4 outline-none transition-all text-2xl font-black"
                   />
                 </div>
 
@@ -220,8 +220,8 @@ const DonatePage = () => {
                       key={val}
                       onClick={() => setAmount(val)}
                       className={`py-3 rounded-xl font-bold border-2 transition-all ${Number(amount) === val
-                          ? "bg-black border-black text-white shadow-lg"
-                          : "bg-white border-gray-100 text-gray-600 hover:border-gray-300"
+                          ? "bg-black border-black text-primary-foreground shadow-lg"
+                          : "bg-card border-gray-100 text-muted-foreground hover:border-border"
                         }`}
                     >
                       ₹{val}
@@ -232,7 +232,7 @@ const DonatePage = () => {
                 <button
                   onClick={handleDonate}
                   disabled={campaign.status !== "active" || isProcessing}
-                  className="w-full bg-black text-white py-5 rounded-2xl text-lg font-bold hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-3"
+                  className="w-full bg-black text-primary-foreground py-5 rounded-2xl text-lg font-bold hover:bg-secondary transition-all shadow-xl hover:shadow-2xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-3"
                 >
                   {isProcessing ? (
                     <>

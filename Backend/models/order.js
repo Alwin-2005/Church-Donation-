@@ -15,18 +15,18 @@ const orderSchema = mongoose.Schema({
                     required: true,
                     ref: "Merchandise",
                },
-     
+
                quantity: {
                     type: Number,
                     required: true,
                },
-     
+
                price: {
                     type: Number,
                     required: true,
                }
           }
-         ],
+     ],
 
      orderDate: {
           type: Date,
@@ -40,15 +40,16 @@ const orderSchema = mongoose.Schema({
 
      status: {
           type: String,
-          enum: ['pending','confirmed','shipped','completed','cancelled'],
+          enum: ['pending', 'confirmed', 'shipped', 'completed', 'cancelled'],
+          default: 'confirmed',
           required: true,
      },
 
 },
-{
-    timestamps:true,
-});
+     {
+          timestamps: true,
+     });
 
-const order = mongoose.model("Order",orderSchema);
+const order = mongoose.model("Order", orderSchema);
 
 module.exports = order;

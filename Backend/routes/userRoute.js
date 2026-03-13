@@ -1,8 +1,8 @@
 const express = require("express");
 const { handleGetMerchItemsForUsers } = require("../controllers/userMerch");
-const { handleGetOrderById, handlePlaceOrder, handleUpdateOrder } = require("../controllers/userOrder");
+const { handleGetOrderById, handlePlaceOrder, handleUpdateOrder, handleDownloadOrderReceipt } = require("../controllers/userOrder");
 const { handleGetPaymentById } = require("../controllers/userPayment");
-const { handleUserMakeDonation, handleGetUserDonations } = require("../controllers/userDonation");
+const { handleUserMakeDonation, handleGetUserDonations, handleDownloadDonationReceipt } = require("../controllers/userDonation");
 const { handleAddToCart, handleGetCartInfo, handleUpdateCart } = require("../controllers/userCart");
 const { handleGetAllContent } = require("../controllers/userContent");
 const { handleGetUserInfo, handleUpdateProfile, handleChangePassword } = require("../controllers/userProfile");
@@ -26,6 +26,8 @@ Router.get("/content/view", restrictToLoggedinUserOnly, handleMemberRole, handle
 Router.get("/exdonationcampaigns/view", handleGetExternalDonation);
 Router.get("/indonationcampaigns/view", handleGetInternaDonation);
 Router.get("/exdonationcampaigns/view/:campaignId", handleGetDonationCampaignById);
+Router.get("/receipts/donation/:id", restrictToLoggedinUserOnly, handleDownloadDonationReceipt);
+Router.get("/receipts/order/:id", restrictToLoggedinUserOnly, handleDownloadOrderReceipt);
 
 Router.post("/donations/make/:campaignId", restrictToLoggedinUserOnly, handleUserMakeDonation);
 Router.post("/cart/add", restrictToLoggedinUserOnly, handleAddToCart);

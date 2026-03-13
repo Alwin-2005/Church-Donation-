@@ -2,10 +2,10 @@ import React from "react";
 
 const UserCard = ({ user, isAdmin, onEdit }) => {
   return (
-    <div className="w-full max-w-sm bg-white rounded-xl border shadow-sm p-4 hover:shadow-md transition">
+    <div className="w-full max-w-sm bg-card rounded-xl border shadow-sm p-4 hover:shadow-md transition">
       
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-semibold text-gray-800">
+        <h3 className="text-base font-semibold text-foreground">
           {user.fullname}
         </h3>
 
@@ -21,18 +21,18 @@ const UserCard = ({ user, isAdmin, onEdit }) => {
         </span>
       </div>
 
-      <p className="text-sm text-gray-600 mt-1 truncate">{user.email}</p>
-      <p className="text-sm text-gray-500 mt-1">📞 {user.phoneNo}</p>
+      <p className="text-sm text-muted-foreground mt-1 truncate">{user.email}</p>
+      <p className="text-sm text-muted-foreground mt-1">📞 {user.phoneNo}</p>
 
       <div className="mt-3 flex justify-between items-center">
-        <span className="bg-gray-100 text-xs px-2 py-1 rounded-md">
+        <span className="bg-muted text-xs px-2 py-1 rounded-md">
           Role: {user.role}
         </span>
 
         {isAdmin && (
           <button
             onClick={onEdit}
-            className="text-sm text-blue-600 hover:underline"
+            className="text-sm text-primary hover:underline"
           >
             Edit
           </button>
