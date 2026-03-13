@@ -41,12 +41,6 @@ const AdminUserCard = ({ user, onToggleStatus, onView }) => {
 
       {/* Actions */}
       <div className="flex justify-between items-center mt-5">
-        <button
-          onClick={() => onView(user)}
-          className="text-sm text-primary hover:underline"
-        >
-          View Details
-        </button>
 
         <button
           onClick={() => onToggleStatus(user._id)}

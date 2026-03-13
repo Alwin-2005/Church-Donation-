@@ -41,7 +41,7 @@ const ShopCard = (props) => {
         )}
 
         {/* ABSOLUTE PRICE BADGE */}
-        <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold shadow-sm">
+        <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold shadow-sm text-black">
           ₹{props.price}
         </div>
       </div>
@@ -82,7 +82,7 @@ const ShopCard = (props) => {
               >
                 <Minus className="w-4 h-4" />
               </button>
-              <span className="font-bold text-sm min-w-[20px] text-center">{qty}</span>
+              <span className="font-bold text-sm min-w-[20px] text-center text-black">{qty}</span>
               <button
                 onClick={() => handleQtyChange(qty + 1)}
                 disabled={qty >= props.stockQuantity}

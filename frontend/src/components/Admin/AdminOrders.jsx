@@ -3,8 +3,6 @@ import api from "../../api/axios";
 
 const STATUS_OPTIONS = [
   "all",
-  "pending",
-  "confirmed",
   "shipped",
   "completed",
   "cancelled",
