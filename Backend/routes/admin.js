@@ -5,7 +5,7 @@ const { handleGetAllUsersInfo, handleAddNewUsers, handleAddBulkUsers } = require
 const { handleGetAllOrdersInfo, handleUpdateOrderStatus } = require("../controllers/admin/manageOrder");
 const { handleAddNewDonationCampaign, handleGetAllDonationCampaignInfo, handleUpdateDonationCampaign, handleDeleteDonationCampaign } = require("../controllers/admin/manageDonationCampaign");
 const { handleAddNewMerchItem, handleGetAllMerchItems, handleUpdateMerch, handleDeleteMerch } = require("../controllers/admin/manageMerch");
-const { handleGetDonationInfo } = require("../controllers/admin/viewDonation");
+const { handleGetDonationInfo, handleDownloadDonationReceipt } = require("../controllers/admin/viewDonation");
 const { handleAddNewContent, handleViewAllContent, handleUpdateContent, handleDeleteContent } = require("../controllers/admin/manageContent");
 const { handleGetAllPaymentInfo } = require("../controllers/admin/viewPayment");
 
@@ -32,6 +32,7 @@ Router.delete("/donationcampaigns/delete/:id", handleDeleteDonationCampaign);
 
 //routes to view donation 
 Router.get("/donations/view", handleGetDonationInfo);
+Router.get("/donations/:id/receipt", handleDownloadDonationReceipt);
 
 
 //routes to add, view and update content

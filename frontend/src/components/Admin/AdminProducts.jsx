@@ -238,7 +238,7 @@ const AdminProducts = () => {
                   </td>
                   <td className="p-4">
                     <p className="font-semibold text-foreground">{p.itemName}</p>
-                    <p className="text-xs text-muted-foreground truncate max-w-[150px]">{p._id}</p>
+                    <p className="text-xs text-muted-foreground truncate max-w[150px]">{p._id}</p>
                   </td>
                   <td className="p-4 text-muted-foreground">
                     <span className="bg-muted px-2 py-1 rounded text-xs font-medium">{p.category}</span>
@@ -263,7 +263,7 @@ const AdminProducts = () => {
                     </span>
                   </td>
                   <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center justify-end gap-2 transition-opacity">
                       <button
                         onClick={() => handleEditClick(p)}
                         className="text-muted-foreground hover:text-foreground p-2 hover:bg-muted rounded-lg transition-colors"
@@ -439,7 +439,7 @@ const AdminProducts = () => {
                   value={formData.description}
                   onChange={handleChange}
                   placeholder="Product details..."
-                  className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm min-h-[80px]"
+                  className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm min-h[80px]"
                 />
               </div>
 

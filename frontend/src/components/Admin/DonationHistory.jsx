@@ -5,6 +5,7 @@ const DonationHistory = () => {
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [downloadingId, setDownloadingId] = useState(null);
 
   useEffect(() => {
     fetchDonations();
@@ -19,6 +20,31 @@ const DonationHistory = () => {
       setError("Failed to fetch donation history");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadReceipt = async (donation) => {
+    setDownloadingId(donation._id);
+    try {
+      const res = await api.get(`admin/donations/${donation._id}/receipt`, {
+        responseType: "blob",
+        withCredentials: true,
+      });
+
+      // Create a temporary object URL and trigger download
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `receipt-${donation.receiptNo}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Receipt download failed:", err);
+      alert("Failed to download receipt. Please try again.");
+    } finally {
+      setDownloadingId(null);
     }
   };
 
@@ -94,13 +120,26 @@ const DonationHistory = () => {
 
                 <td className="p-3 space-x-2">
                   {d.paymentStatus === "paid" && (
-                    <button className="text-primary underline">
-                      Receipt
+                    <button
+                      onClick={() => handleDownloadReceipt(d)}
+                      disabled={downloadingId === d._id}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-black text-white text-xs font-medium hover:bg-gray-800 active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {downloadingId === d._id ? (
+                        <>
+                          <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                          </svg>
+                          Downloading…
+                        </>
+                      ) : (
+                        <>
+                          ↓ Receipt
+                        </>
+                      )}
                     </button>
                   )}
-                  <button className="text-muted-foreground underline">
-                    View
-                  </button>
                 </td>
               </tr>
             ))}
@@ -112,3 +151,4 @@ const DonationHistory = () => {
 };
 
 export default DonationHistory;
+
