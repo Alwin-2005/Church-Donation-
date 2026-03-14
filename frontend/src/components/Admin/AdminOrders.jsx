@@ -3,6 +3,7 @@ import api from "../../api/axios";
 
 const STATUS_OPTIONS = [
   "all",
+  "confirmed",
   "shipped",
   "completed",
   "cancelled",
@@ -13,6 +14,18 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.status-dropdown-container')) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     fetchOrders();
@@ -38,6 +51,7 @@ const AdminOrders = () => {
           ? { ...order, status: newStatus }
           : order
       ));
+      setActiveDropdown(null); // Close dropdown after selection
     } catch (err) {
       console.error(err);
       alert("Failed to update status");
@@ -147,19 +161,35 @@ const AdminOrders = () => {
                   </td>
 
                   <td className="p-3">
-                    <select
-                      value={o.status}
-                      onChange={e =>
-                        handleStatusChange(o._id, e.target.value)
-                      }
-                      className="border rounded px-2 py-1 text-sm"
-                    >
-                      {STATUS_OPTIONS.filter(s => s !== "all").map(s => (
-                        <option key={s} value={s} disabled={s === "confirmed"}>
-                          {s}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="relative status-dropdown-container">
+                      <button
+                        onClick={() => setActiveDropdown(activeDropdown === o._id ? null : o._id)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-300 bg-white text-xs font-medium hover:bg-gray-50 active:scale-95 transition-all w-32 justify-between"
+                      >
+                        Update Status
+                        <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+
+                      {activeDropdown === o._id && (
+                        <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg border border-gray-100 z-50 overflow-hidden">
+                          {STATUS_OPTIONS.filter(s => s !== "all").map((s) => (
+                            <button
+                              key={s}
+                              onClick={() => handleStatusChange(o._id, s)}
+                              disabled={s === "confirmed" || s === o.status}
+                              className={`w-full text-left px-4 py-2 text-xs capitalize hover:bg-gray-50 transition-colors
+                                ${s === o.status ? 'bg-gray-50 text-black font-semibold' : 'text-gray-600'}
+                                ${s === 'confirmed' ? 'opacity-50 cursor-not-allowed' : ''}
+                              `}
+                            >
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))

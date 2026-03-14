@@ -8,6 +8,7 @@ const AdminPayments = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [downloadingId, setDownloadingId] = useState(null);
 
   useEffect(() => {
     fetchPayments();
@@ -22,6 +23,29 @@ const AdminPayments = () => {
       setError("Failed to fetch payments");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadReceipt = async (payment) => {
+    setDownloadingId(payment._id);
+    try {
+      const res = await api.get(`admin/payments/${payment._id}/receipt`, {
+        responseType: "blob",
+        withCredentials: true,
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `payment_receipt_${payment.transactionNo}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Receipt download failed:", err);
+      alert("Failed to download receipt. Please try again.");
+    } finally {
+      setDownloadingId(null);
     }
   };
 
@@ -130,19 +154,29 @@ const AdminPayments = () => {
 
                   <td className="p-3">
                     {p.status === "paid" && (
-                      <button className="text-primary underline text-xs">
-                        Refund
+                      <button
+                        onClick={() => handleDownloadReceipt(p)}
+                        disabled={downloadingId === p._id}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-black text-white text-xs font-medium hover:bg-gray-800 active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {downloadingId === p._id ? (
+                          <>
+                            <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24" fill="none">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                            </svg>
+                            Downloading…
+                          </>
+                        ) : (
+                          <>↓ Receipt</>
+                        )}
                       </button>
                     )}
                     {p.status === "failed" && (
-                      <span className="text-gray-400 text-xs">
-                        No Action
-                      </span>
+                      <span className="text-gray-400 text-xs">No Action</span>
                     )}
                     {p.status === "pending" && (
-                      <span className="text-yellow-600 text-xs">
-                        Awaiting
-                      </span>
+                      <span className="text-yellow-600 text-xs">Awaiting</span>
                     )}
                   </td>
                 </tr>

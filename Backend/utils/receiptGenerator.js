@@ -151,7 +151,54 @@ async function buildOrderReceipt(order, res) {
     });
 }
 
+async function buildPaymentReceipt(payment, res) {
+    return new Promise((resolve, reject) => {
+        try {
+            const doc = new PDFDocument({ margin: 50 });
+
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=payment_receipt_${payment.transactionNo}.pdf`);
+
+            doc.pipe(res);
+
+            generateHeader(doc, 'Payment Receipt');
+
+            doc.fontSize(12).fillColor('#000');
+
+            const topY = 220;
+            doc.font('Helvetica-Bold').text('Transaction No:', 50, topY);
+            doc.font('Helvetica').text(payment.transactionNo, 180, topY);
+
+            doc.font('Helvetica-Bold').text('Date:', 350, topY);
+            doc.font('Helvetica').text(new Date(payment.paymentDate).toLocaleDateString(), 400, topY);
+
+            doc.font('Helvetica-Bold').text('Customer Name:', 50, topY + 25);
+            doc.font('Helvetica').text(payment.orderId?.userId?.fullname || 'N/A', 180, topY + 25);
+
+            doc.font('Helvetica-Bold').text('Customer Email:', 50, topY + 50);
+            doc.font('Helvetica').text(payment.orderId?.userId?.email || 'N/A', 180, topY + 50);
+
+            doc.font('Helvetica-Bold').text('Payment Method:', 50, topY + 75);
+            doc.font('Helvetica').text(payment.method ? payment.method.toUpperCase() : 'N/A', 180, topY + 75);
+
+            doc.font('Helvetica-Bold').text('Amount:', 50, topY + 100);
+            doc.font('Helvetica').text(`Rs. ${Number(payment.amount).toFixed(2)}`, 180, topY + 100);
+
+            doc.font('Helvetica-Bold').text('Payment Status:', 50, topY + 125);
+            doc.font('Helvetica').text(payment.status.toUpperCase(), 180, topY + 125);
+
+            generateFooter(doc);
+            doc.end();
+
+            doc.on('end', () => resolve());
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
+
 module.exports = {
     buildDonationReceipt,
-    buildOrderReceipt
+    buildOrderReceipt,
+    buildPaymentReceipt,
 };
