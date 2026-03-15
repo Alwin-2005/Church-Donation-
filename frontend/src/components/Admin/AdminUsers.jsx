@@ -157,7 +157,7 @@ const AdminUsers = () => {
       <div className="pt-24 px-6 max-w-7xl mx-auto pb-12">
 
         {/* Header */}
-        <div className="mb-6 flex justify-between items-start">
+        <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">
               User Management
@@ -405,7 +405,7 @@ const AdminUsers = () => {
 
               {csvData.length > 0 && (
                 <div className="border rounded-lg overflow-hidden">
-                  <div className="max-h-64 overflow-y-auto">
+                  <div className="max-h-64 overflow-y-auto overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead className="bg-muted sticky top-0">
                         <tr>
