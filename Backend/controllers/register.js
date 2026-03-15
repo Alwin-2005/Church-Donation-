@@ -6,7 +6,7 @@ const role = "externalMember";
 const status = "enabled";
 
 async function handleMemberRegistration(req,res){
-    const {fullName, email, phoneNo, gender, dob, password} = req.body;
+    const {fullName, email, phoneNo, gender, dob, password, address} = req.body;
     //console.log("variables",fullName, email, phoneNo, gender, dob, password);
     if (!validator.isEmail(email)) {
         return res.status(409).json({ message: "Invalid email format" });
@@ -31,6 +31,7 @@ async function handleMemberRegistration(req,res){
             phoneNo,
             gender,
             dob,
+            address,
             role,
             passwordHash: hashed,
             status,

@@ -74,6 +74,23 @@ const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Filters state
+  const [filterCategory, setFilterCategory] = useState("All");
+  const [filterStock, setFilterStock] = useState("All");
+  const [filterStatus, setFilterStatus] = useState("All");
+
+  const filteredProducts = products.filter(p => {
+    let matchCat = filterCategory === "All" || p.category === filterCategory;
+    
+    let matchStock = true;
+    if (filterStock === "In Stock") matchStock = p.stockQuantity > 0;
+    else if (filterStock === "Out of Stock") matchStock = p.stockQuantity === 0;
+
+    let matchStatus = filterStatus === "All" || (p.status || "").toLowerCase() === filterStatus.toLowerCase();
+
+    return matchCat && matchStock && matchStatus;
+  });
+
   // Fetch products on mount
   useEffect(() => {
     fetchProducts();
@@ -220,6 +237,43 @@ const AdminProducts = () => {
         </button>
       </div>
 
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row justify-end gap-4 mb-6">
+        <select 
+          className="border border-border p-2 rounded-lg text-sm bg-card focus:ring-2 focus:ring-black outline-none"
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+        >
+          <option value="All">All Categories</option>
+          <option value="Books & Bibles">Books & Bibles</option>
+          <option value="Apparel">Apparel</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Home Decor">Home Decor</option>
+          <option value="Stationery">Stationery</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <select 
+          className="border border-border p-2 rounded-lg text-sm bg-card focus:ring-2 focus:ring-black outline-none"
+          value={filterStock}
+          onChange={(e) => setFilterStock(e.target.value)}
+        >
+          <option value="All">All Stock Levels</option>
+          <option value="In Stock">In Stock</option>
+          <option value="Out of Stock">Out of Stock</option>
+        </select>
+
+        <select 
+          className="border border-border p-2 rounded-lg text-sm bg-card focus:ring-2 focus:ring-black outline-none"
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+        >
+          <option value="All">All Statuses</option>
+          <option value="visible">Visible</option>
+          <option value="hidden">Hidden</option>
+        </select>
+      </div>
+
       {/* Table */}
       <div className="bg-card shadow-sm border border-gray-100 rounded-xl overflow-hidden animate-scaleIn">
         <div className="overflow-x-auto">
@@ -236,7 +290,7 @@ const AdminProducts = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {products.map(p => (
+              {filteredProducts.map(p => (
                 <tr key={p._id} className="hover:bg-background/50 transition-colors group">
                   <td className="p-4">
                     <div className="w-12 h-12 rounded-lg bg-muted overflow-hidden border border-border">

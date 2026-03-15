@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
-import { Users, ShoppingCart, TrendingUp, Package, Heart, Calendar } from "lucide-react";
+import { Users, ShoppingCart, TrendingUp, Package, Heart, Calendar, Download } from "lucide-react";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -92,6 +92,26 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDownloadReport = async () => {
+    try {
+      // Use the 'api' instance to strictly pass authentication cookies/headers
+      const response = await api.get('/admin/report/download', {
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      // Extract filename from Content-Disposition if needed, or fallback
+      link.setAttribute('download', `Admin_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading report:", error);
+      alert("Failed to download report. Ensure you have admin access.");
+    }
+  };
+
   if (loading) {
     return (
       <main className="flex-1 p-8 overflow-y-auto">
@@ -105,7 +125,16 @@ const AdminDashboard = () => {
   return (
     <main className="flex-1 p-8 overflow-y-auto bg-background">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-foreground">Dashboard Overview</h1>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <h1 className="text-3xl font-bold text-foreground">Dashboard Overview</h1>
+          <button
+            onClick={handleDownloadReport}
+            className="flex items-center gap-2 bg-black text-primary-foreground px-5 py-2.5 rounded-xl font-bold hover:bg-secondary transition active:scale-95 shadow-md"
+          >
+            <Download className="w-5 h-5" />
+            Generate PDF Report
+          </button>
+        </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">

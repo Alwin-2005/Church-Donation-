@@ -8,6 +8,7 @@ const { handleAddNewMerchItem, handleGetAllMerchItems, handleUpdateMerch, handle
 const { handleGetDonationInfo, handleDownloadDonationReceipt } = require("../controllers/admin/viewDonation");
 const { handleAddNewContent, handleViewAllContent, handleUpdateContent, handleDeleteContent } = require("../controllers/admin/manageContent");
 const { handleGetAllPaymentInfo, handleDownloadPaymentReceipt } = require("../controllers/admin/viewPayment");
+const { handleGenerateAdminReport } = require("../controllers/admin/generateReport");
 
 const app = express();
 const Router = express.Router();
@@ -52,5 +53,8 @@ Router.delete("/merch/delete/:id", handleDeleteMerch);
 //routes to view payment 
 Router.get("/payments/view", handleGetAllPaymentInfo);
 Router.get("/payments/:id/receipt", handleDownloadPaymentReceipt);
+
+//route to download admin report
+Router.get("/report/download", handleGenerateAdminReport);
 
 module.exports = Router;

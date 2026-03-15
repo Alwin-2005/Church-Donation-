@@ -15,8 +15,8 @@ function generateHeader(doc, title) {
         .fontSize(20)
         .text('Church Of God', 110, 57)
         .fontSize(10)
-        .text('123 Church Street', 110, 80)
-        .text('City, State, ZIP', 110, 95)
+        .text('742 Evergreen Terrace Street, Maplewood Heights', 110, 80)
+        .text('Springfield Illinois 62704, United States', 110, 95)
         .text('contact@churchofgod.org', 110, 110)
         .moveDown();
 

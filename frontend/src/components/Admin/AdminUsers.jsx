@@ -255,49 +255,49 @@ const AdminUsers = () => {
             </div>
 
             <form onSubmit={handleSubmitSingleUser} className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Full Name *</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Full Name *</label>
                   <input
                     name="fullname"
                     value={formData.fullname}
                     onChange={handleInputChange}
                     required
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-black outline-none"
+                    className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-foreground"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Email *</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Email *</label>
                   <input
                     name="email"
                     type="email"
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-black outline-none"
+                    className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-foreground"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Phone Number</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Phone Number</label>
                   <input
                     name="phoneNo"
                     value={formData.phoneNo}
                     onChange={handleInputChange}
                     placeholder="9876543210"
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-black outline-none"
+                    className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-foreground"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Gender *</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Gender *</label>
                   <select
                     name="gender"
                     value={formData.gender}
                     onChange={handleInputChange}
                     required
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-black outline-none"
+                    className="w-full bg-card border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-bold"
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -306,24 +306,24 @@ const AdminUsers = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Date of Birth</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Date of Birth</label>
                   <input
                     name="dob"
                     type="date"
                     value={formData.dob}
                     onChange={handleInputChange}
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-black outline-none"
+                    className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-foreground"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Role *</label>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Role *</label>
                   <select
                     name="role"
                     value={formData.role}
                     onChange={handleInputChange}
                     required
-                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-black outline-none"
+                    className="w-full bg-card border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-bold"
                   >
                     <option value="churchMember">Church Member</option>
                     <option value="externalMember">External Member</option>
@@ -333,27 +333,38 @@ const AdminUsers = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Address</label>
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 mt-2">Address</label>
                 <textarea
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
                   rows="2"
-                  className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-black outline-none"
+                  className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium min-h-[80px] text-foreground"
                 />
               </div>
 
-              <div className="bg-blue-50 p-3 rounded-lg text-sm text-primary border border-blue-200">
-                <p className="font-semibold">Password Auto-Generation</p>
-                <p>A secure password will be automatically generated and emailed to the user upon creation.</p>
-              </div>
+              <div className="flex flex-col sm:flex-row gap-6 items-center pt-4 border-t border-gray-100 mt-4">
+                <div className="flex-1 bg-blue-50/50 p-3 rounded-2xl text-sm text-primary border border-blue-100">
+                  <p className="font-bold">Password Auto-Generation</p>
+                  <p className="text-muted-foreground mt-1">A secure password will be automatically generated and emailed to the user upon creation.</p>
+                </div>
 
-              <button
-                type="submit"
-                className="w-full bg-black text-primary-foreground py-3 rounded-lg font-bold hover:bg-secondary transition"
-              >
-                Create User
-              </button>
+                <div className="flex gap-3 w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => setShowSingleUserModal(false)}
+                    className="flex-1 sm:flex-none px-6 py-4 border border-border text-muted-foreground rounded-2xl hover:bg-background font-bold text-sm transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-8 py-4 bg-black text-primary-foreground rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:shadow-black/20 hover:bg-secondary transition-all active:scale-95 whitespace-nowrap"
+                  >
+                    Create User
+                  </button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -376,22 +387,26 @@ const AdminUsers = () => {
             </div>
 
             <div className="p-6 space-y-4">
-              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-                <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+              <div 
+                className="group relative border-2 border-dashed border-border rounded-lg p-8 text-center transition-all hover:bg-background hover:border-black focus-within:ring-2 focus-within:ring-black focus-within:border-black hover:scale-[1.01] cursor-pointer"
+                onClick={() => document.getElementById("csv-upload").click()}
+              >
+                <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400 group-hover:text-black transition-colors" />
                 <input
                   type="file"
                   accept=".csv"
                   onChange={handleFileChange}
-                  className="hidden"
+                  className="sr-only"
                   id="csv-upload"
                 />
                 <label
                   htmlFor="csv-upload"
-                  className="cursor-pointer text-foreground font-medium hover:underline"
+                  className="cursor-pointer text-foreground font-semibold group-hover:underline"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  Click to upload CSV
+                  Click here to upload your CSV file
                 </label>
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="text-sm text-muted-foreground mt-2 pointer-events-none">
                   Required columns: fullname, email, phoneNo, gender, dob, address, role, password
                 </p>
               </div>
