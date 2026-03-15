@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
+import { toast } from "react-hot-toast";
 
 const DonationHistory = () => {
   const [donations, setDonations] = useState([]);
@@ -44,7 +45,7 @@ const DonationHistory = () => {
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error("Receipt download failed:", err);
-      alert("Failed to download receipt. Please try again.");
+      toast.error("Failed to download receipt. Please try again.");
     } finally {
       setDownloadingId(null);
     }

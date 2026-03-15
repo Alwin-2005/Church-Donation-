@@ -4,6 +4,7 @@ import api from "../../api/axios";
 import Papa from "papaparse";
 import bcrypt from "bcryptjs";
 import { Upload, X, UserPlus, Users } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -64,7 +65,7 @@ const AdminUsers = () => {
     e.preventDefault();
     try {
       await api.post("/admin/users/add", formData);
-      alert("User created successfully!");
+      toast.success("User created successfully!");
       setShowSingleUserModal(false);
       setFormData({
         fullname: "",
@@ -78,7 +79,7 @@ const AdminUsers = () => {
       });
       fetchUsers();
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to create user");
+      toast.error(error.response?.data?.message || "Failed to create user");
     }
   };
 
@@ -99,34 +100,47 @@ const AdminUsers = () => {
         setCsvData(results.data);
       },
       error: (error) => {
-        alert("Error parsing CSV: " + error.message);
+        toast.error("Error parsing CSV: " + error.message);
       }
     });
   };
 
   const handleBulkUpload = async () => {
     if (csvData.length === 0) {
-      alert("No data to upload");
+      toast.error("No data to upload");
       return;
     }
 
     try {
       const res = await api.post("/admin/users/bulk", { users: csvData });
       setUploadResult(res.data);
+      toast.success(res.data.message || "Bulk upload completed");
       fetchUsers();
     } catch (error) {
-      alert("Bulk upload failed: " + (error.response?.data?.message || error.message));
+      toast.error("Bulk upload failed: " + (error.response?.data?.message || error.message));
     }
   };
 
-  const handleToggleStatus = (id) => {
-    setUsers(prev =>
-      prev.map(user =>
-        user._id === id
-          ? { ...user, status: user.status === "enabled" ? "disabled" : "enabled" }
-          : user
-      )
-    );
+  const handleToggleStatus = async (id) => {
+    const user = users.find(u => u._id === id);
+    if (!user) return;
+
+    const newStatus = user.status === "enabled" ? "disabled" : "enabled";
+
+    try {
+      await api.patch(`/admin/users/status/${id}`, { status: newStatus });
+      
+      setUsers(prev =>
+        prev.map(u =>
+          u._id === id ? { ...u, status: newStatus } : u
+        )
+      );
+      
+      toast.success(`User ${newStatus === "enabled" ? "enabled" : "disabled"} successfully`);
+    } catch (error) {
+      console.error("Error updating user status:", error);
+      toast.error("Failed to update user status");
+    }
   };
 
   const handleViewUser = (user) => {

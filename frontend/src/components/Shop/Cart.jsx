@@ -4,6 +4,7 @@ import { useCart } from "./CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { Trash2, Smartphone, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import api from "../../api/axios";
 
 const Cart = () => {
@@ -31,7 +32,7 @@ const Cart = () => {
       const userData = profile[0]; // Controller returns an array
 
       if (!userData || !userData.address) {
-        alert("Please provide a delivery address in your profile before checking out.");
+        toast.error("Please provide a delivery address in your profile before checking out.");
         navigate("/profile");
         return;
       }
@@ -68,13 +69,12 @@ const Cart = () => {
             };
 
             await api.post("/payment/merch/verify", verificationData);
-
-            alert("Payment Successful! Your order has been placed.");
+            toast.success("Payment Successful! Your order has been placed.");
             clearCart();
             navigate("/shop");
           } catch (err) {
             console.error("Verification failed:", err);
-            alert("Payment verification failed. Please contact support.");
+            toast.error("Payment verification failed. Please contact support.");
           }
         },
         prefill: {
@@ -89,13 +89,13 @@ const Cart = () => {
 
       const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function (response) {
-        alert("Payment Failed: " + response.error.description);
+        toast.error("Payment Failed: " + response.error.description);
       });
       rzp.open();
 
     } catch (err) {
       console.error("Checkout error:", err);
-      alert(err.response?.data?.msg || "Failed to initiate checkout");
+      toast.error(err.response?.data?.msg || "Failed to initiate checkout");
     } finally {
       setIsProcessing(false);
     }

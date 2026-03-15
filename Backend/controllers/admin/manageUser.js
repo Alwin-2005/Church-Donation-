@@ -135,9 +135,29 @@ async function handleAddBulkUsers(req, res) {
     });
 }
 
+async function handleUpdateUserStatus(req, res) {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status || !["enabled", "disabled"].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+    }
+
+    try {
+        const user = await User.findByIdAndUpdate(id, { status }, { new: true });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        return res.status(200).json({ message: `User status updated to ${status}` });
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+}
+
 
 module.exports = {
     handleGetAllUsersInfo,
     handleAddNewUsers,
     handleAddBulkUsers,
+    handleUpdateUserStatus,
 };

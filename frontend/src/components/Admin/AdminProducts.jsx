@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Upload, AlertCircle } from "lucide-react";
 import api from "../../api/axios";
+import { toast } from "react-hot-toast";
 
 const AdminProducts = () => {
   const [showForm, setShowForm] = useState(false);
@@ -188,11 +189,11 @@ const AdminProducts = () => {
       if (editingProduct) {
         // UPDATE
         await api.patch(`/admin/merch/update/${editingProduct._id}`, productData);
-        alert("Product updated successfully!");
+        toast.success("Product updated successfully!");
       } else {
         // CREATE
         await api.post('/admin/merch/add', productData);
-        alert("Product added successfully!");
+        toast.success("Product added successfully!");
       }
 
       setShowForm(false);
@@ -213,11 +214,11 @@ const AdminProducts = () => {
 
     try {
       await api.delete(`/admin/merch/delete/${id}`);
-      alert('Product deleted successfully!');
+      toast.success('Product deleted successfully!');
       fetchProducts(); // Refresh list
     } catch (error) {
       console.error('Error deleting product:', error);
-      alert(error.response?.data?.msg || 'Failed to delete product');
+      toast.error(error.response?.data?.msg || 'Failed to delete product');
     }
   };
 

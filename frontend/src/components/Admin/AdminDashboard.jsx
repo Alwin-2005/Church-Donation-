@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import { Users, ShoppingCart, TrendingUp, Package, Heart, Calendar, Download } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -128,10 +129,11 @@ const AdminDashboard = () => {
       link.setAttribute('download', reportName);
       document.body.appendChild(link);
       link.click();
-      link.parentNode.removeChild(link);
+      link.remove();
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading report:", error);
-      alert("Failed to download report. Ensure you have admin access.");
+      toast.error("Failed to download report. Ensure you have admin access.");
     }
   };
 

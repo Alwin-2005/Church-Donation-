@@ -3,6 +3,7 @@ import Navbar from "./NavBar/NavBar";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { toast } from "react-hot-toast";
 import api from "../api/axios";
 
 const Profile = () => {
@@ -134,7 +135,7 @@ const Profile = () => {
       link.parentNode.removeChild(link);
     } catch (error) {
       console.error("Error downloading receipt:", error);
-      alert("Failed to download receipt.");
+      toast.error("Failed to download receipt.");
     }
   };
 

@@ -4,6 +4,7 @@ import api from "../../api/axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Loader2, Heart, ShieldCheck, CreditCard } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const DonatePage = () => {
   const { campaignId } = useParams();
@@ -47,7 +48,7 @@ const DonatePage = () => {
     }
 
     if (!amount || amount <= 0) {
-      alert("Please enter a valid donation amount");
+      toast.error("Please enter a valid donation amount");
       return;
     }
 
@@ -76,12 +77,11 @@ const DonatePage = () => {
               userId: user._id,
               campaignId: campaignId
             });
-
-            alert("Thank you for your generous donation! Progress has been updated.");
+            toast.success("Thank you for your generous donation! Progress has been updated.");
             navigate("/");
           } catch (err) {
             console.error("Verification failed:", err);
-            alert("Donation verification failed. Please contact support.");
+            toast.error("Donation verification failed. Please contact support.");
           }
         },
         prefill: {
@@ -96,13 +96,13 @@ const DonatePage = () => {
 
       const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function (response) {
-        alert("Donation Failed: " + response.error.description);
+        toast.error("Donation Failed: " + response.error.description);
       });
       rzp.open();
 
     } catch (err) {
       console.error("Donation error:", err);
-      alert(err.response?.data?.msg || "Failed to initiate donation");
+      toast.error(err.response?.data?.msg || "Failed to initiate donation");
     } finally {
       setIsProcessing(false);
     }

@@ -3,6 +3,7 @@ import EventForm from "../Events/EventForm";
 import EventCard from "../Events/EventCard";
 import api from "../../api/axios";
 import { Plus, Filter, Loader2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const AdminEvents = () => {
   const [events, setEvents] = useState([]);
@@ -37,9 +38,10 @@ const AdminEvents = () => {
       setShowForm(false);
       setEditingEvent(null);
       fetchEvents();
+      toast.success(editingEvent ? "Announcement updated" : "Announcement created");
     } catch (error) {
       console.error("Error saving event:", error);
-      alert("Failed to save event");
+      toast.error("Failed to save announcement");
     }
   };
 
@@ -48,9 +50,10 @@ const AdminEvents = () => {
     try {
       await api.delete(`/admin/content/delete/${id}`);
       fetchEvents();
+      toast.success("Announcement deleted");
     } catch (error) {
       console.error("Error deleting event:", error);
-      alert("Failed to delete event");
+      toast.error("Failed to delete announcement");
     }
   };
 

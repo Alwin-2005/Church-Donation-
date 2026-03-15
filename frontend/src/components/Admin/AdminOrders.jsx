@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
+import { toast } from "react-hot-toast";
 
 const STATUS_OPTIONS = [
   "all",
@@ -51,10 +52,11 @@ const AdminOrders = () => {
           ? { ...order, status: newStatus }
           : order
       ));
+      toast.success(`Order status updated to ${newStatus}`);
       setActiveDropdown(null); // Close dropdown after selection
     } catch (err) {
       console.error(err);
-      alert("Failed to update status");
+      toast.error("Failed to update status");
     }
   };
 

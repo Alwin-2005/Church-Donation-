@@ -16,6 +16,10 @@ async function handleUserLogin(req,res){
         return res.status(409).json({msg: "Incorrect email or password"});
     }
 
+    if (user.status === "disabled") {
+        return res.status(403).json({ msg: "Your account has been disabled. Please contact the administrator." });
+    }
+
     const token = setUser(user);
     return res.cookie("token", token, {
         httpOnly: false,

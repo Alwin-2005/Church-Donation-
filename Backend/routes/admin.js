@@ -1,7 +1,7 @@
 const express = require("express");
 
 //importing controller functions
-const { handleGetAllUsersInfo, handleAddNewUsers, handleAddBulkUsers } = require("../controllers/admin/manageUser");
+const { handleGetAllUsersInfo, handleAddNewUsers, handleAddBulkUsers, handleUpdateUserStatus } = require("../controllers/admin/manageUser");
 const { handleGetAllOrdersInfo, handleUpdateOrderStatus } = require("../controllers/admin/manageOrder");
 const { handleAddNewDonationCampaign, handleGetAllDonationCampaignInfo, handleUpdateDonationCampaign, handleDeleteDonationCampaign } = require("../controllers/admin/manageDonationCampaign");
 const { handleAddNewMerchItem, handleGetAllMerchItems, handleUpdateMerch, handleDeleteMerch } = require("../controllers/admin/manageMerch");
@@ -17,6 +17,7 @@ const Router = express.Router();
 Router.get("/users/view", handleGetAllUsersInfo);
 Router.post("/users/add", handleAddNewUsers);
 Router.post("/users/bulk", handleAddBulkUsers);
+Router.patch("/users/status/:id", handleUpdateUserStatus);
 
 
 //routes to view and update order

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DonationCampaignCard from "../Donation/DonationCampaignCard";
 import api from "../../api/axios";
+import { toast } from "react-hot-toast";
 
 const AdminDonation = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -102,7 +103,7 @@ const AdminDonation = () => {
     e.preventDefault();
 
     if (!formData.ctitle || (!formData.isTithe && !formData.goalAmt) || !formData.startDate || !formData.endate) {
-      alert("Please fill all required fields");
+      toast.error("Please fill all required fields");
       return;
     }
 
@@ -110,12 +111,12 @@ const AdminDonation = () => {
     
     // Only enforce that the start date must be today or future when CREATING a new campaign
     if (!editingCampaign && formData.startDate < today) {
-      alert("Start date cannot be before the current date");
+      toast.error("Start date cannot be before the current date");
       return;
     }
 
     if (formData.endate && formData.endate < formData.startDate) {
-      alert("End date cannot be before the start date");
+      toast.error("End date cannot be before the start date");
       return;
     }
 
@@ -157,11 +158,11 @@ const AdminDonation = () => {
 
       setShowForm(false);
       setEditingCampaign(null);
-      alert(editingCampaign ? "Campaign updated successfully!" : "Campaign created successfully!");
+      toast.success(editingCampaign ? "Campaign updated successfully!" : "Campaign created successfully!");
 
     } catch (err) {
       console.error(err);
-      alert("Error saving campaign. Please check inputs.");
+      toast.error("Error saving campaign. Please check inputs.");
     }
   };
 
@@ -169,10 +170,11 @@ const AdminDonation = () => {
     if (!window.confirm("Delete this campaign?")) return;
     try {
       await api.delete(`admin/donationcampaigns/delete/${id}`, { withCredentials: true });
+      toast.success("Campaign deleted");
       setCampaigns(prev => prev.filter(c => c._id !== id));
     } catch (err) {
       console.error(err);
-      alert("Failed to delete campaign.");
+      toast.error("Failed to delete campaign.");
     }
   };
 

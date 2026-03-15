@@ -28,6 +28,7 @@ import AdminUsers from "./components/Admin/AdminUsers";
 import { CartProvider } from "./components/Shop/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./components/ForgotPassword";
+import { Toaster } from "react-hot-toast";
 
 
 const App = () => {
@@ -35,6 +36,7 @@ const App = () => {
     <div className="w-full min-h-screen bg-background text-foreground overflow-x-hidden">
 
       <AuthProvider>
+        <Toaster position="top-right" reverseOrder={false} />
         <CartProvider>
           <Routes>
 
