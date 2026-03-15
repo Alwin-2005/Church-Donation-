@@ -119,7 +119,7 @@ const AdminEvents = () => {
       )}
 
       {showForm && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-fadeIn">
           <EventForm
             initialData={editingEvent}
             onClose={() => {

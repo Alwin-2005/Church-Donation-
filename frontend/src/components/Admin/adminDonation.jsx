@@ -243,7 +243,7 @@ const AdminDonation = () => {
 
       {/* MODAL FORM */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fadeIn">
           <div className="bg-card rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden scale-100 animate-scaleIn max-h-[90vh] overflow-y-auto">
 
             <div className="px-6 py-4 border-b border-gray-100 bg-background flex justify-between items-center sticky top-0 z-10">

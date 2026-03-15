@@ -8,7 +8,7 @@ const MainLayout = () => {
       <div className="relative z-50">
         <Navbar />
       </div>
-      <div className="relative z-10">
+      <div className="relative">
         {/* prevents content going behind fixed navbar */}
         <Outlet />
       </div>
