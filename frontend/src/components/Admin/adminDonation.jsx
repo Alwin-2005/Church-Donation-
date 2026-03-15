@@ -55,12 +55,13 @@ const AdminDonation = () => {
   /* ---------- FORM HANDLERS ---------- */
   const handleAddClick = () => {
     setEditingCampaign(null);
+    const today = new Date().toISOString().split('T')[0];
     setFormData({
       type: "internal",
       ctitle: "",
       desc: "",
       goalAmt: "",
-      startDate: "",
+      startDate: today,
       endate: "",
       status: "active",
       isTithe: false,
@@ -100,8 +101,21 @@ const AdminDonation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.ctitle || (!formData.isTithe && !formData.goalAmt) || !formData.startDate) {
+    if (!formData.ctitle || (!formData.isTithe && !formData.goalAmt) || !formData.startDate || !formData.endate) {
       alert("Please fill all required fields");
+      return;
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Only enforce that the start date must be today or future when CREATING a new campaign
+    if (!editingCampaign && formData.startDate < today) {
+      alert("Start date cannot be before the current date");
+      return;
+    }
+
+    if (formData.endate && formData.endate < formData.startDate) {
+      alert("End date cannot be before the start date");
       return;
     }
 
@@ -170,6 +184,8 @@ const AdminDonation = () => {
 
   const internalCampaigns = campaigns.filter(c => c.donationType === "internal");
   const externalCampaigns = campaigns.filter(c => c.donationType === "external");
+
+  const todayDateStr = new Date().toISOString().split('T')[0];
 
   return (
     <div className="pt-24 px-6 md:px-16 min-h-screen bg-background pb-20">
@@ -330,19 +346,22 @@ const AdminDonation = () => {
                     type="date"
                     name="startDate"
                     value={formData.startDate}
+                    min={todayDateStr}
                     onChange={handleInputChange}
                     className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">End Date {formData.isTithe && "(Optional)"}</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">End Date *</label>
                   <input
                     type="date"
                     name="endate"
                     value={formData.endate}
+                    min={formData.startDate || todayDateStr}
                     onChange={handleInputChange}
                     className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
+                    required
                   />
                 </div>
               </div>

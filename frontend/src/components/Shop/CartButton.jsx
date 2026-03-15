@@ -6,7 +6,7 @@ const CartButton = ({ cart }) => {
 
   return (
     <button
-      className="fixed bottom-6 right-6 bg-primary hover:bg-primary
+      className="relative bg-primary hover:bg-primary/90
                  text-primary-foreground w-16 h-16 rounded-full shadow-lg
                  flex items-center justify-center text-2xl"
     >

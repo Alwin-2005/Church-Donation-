@@ -22,6 +22,7 @@ const { handleAdminRole } = require("./middlewares/roleCheck");
 const app = express();
 const mongoose = require("mongoose");
 const { connectMongoDB } = require("./connection");
+const { startCronJobs } = require("./utils/cronJobs");
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -35,7 +36,10 @@ app.use(cookieParser());
 
 
 connectMongoDB(MongoDB)
-  .then(console.log("Database connected"))
+  .then(() => {
+    console.log("Database connected")
+    startCronJobs();
+  })
   .catch((err) => console.log("Error occured", err));
 
 app.use("/api/login", handleUserLogin);

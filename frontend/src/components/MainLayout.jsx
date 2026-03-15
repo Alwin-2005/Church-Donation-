@@ -12,7 +12,7 @@ const MainLayout = () => {
         {/* prevents content going behind fixed navbar */}
         <Outlet />
       </div>
-      <div className="relative z-50">
+      <div className="relative z-40">
         <Footer />
       </div>
     </>

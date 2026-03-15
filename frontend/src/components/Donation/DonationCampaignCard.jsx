@@ -187,12 +187,6 @@ const DonationCampaignCard = ({
               >
                 <Edit className="w-4 h-4" /> Edit
               </button>
-              <button
-                onClick={() => onDelete?.(campaign._id)}
-                className="flex-1 flex items-center justify-center gap-2 bg-card hover:bg-red-50 text-red-600 font-bold py-2 px-4 rounded-lg border-2 border-red-100 hover:border-red-200 transition-colors"
-              >
-                <Trash2 className="w-4 h-4" /> Delete
-              </button>
             </div>
           )}
         </div>
