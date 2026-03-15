@@ -1,19 +1,19 @@
 const User = require("../models/user");
-const {setUser} = require("../services/auth");
+const { setUser } = require("../services/auth");
 const bcrypt = require("bcrypt");
 
-async function handleUserLogin(req,res){
+async function handleUserLogin(req, res) {
 
-    if(!req.body){
-        return res.status(409).json({msg: "Please provide email and password"});
+    if (!req.body) {
+        return res.status(409).json({ msg: "Please provide email and password" });
     }
-    const {email, password} = req.body;
-    const user = await User.findOne({email});
-    
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
     const isMatch = await bcrypt.compare(password, user.passwordHash);
 
-    if(!user || !isMatch){
-        return res.status(409).json({msg: "Incorrect email or password"});
+    if (!user || !isMatch) {
+        return res.status(409).json({ msg: "Incorrect email or password" });
     }
 
     if (user.status === "disabled") {
@@ -25,7 +25,7 @@ async function handleUserLogin(req,res){
         httpOnly: false,
         secure: false,
         sameSite: "lax"
-        }).json({token});
+    }).json({ token });
 
 }
 
