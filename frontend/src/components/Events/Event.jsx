@@ -27,21 +27,21 @@ const Event = () => {
   };
 
   return (
-    <div className="pt-20 bg-foreground min-h-screen">
-      {/* HERO SECTION */}
-      <div className="relative min-h-[60vh] w-full flex items-center justify-center overflow-hidden">
-        {/* BACKGROUND IMAGE WITH OVERLAY */}
-        <div className="absolute inset-0">
-          <img
-            src={evimg}
-            className="h-full w-full object-cover scale-105"
-            alt="Events background"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-gray-900" />
-        </div>
+    <div className="relative min-h-screen text-white overflow-x-hidden">
+      {/* GLOBAL FIXED BACKGROUND IMAGE */}
+      <div className="fixed inset-0 z-0">
+        <img
+          src={evimg}
+          className="h-full w-full object-cover scale-105"
+          alt="Events background"
+        />
+        <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" />
+      </div>
 
+      {/* HERO SECTION */}
+      <div className="relative z-10 min-h-[60vh] w-full flex items-center justify-center">
         {/* HERO CONTENT */}
-        <div className="relative z-20 text-center px-6 max-w-4xl animate-fadeIn">
+        <div className="relative z-20 text-center px-6 max-w-4xl pt-32 animate-fadeIn">
           <h1 className="text-5xl md:text-7xl font-black text-primary-foreground tracking-tighter mb-4 uppercase italic">
             ANNOUNCEMENTS
           </h1>
@@ -53,7 +53,7 @@ const Event = () => {
       </div>
 
       {/* EVENTS GRID */}
-      <div className="relative z-10 -mt-20 pb-20 px-6 max-w-7xl mx-auto">
+      <div className="relative z-10 pb-20 px-6 max-w-7xl mx-auto">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 text-primary bg-card/5 backdrop-blur-xl rounded-3xl border border-white/10">
             <Loader2 className="animate-spin mb-4" size={40} />

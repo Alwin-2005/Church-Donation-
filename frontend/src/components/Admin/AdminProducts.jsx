@@ -99,7 +99,7 @@ const AdminProducts = () => {
   const fetchProducts = async () => {
     try {
       const res = await api.get('/admin/merch/view');
-      setProducts(res.data.result || []);
+      setProducts(res.data.Result || []);
     } catch (error) {
       console.error('Error fetching products:', error);
       setError('Failed to load products');

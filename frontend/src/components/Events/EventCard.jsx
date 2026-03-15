@@ -2,7 +2,7 @@ import React from "react";
 import { Clock, MapPin, Edit3, Trash2, BookOpen } from "lucide-react";
 
 const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit, onDelete }) => {
-  const { title, date, time, note, status, type } = event;
+  const { title, date, time, note, status, type, link } = event;
 
   const formatDate = (dateStr) => {
     if (!dateStr) return { day: "--", month: "---" };
@@ -31,7 +31,10 @@ const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit, onDelete
   };
 
   return (
-    <div className={`group relative bg-card rounded-[24px] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 flex flex-col h-full ${isCompact ? "max-w-sm" : ""}`}>
+    <div
+      onClick={() => !isAdmin && link && window.open(link, '_blank')}
+      className={`group relative bg-card rounded-[24px] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 flex flex-col h-full ${isCompact ? "max-w-sm" : ""} ${!isAdmin && link ? "cursor-pointer" : ""}`}
+    >
       {/* Visual Identity Section - Emphasized Date */}
       <div className={`relative ${isCompact ? "h-20" : "h-44"} bg-foreground overflow-hidden flex-shrink-0`}>
         <div className="absolute inset-0 bg-primary/20 mix-blend-overlay" />
@@ -79,7 +82,7 @@ const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit, onDelete
           </h3>
 
           <p className={`text-muted-foreground font-medium italic ${isCompact ? "text-xs leading-normal line-clamp-1" : "text-sm leading-relaxed line-clamp-2"}`}>
-            {note || "Gather with our community for spiritual growth and fellowship."}
+            {note}
           </p>
         </div>
 
@@ -91,7 +94,10 @@ const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit, onDelete
               {note || "Main Sanctuary"}
             </span>
           </div>
-          <div className={`${isCompact ? "w-6 h-6" : "w-8 h-8"} rounded-full bg-background flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500`}>
+          <div 
+            title={link ? "Register" : "View Announcement"}
+            className={`${isCompact ? "w-6 h-6" : "w-8 h-8"} rounded-full bg-background flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500`}
+          >
             <BookOpen size={isCompact ? 10 : 14} className="opacity-20 group-hover:opacity-100" />
           </div>
         </div>

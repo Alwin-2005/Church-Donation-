@@ -7,11 +7,29 @@ const { generateAdminReport } = require("../../utils/reportGenerator");
 
 async function handleGenerateAdminReport(req, res) {
     try {
-        // Fetch all data
-        const users = await User.find({});
-        const donations = await Donation.find({}).populate('userId donationCampaignId');
-        const orders = await Order.find({}).populate('userId items.itemId');
-        const campaigns = await DonationCampaign.find({});
+        // Parse months from query (comma separated: e.g., ?months=3,4,5)
+        const selectedMonths = req.query.months ? req.query.months.split(',').map(Number) : [];
+        const currentYear = new Date().getFullYear();
+
+        // Build filter object for time
+        let timeFilter = {};
+        if (selectedMonths.length > 0) {
+            timeFilter = {
+                $expr: {
+                    $and: [
+                        { $in: [{ $month: "$createdAt" }, selectedMonths] },
+                        { $eq: [{ $year: "$createdAt" }, currentYear] } // Default to current year for simplicity
+                    ]
+                }
+            };
+        }
+
+        // Fetch filtered data
+        const users = await User.find(selectedMonths.length > 0 ? timeFilter : {});
+        const donations = await Donation.find(selectedMonths.length > 0 ? timeFilter : {}).populate('userId donationCampaignId');
+        const orders = await Order.find(selectedMonths.length > 0 ? timeFilter : {}).populate('userId items.itemId');
+        const campaigns = await DonationCampaign.find({}); // Campaigns usually stay as is for tracking progress
+
 
         // 1. Summary
         const donationCollected = donations.reduce((sum, d) => sum + (d.paymentStatus === 'completed' ? d.amount : 0), 0);
@@ -92,7 +110,10 @@ async function handleGenerateAdminReport(req, res) {
                 verifiedPercent: "100%",
                 growth: "+10%"
             },
-            notes: "This report covers the current state of donations and orders."
+            period: selectedMonths.length > 0 
+                ? selectedMonths.map(m => new Date(0, m - 1).toLocaleString('default', { month: 'long' })).join(', ') 
+                : 'All Time',
+            notes: `This report covers: ${selectedMonths.length > 0 ? selectedMonths.map(m => new Date(0, m - 1).toLocaleString('default', { month: 'long' })).join(', ') : 'All Time'}`
         };
 
         await generateAdminReport(reportData, res);

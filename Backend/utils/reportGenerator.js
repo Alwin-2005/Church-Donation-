@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const LOGO_PATH = path.join(__dirname, '..', 'assets', 'COG.png');
 
-function generateHeader(doc, title) {
+function generateHeader(doc, title, period) {
     const oldY = doc.y;
     
     if (fs.existsSync(LOGO_PATH)) {
@@ -22,8 +22,15 @@ function generateHeader(doc, title) {
 
     doc
         .fillColor('#000000')
-        .fontSize(24)
-        .text(title, 50, 160, { align: 'center' });
+        .fontSize(22)
+        .text(title, 50, 140, { align: 'center' });
+
+    if (period) {
+        doc
+            .fontSize(14)
+            .fillColor('#666666')
+            .text(`REPORTING PERIOD: ${period.toUpperCase()}`, 50, 170, { align: 'center' });
+    }
 
     doc.moveTo(50, 195).lineTo(550, 195).stroke();
     
@@ -66,7 +73,7 @@ async function generateAdminReport(reportData, res) {
             doc.pipe(res);
 
             // Print the first page header (since 'pageAdded' doesn't fire for the first page)
-            generateHeader(doc, 'System Admin Report');
+            generateHeader(doc, 'System Admin Report', reportData.period);
 
             // SECTION 1: SUMMARY OVERVIEW
             sectionHeader(doc, 'Summary Overview');

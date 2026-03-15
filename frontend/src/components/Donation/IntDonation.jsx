@@ -1,7 +1,8 @@
 import React, {useState,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import DonationLayout from "./DonationLayout";
+import DonationCampaignCard from "./DonationCampaignCard";
 import api from "../../api/axios";
+import giving from "../../assets/giving.jpg";
 
 
 const IntDonation = () => {
@@ -41,10 +42,18 @@ const IntDonation = () => {
   const otherCampaigns = intCampaigns.filter(c => !c.isTithe);
 
   return (
-    <div className="bg-black/95 min-h-screen">
-      <Navbar />
+    <div className="relative min-h-screen text-white overflow-x-hidden">
+      {/* GLOBAL FIXED BACKGROUND IMAGE */}
+      <div className="fixed inset-0 z-0">
+        <img
+          src={giving}
+          className="h-full w-full object-cover"
+          alt="Church donation background"
+        />
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-[2px]" />
+      </div>
 
-      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+      <div className="relative z-10 pt-32 pb-20 px-6 max-w-7xl mx-auto">
         {/* TITHES SECTION */}
         {titheCampaigns.length > 0 && (
           <section className="mb-20">

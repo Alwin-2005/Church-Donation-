@@ -23,8 +23,8 @@ async function handleAddNewMerchItem(req, res) {
 
 async function handleGetAllMerchItems(req, res) {
     try {
-        const result = await merch.find({});
-        return res.status(200).json({ result });
+        const Result = await merch.find({});
+        return res.status(200).json({ Result });
     } catch (err) {
         console.log(err);
         return res.status(500).json({ msg: "Failed to fetch merchandise items", error: err.message });

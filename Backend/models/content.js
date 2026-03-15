@@ -7,7 +7,7 @@ const contentSchema = mongoose.Schema({
           required: true,
      },
 
-     body: {
+     note: {
           type: String,
           required: false,
      },
@@ -37,6 +37,11 @@ const contentSchema = mongoose.Schema({
           enum: ['visible', 'hidden'],
           required: true,
           default: 'visible',
+     },
+
+     link: {
+          type: String,
+          required: false,
      },
 
      createdBy: {

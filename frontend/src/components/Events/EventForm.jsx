@@ -9,6 +9,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
     note: "",
     status: "visible",
     type: "event",
+    link: "",
   });
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
         note: initialData.note || "",
         status: initialData.status || "visible",
         type: initialData.type || "event",
+        link: initialData.link || "",
       });
     }
   }, [initialData]);
@@ -101,6 +103,17 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
             name="note"
             placeholder="e.g. Main Sanctuary"
             value={formData.note}
+            onChange={handleChange}
+            className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">External Link (e.g. Google Form)</label>
+          <input
+            name="link"
+            placeholder="https://forms.gle/..."
+            value={formData.link}
             onChange={handleChange}
             className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
           />

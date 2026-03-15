@@ -2,17 +2,18 @@ const content = require("../../models/content");
 const mongoose = require("mongoose");
 
 async function handleAddNewContent(req, res) {
-    const { title, body, type, status, date, time, image, note } = req.body;
+    const { title, note, type, status, date, time, image, link } = req.body;
     const createdBy = new mongoose.Types.ObjectId(req.user._id);
     try {
         await content.create({
             title,
-            body: body || note, // Map note to body if body is missing
+            note,
             type: type || 'event',
             status: status || 'visible',
             date,
             time,
             image,
+            link,
             createdBy,
         });
         return res.status(201).json({ msg: "Content created successfully" });
