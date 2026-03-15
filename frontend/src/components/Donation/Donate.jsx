@@ -161,26 +161,28 @@ const DonatePage = () => {
                   {campaign.description}
                 </p>
 
-                <div className="mt-8 pt-8 border-t border-gray-100">
-                  <div className="flex justify-between items-end mb-3">
-                    <div>
-                      <p className="text-gray-400 uppercase text-[10px] font-bold tracking-[0.2em] mb-1">Total Raised</p>
-                      <p className="text-3xl font-black text-foreground">₹{campaign.collectedAmount.toLocaleString()}</p>
+                {!campaign.isTithe && (
+                  <div className="mt-8 pt-8 border-t border-gray-100">
+                    <div className="flex justify-between items-end mb-3">
+                      <div>
+                        <p className="text-gray-400 uppercase text-[10px] font-bold tracking-[0.2em] mb-1">Total Raised</p>
+                        <p className="text-3xl font-black text-foreground">₹{campaign.collectedAmount.toLocaleString()}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-gray-400 uppercase text-[10px] font-bold tracking-[0.2em] mb-1">Goal</p>
+                        <p className="text-xl font-bold text-gray-400">₹{campaign.goalAmount.toLocaleString()}</p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-gray-400 uppercase text-[10px] font-bold tracking-[0.2em] mb-1">Goal</p>
-                      <p className="text-xl font-bold text-gray-400">₹{campaign.goalAmount.toLocaleString()}</p>
-                    </div>
-                  </div>
 
-                  <div className="w-full bg-muted rounded-full h-4 overflow-hidden relative">
-                    <div
-                      className="bg-black h-full rounded-full transition-all duration-1000 ease-out"
-                      style={{ width: `${progress}%` }}
-                    />
+                    <div className="w-full bg-muted rounded-full h-4 overflow-hidden relative">
+                      <div
+                        className="bg-black h-full rounded-full transition-all duration-1000 ease-out"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                    <p className="text-right text-sm font-bold mt-2 text-foreground">{Math.round(progress)}% of goal reached</p>
                   </div>
-                  <p className="text-right text-sm font-bold mt-2 text-foreground">{Math.round(progress)}% of goal reached</p>
-                </div>
+                )}
               </div>
             </div>
 

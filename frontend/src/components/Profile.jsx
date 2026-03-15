@@ -18,6 +18,8 @@ const Profile = () => {
   const [msg, setMsg] = useState("");
   const [passwordMsg, setPasswordMsg] = useState("");
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [selectedDonation, setSelectedDonation] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   // FETCH DATA
   useEffect(() => {
@@ -206,33 +208,23 @@ const Profile = () => {
             {/* Tab Content */}
             <div className="bg-card min-h-[400px] border border-gray-100 border-t-0 rounded-b-2xl p-8 shadow-sm">
               {activeTab === "donations" && !isAdmin && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {donations.length === 0 ? <p className="text-gray-400 text-center py-10">No donations found.</p> :
                     donations.map(d => (
-                      <div key={d._id} className="border border-gray-100 p-6 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center hover:bg-background transition-colors gap-4">
+                      <div key={d._id} className="border border-gray-100 p-4 rounded-xl flex justify-between items-center hover:bg-background transition-colors">
                         <div>
-                          <p className="font-bold text-foreground text-lg">
+                          <p className="font-bold text-foreground">
                             {d.donationCampaignId ? d.donationCampaignId.title : "General Donation"}
                           </p>
-                          {d.donationCampaignId && (
-                            <div className="flex gap-2 mt-1">
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-600 uppercase">
-                                {d.donationCampaignId.donationType} Account
-                              </span>
-                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${d.donationCampaignId.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-600'}`}>
-                                Campaign: {d.donationCampaignId.status}
-                              </span>
-                            </div>
-                          )}
-                          <p className="text-xs text-gray-400 uppercase tracking-wider mt-2">Receipt: {d.receiptNo}</p>
-                          <p className={`text-xs font-bold uppercase tracking-wider mt-1 ${d.paymentStatus === 'paid' ? 'text-emerald-500' : 'text-amber-500'}`}>Payment: {d.paymentStatus}</p>
+                          <p className="text-xs text-gray-400 mt-0.5">{new Date(d.createdAt).toLocaleDateString()}</p>
                         </div>
-                        <div className="text-left sm:text-right">
-                          <p className="font-bold text-xl text-emerald-600">₹{d.amount}</p>
-                          <p className="text-xs text-gray-400 mt-1">{new Date(d.createdAt).toLocaleDateString()}</p>
-                          <button onClick={() => handleDownloadReceipt('donation', d._id)} className="mt-2 text-xs font-bold text-primary hover:underline flex items-center gap-1 sm:justify-end">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                            Download Receipt
+                        <div className="flex items-center gap-4">
+                          <p className="font-bold text-lg text-emerald-600">₹{d.amount}</p>
+                          <button
+                            onClick={() => setSelectedDonation(d)}
+                            className="text-xs font-bold text-primary border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+                          >
+                            View Details
                           </button>
                         </div>
                       </div>
@@ -241,51 +233,27 @@ const Profile = () => {
               )}
 
               {activeTab === "orders" && !isAdmin && (
-                <div className="space-y-6">
+                <div className="space-y-3">
                   {orders.length === 0 ? <p className="text-gray-400 text-center py-10">No orders found.</p> :
                     orders.map(o => (
-                      <div key={o._id} className="border border-gray-100 p-6 rounded-xl">
-                        <div className="flex justify-between items-center mb-4 border-b border-gray-50 pb-4">
-                          <div>
-                            <p className="text-sm font-bold text-foreground">Order #{o._id.slice(-6).toUpperCase()}</p>
-                            <p className="text-xs text-gray-400">{new Date(o.createdAt).toLocaleDateString()}</p>
-                          </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${o.status === 'completed' || o.status === 'confirmed' ? 'bg-emerald-100 text-emerald-700' : 'bg-muted text-muted-foreground'
-                            }`}>
-                            {o.status}
-                          </span>
+                      <div key={o._id} className="border border-gray-100 p-4 rounded-xl flex justify-between items-center hover:bg-background transition-colors">
+                        <div>
+                          <p className="font-bold text-foreground">Order #{o._id.slice(-6).toUpperCase()}</p>
+                          <p className="text-xs text-gray-400 mt-0.5">{new Date(o.createdAt).toLocaleDateString()} · {o.items?.length} item(s)</p>
                         </div>
-
-                        {/* Order Items */}
-                        <div className="space-y-3 mb-4">
-                          {o.items?.map((item, idx) => (
-                            <div key={idx} className="flex items-center gap-4 border-b border-gray-50 pb-3 last:border-0 last:pb-0">
-                              {item.itemId?.url ? (
-                                <img src={item.itemId.url} alt={item.itemId.itemName} className="w-12 h-12 object-cover rounded bg-gray-100" />
-                              ) : (
-                                <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">IMG</div>
-                              )}
-                              <div className="flex-1">
-                                <p className="text-sm font-semibold">{item.itemId?.itemName || "Unknown Item"}</p>
-                                <p className="text-xs text-gray-400">{item.itemId?.category || "Unknown Category"}</p>
-                              </div>
-                              <div className="text-right">
-                                <p className="text-sm font-medium">₹{item.price} x {item.quantity}</p>
-                                <p className="text-sm font-bold text-foreground">₹{item.price * item.quantity}</p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="flex justify-between items-center pt-2 border-t border-gray-50 border-dashed mt-2">
-                          <div>
-                            <p className="text-sm text-muted-foreground">Total Amount</p>
-                            <button onClick={() => handleDownloadReceipt('order', o._id)} className="text-xs font-bold text-primary hover:underline flex items-center gap-1 mt-1">
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                              Download Receipt
-                            </button>
+                        <div className="flex items-center gap-4">
+                          <div className="text-right">
+                            <span className={`text-xs font-bold capitalize px-2 py-0.5 rounded-full ${
+                              o.status === 'completed' || o.status === 'confirmed' ? 'bg-emerald-100 text-emerald-700' : 'bg-muted text-muted-foreground'
+                            }`}>{o.status}</span>
+                            <p className="font-bold text-foreground mt-1">₹{o.totalAmount}</p>
                           </div>
-                          <p className="font-bold text-lg text-foreground">₹{o.totalAmount}</p>
+                          <button
+                            onClick={() => setSelectedOrder(o)}
+                            className="text-xs font-bold text-primary border border-blue-200 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+                          >
+                            View Details
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -377,8 +345,121 @@ const Profile = () => {
           </div>
         </div>
       </div>
+      {/* Detail Modals */}
+      <DonationModal
+        donation={selectedDonation}
+        onClose={() => setSelectedDonation(null)}
+        onDownload={handleDownloadReceipt}
+      />
+      <OrderModal
+        order={selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+        onDownload={handleDownloadReceipt}
+      />
     </>
   );
 };
+
+// ─── Donation Detail Modal ───────────────────────────────────────────────────
+const DonationModal = ({ donation, onClose, onDownload }) => {
+  if (!donation) return null;
+  const d = donation;
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-card rounded-2xl w-full max-w-md shadow-2xl p-6 animate-scaleIn" onClick={e => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-5 border-b border-gray-100 pb-4">
+          <h3 className="text-lg font-black text-foreground">Donation Details</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-foreground text-xl transition-colors">✕</button>
+        </div>
+        <div className="space-y-3 text-sm">
+          <Row label="Campaign" value={d.donationCampaignId?.title || "General Donation"} />
+          <Row label="Amount" value={`₹${d.amount}`} highlight />
+          <Row label="Payment Status" value={d.paymentStatus} />
+          <Row label="Receipt No" value={d.receiptNo} />
+          <Row label="Date" value={new Date(d.createdAt).toLocaleDateString()} />
+          {d.donationCampaignId && (
+            <>
+              <Row label="Campaign Type" value={d.donationCampaignId.donationType} />
+              <Row label="Campaign Status" value={d.donationCampaignId.status} />
+            </>
+          )}
+        </div>
+        <button
+          onClick={() => { onDownload('donation', d._id); onClose(); }}
+          className="mt-6 w-full bg-black text-primary-foreground py-2.5 rounded-xl font-bold text-sm hover:bg-secondary transition-colors"
+        >
+          Download Receipt
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ─── Order Detail Modal ──────────────────────────────────────────────────────
+const OrderModal = ({ order, onClose, onDownload }) => {
+  if (!order) return null;
+  const o = order;
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-card rounded-2xl w-full max-w-lg shadow-2xl p-6 animate-scaleIn max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-5 border-b border-gray-100 pb-4">
+          <div>
+            <h3 className="text-lg font-black text-foreground">Order Details</h3>
+            <p className="text-xs text-gray-400 mt-0.5">#{o._id.slice(-6).toUpperCase()} · {new Date(o.createdAt).toLocaleDateString()}</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-foreground text-xl transition-colors">✕</button>
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Status</span>
+          <span className={`text-xs font-bold capitalize px-3 py-1 rounded-full ${
+            o.status === 'completed' || o.status === 'confirmed' ? 'bg-emerald-100 text-emerald-700' : 'bg-muted text-muted-foreground'
+          }`}>{o.status}</span>
+        </div>
+
+        <div className="space-y-3 mb-5">
+          {o.items?.map((item, idx) => (
+            <div key={idx} className="flex items-center gap-3 border border-gray-100 p-3 rounded-xl">
+              {item.itemId?.url ? (
+                <img src={item.itemId.url} alt={item.itemId.itemName} className="w-14 h-14 object-cover rounded-lg bg-gray-100" />
+              ) : (
+                <div className="w-14 h-14 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">IMG</div>
+              )}
+              <div className="flex-1">
+                <p className="text-sm font-bold text-foreground">{item.itemId?.itemName || "Unknown Item"}</p>
+                <p className="text-xs text-gray-400">{item.itemId?.category || ""}</p>
+                <p className="text-xs text-muted-foreground mt-1">Qty: {item.quantity}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-bold text-foreground">₹{item.price * item.quantity}</p>
+                <p className="text-xs text-gray-400">₹{item.price}/ea</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="border-t border-dashed border-gray-100 pt-4 flex justify-between items-center mb-4">
+          <span className="font-bold text-foreground">Total</span>
+          <span className="font-black text-xl text-foreground">₹{o.totalAmount}</span>
+        </div>
+
+        <button
+          onClick={() => { onDownload('order', o._id); onClose(); }}
+          className="w-full bg-black text-primary-foreground py-2.5 rounded-xl font-bold text-sm hover:bg-secondary transition-colors"
+        >
+          Download Receipt
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ─── Helper Row ──────────────────────────────────────────────────────────────
+const Row = ({ label, value, highlight }) => (
+  <div className="flex justify-between items-center">
+    <span className="text-gray-400 font-medium">{label}</span>
+    <span className={`font-bold text-right ${highlight ? 'text-emerald-600 text-base' : 'text-foreground'}`}>{value}</span>
+  </div>
+);
 
 export default Profile;

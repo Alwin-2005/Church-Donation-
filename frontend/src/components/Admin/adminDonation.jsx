@@ -182,7 +182,8 @@ const AdminDonation = () => {
     </div>
   );
 
-  const internalCampaigns = campaigns.filter(c => c.donationType === "internal");
+  const titheCampaigns = campaigns.filter(c => c.isTithe);
+  const internalCampaigns = campaigns.filter(c => c.donationType === "internal" && !c.isTithe);
   const externalCampaigns = campaigns.filter(c => c.donationType === "external");
 
   const todayDateStr = new Date().toISOString().split('T')[0];
@@ -209,11 +210,34 @@ const AdminDonation = () => {
       {/* SECTIONS */}
       <div className="space-y-12">
 
+        {/* MONTHLY TITHES */}
+        <section>
+          <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
+            <span className="w-2 h-6 bg-yellow-400 rounded-full"></span>
+            Monthly Tithes
+          </h2>
+          <div className="flex flex-wrap gap-6">
+            {titheCampaigns.length > 0 ? (
+              titheCampaigns.map(campaign => (
+                <DonationCampaignCard
+                  key={campaign._id}
+                  campaign={campaign}
+                  role="admin"
+                  onEdit={() => handleEditClick(campaign)}
+                  onDelete={handleDelete}
+                />
+              ))
+            ) : (
+              <p className="text-gray-400 italic">No active monthly tithe campaigns.</p>
+            )}
+          </div>
+        </section>
+
         {/* INTERNAL */}
         <section>
           <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
             <span className="w-2 h-6 bg-black rounded-full"></span>
-            Church Campaigns & Tithes
+            Church Campaigns
           </h2>
           <div className="flex flex-wrap gap-6">
             {internalCampaigns.length > 0 ? (

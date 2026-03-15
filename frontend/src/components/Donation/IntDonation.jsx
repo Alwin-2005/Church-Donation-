@@ -31,16 +31,61 @@ const IntDonation = () => {
       }
     };
 
-  if (loading) return <p>Loading campaigns...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+      <p className="animate-pulse">Loading campaigns...</p>
+    </div>
+  );
 
-  return(
-    <DonationLayout
-      title="Donate for Church"
-      campaigns={intCampaigns}
-      role="churchMember"
-      onDonate={(c) => navigate(`/donate/${c._id}`)}
-    />
+  const titheCampaigns = intCampaigns.filter(c => c.isTithe);
+  const otherCampaigns = intCampaigns.filter(c => !c.isTithe);
+
+  return (
+    <div className="bg-black/95 min-h-screen">
+      <Navbar />
+
+      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+        {/* TITHES SECTION */}
+        {titheCampaigns.length > 0 && (
+          <section className="mb-20">
+            <h2 className="text-3xl font-black text-white mb-8 border-l-4 border-yellow-400 pl-4 uppercase italic tracking-tighter">
+              Monthly Tithes
+            </h2>
+            <div className="flex flex-wrap gap-8 justify-center md:justify-start">
+              {titheCampaigns.map(c => (
+                <DonationCampaignCard
+                  key={c._id}
+                  campaign={c}
+                  role="churchMember"
+                  onDonate={() => navigate(`/donate/${c._id}`)}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* OTHER CAUSES SECTION */}
+        <section>
+          <h2 className="text-3xl font-black text-white mb-8 border-l-4 border-primary pl-4 uppercase italic tracking-tighter">
+            Church Causes & Missions
+          </h2>
+          <div className="flex flex-wrap gap-8 justify-center md:justify-start">
+            {otherCampaigns.length > 0 ? (
+              otherCampaigns.map(c => (
+                <DonationCampaignCard
+                  key={c._id}
+                  campaign={c}
+                  role="churchMember"
+                  onDonate={() => navigate(`/donate/${c._id}`)}
+                />
+              ))
+            ) : (
+              <p className="text-gray-500 italic">No other active church campaigns.</p>
+            )}
+          </div>
+        </section>
+      </div>
+    </div>
   );
   
 };
