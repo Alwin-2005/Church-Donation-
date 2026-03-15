@@ -6,6 +6,8 @@ const DonationHistory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [downloadingId, setDownloadingId] = useState(null);
+  const [filterType, setFilterType] = useState("all");
+  const [sortDate, setSortDate] = useState("desc");
 
   useEffect(() => {
     fetchDonations();
@@ -55,12 +57,41 @@ const DonationHistory = () => {
       year: "numeric",
     });
 
+  const filteredDonations = donations
+    .filter((d) => filterType === "all" || d.donationCampaignId?.donationType === filterType)
+    .sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return sortDate === "desc" ? dateB - dateA : dateA - dateB;
+    });
+
   if (loading) return <div className="mt-24 px-6 text-center">Loading donations...</div>;
   if (error) return <div className="mt-24 px-6 text-center text-red-500">{error}</div>;
 
   return (
     <div className="mt-24 px-6">
-      <h1 className="text-2xl font-semibold mb-6">Donation History </h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-2xl font-semibold m-0">Donation History</h1>
+        <div className="flex gap-4">
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="border p-2 rounded-md bg-background text-sm"
+          >
+            <option value="all">All Types</option>
+            <option value="internal">Internal</option>
+            <option value="external">External</option>
+          </select>
+          <select
+            value={sortDate}
+            onChange={(e) => setSortDate(e.target.value)}
+            className="border p-2 rounded-md bg-background text-sm"
+          >
+            <option value="desc">Date: Newest First</option>
+            <option value="asc">Date: Oldest First</option>
+          </select>
+        </div>
+      </div>
 
       <div className="bg-card rounded-lg shadow overflow-x-auto animate-scaleIn">
         <table className="w-full text-left text-sm">
@@ -79,7 +110,7 @@ const DonationHistory = () => {
           </thead>
 
           <tbody>
-            {donations.map(d => (
+            {filteredDonations.map(d => (
               <tr key={d._id} className="border-t hover:bg-background">
                 <td className="p-3 font-mono text-xs">{d._id}</td>
 

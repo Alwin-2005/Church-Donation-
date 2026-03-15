@@ -22,6 +22,17 @@ const AdminDonation = () => {
     isTithe: false,
   });
 
+
+  // Scroll lock while opening form
+  useEffect(() => {
+    if (showForm) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [showForm]);
+
+
   useEffect(() => {
     fetchCampaigns();
   }, []);

@@ -33,6 +33,14 @@ const AdminUsers = () => {
   const [uploadResult, setUploadResult] = useState(null);
 
   useEffect(() => {
+    if (showSingleUserModal || showCSVModal) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [showSingleUserModal, showCSVModal]);
+
+  useEffect(() => {
     fetchUsers();
   }, []);
 

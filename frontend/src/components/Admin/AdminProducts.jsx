@@ -12,6 +12,17 @@ const AdminProducts = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
+
+  // Scroll lock while opening form
+  useEffect(() => {
+    if (showForm) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [showForm]);
+
+
   /* ---------- DRAG & MATCH LOGIC ---------- */
   const handleDrag = (e) => {
     e.preventDefault();
@@ -289,7 +300,8 @@ const AdminProducts = () => {
 
       {/* Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[1000] p-4 animate-fadeIn">
           <div className="bg-card rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden scale-100 animate-scaleIn">
             <div className="px-6 py-4 border-b border-gray-100 bg-background flex justify-between items-center">
               <h2 className="text-lg font-bold text-foreground">
