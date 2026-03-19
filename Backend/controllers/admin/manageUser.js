@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const sendEmail = require("../../utils/email");
 
 async function handleGetAllUsersInfo(req, res) {
-    const Result = await User.find({});
+    const Result = await User.find({ role: { $ne: 'admin' } });
     return res.status(201).json({ Result });
 }
 

@@ -2,7 +2,7 @@ const express = require("express");
 
 //importing controller functions
 const { handleGetAllUsersInfo, handleAddNewUsers, handleAddBulkUsers, handleUpdateUserStatus } = require("../controllers/admin/manageUser");
-const { handleGetAllOrdersInfo, handleUpdateOrderStatus } = require("../controllers/admin/manageOrder");
+const { handleGetAllOrdersInfo, handleUpdateOrderStatus, handleDownloadOrderReceipt } = require("../controllers/admin/manageOrder");
 const { handleAddNewDonationCampaign, handleGetAllDonationCampaignInfo, handleUpdateDonationCampaign, handleDeleteDonationCampaign } = require("../controllers/admin/manageDonationCampaign");
 const { handleAddNewMerchItem, handleGetAllMerchItems, handleUpdateMerch, handleDeleteMerch } = require("../controllers/admin/manageMerch");
 const { handleGetDonationInfo, handleDownloadDonationReceipt } = require("../controllers/admin/viewDonation");
@@ -23,6 +23,7 @@ Router.patch("/users/status/:id", handleUpdateUserStatus);
 //routes to view and update order
 Router.get("/orders/view", handleGetAllOrdersInfo);
 Router.patch("/orders/update/:id", handleUpdateOrderStatus);
+Router.get("/orders/:id/receipt", handleDownloadOrderReceipt);
 
 
 //routes to add, view and update donation campaigns

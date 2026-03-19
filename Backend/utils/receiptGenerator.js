@@ -120,8 +120,15 @@ async function buildOrderReceipt(order, res) {
 
             // Itemized Table
             doc.moveDown(4);
+            doc.x = 50;
             const tableData = {
-                headers: ['Item Name', 'Category', 'Quantity', 'Price (Rs)', 'Total (Rs)'],
+                headers: [
+                    { label: 'Item Name', property: 'name', width: 150 },
+                    { label: 'Category', property: 'category', width: 100 },
+                    { label: 'Quantity', property: 'qty', width: 60 },
+                    { label: 'Price (Rs)', property: 'price', width: 80 },
+                    { label: 'Total (Rs)', property: 'total', width: 80 }
+                ],
                 rows: order.items.map(item => [
                     item.itemId?.itemName || 'Unknown Item',
                     item.itemId?.category || 'N/A',

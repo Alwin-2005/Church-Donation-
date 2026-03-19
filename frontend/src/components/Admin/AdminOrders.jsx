@@ -13,6 +13,7 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [downloadingId, setDownloadingId] = useState(null);
 
 
   useEffect(() => {
@@ -43,6 +44,26 @@ const AdminOrders = () => {
       month: "short",
       year: "numeric",
     });
+
+  const downloadReceipt = async (id) => {
+    setDownloadingId(id);
+    try {
+      const response = await api.get(`admin/orders/${id}/receipt`, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `order_receipt_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success("Receipt downloaded successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to download receipt");
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   const statusColor = status => {
     switch (status) {
@@ -91,6 +112,7 @@ const AdminOrders = () => {
               <th className="p-3">Total</th>
               <th className="p-3">Order Date</th>
               <th className="p-3">Status</th>
+              <th className="p-3 text-right">Actions</th>
             </tr>
           </thead>
 
@@ -121,6 +143,26 @@ const AdminOrders = () => {
                     <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${statusColor(o.status)}`}>
                       {o.status}
                     </span>
+                  </td>
+
+                  <td className="p-3 text-right">
+                    <button
+                      onClick={() => downloadReceipt(o._id)}
+                      disabled={downloadingId === o._id}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-black text-white text-xs font-medium hover:bg-gray-800 active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {downloadingId === o._id ? (
+                        <>
+                          <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                          </svg>
+                          Downloading…
+                        </>
+                      ) : (
+                        <>↓ Receipt</>
+                      )}
+                    </button>
                   </td>
                 </tr>
               ))
