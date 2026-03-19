@@ -44,8 +44,12 @@ async function handleGenerateAdminReport(req, res) {
         const isFiltered = (startDate && endDate) || selectedMonths.length > 0 || year;
 
         // Fetch filtered data
-        const users = await User.find(isFiltered ? timeFilter : {});
-        const donations = await Donation.find(isFiltered ? timeFilter : {}).populate('userId donationCampaignId');
+        let users = await User.find(isFiltered ? timeFilter : {});
+        users = users.filter(u => u.role !== 'admin'); // Exclude admin
+
+        let donations = await Donation.find(isFiltered ? timeFilter : {}).populate('userId donationCampaignId');
+        donations = donations.filter(d => !d.donationCampaignId?.isTithe); // Exclude tithes
+
         const orders = await Order.find(isFiltered ? timeFilter : {}).populate('userId items.itemId');
         const campaigns = await DonationCampaign.find({}); // Campaigns usually stay as is for tracking progress
 
@@ -57,7 +61,7 @@ async function handleGenerateAdminReport(req, res) {
         
         let topCampaign = "N/A";
         if (campaigns.length > 0) {
-            topCampaign = campaigns.reduce((max, c) => c.raisedAmount > max.raisedAmount ? c : max).title;
+            topCampaign = campaigns.reduce((max, c) => (c.collectedAmount || 0) > (max.collectedAmount || 0) ? c : max).title;
         }
 
         const merchRevenue = orders.reduce((sum, o) => sum + (o.status === 'paid' ? o.totalAmount : 0), 0);
@@ -78,8 +82,33 @@ async function handleGenerateAdminReport(req, res) {
         const newUsers = users.filter(u => new Date(u.createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length;
         const activeDonors = uniqueDonors;
 
+        // Pie Chart Data Aggregation
+        const pieCharts = {
+            campaigns: {},
+            userTypes: {},
+            merchSales: {},
+            orderStatus: {}
+        };
+
+        // Donut: Campaign distribution (Donations per campaign)
+        campaigns.forEach(c => {
+            if (!c.isTithe && (c.collectedAmount || 0) > 0) pieCharts.campaigns[c.title || 'Untitled'] = (c.collectedAmount || 0);
+        });
+
+        // Donut: User Types
+        users.forEach(u => {
+            const role = u.role || 'user';
+            pieCharts.userTypes[role] = (pieCharts.userTypes[role] || 0) + 1;
+        });
+
+        // Donut: Merch Sales by Product
+        Object.entries(merchCounts).forEach(([name, count]) => {
+            pieCharts.merchSales[name] = count;
+        });
+
         // Build Data
         const reportData = {
+            pieCharts,
             summary: {
                 donation: { collected: donationCollected, donors: uniqueDonors, average: avgDonation, topCampaign },
                 merch: { totalOrders: orders.length, revenue: merchRevenue, completed: completedOrders, topProduct },
@@ -90,7 +119,6 @@ async function handleGenerateAdminReport(req, res) {
                 (d.userId?.fullname || 'Guest').substring(0, 15),
                 (d.userId?.email || 'N/A').substring(0, 15),
                 (d.donationCampaignId?.title || 'General').substring(0, 15),
-                d.paymentMethod || 'Online',
                 `Rs. ${d.amount}`,
                 d._id.toString().substring(0, 8),
                 d.paymentStatus,
@@ -100,23 +128,21 @@ async function handleGenerateAdminReport(req, res) {
                 (o.userId?.fullname || 'Guest').substring(0, 10),
                 o.items.map(i => i.itemId?.itemName).join(', ').substring(0, 10),
                 o.items.reduce((sum, i) => sum + i.quantity, 0).toString(),
-                "-",
                 `Rs. ${o.totalAmount}`,
-                o.paymentMethod || 'Online',
                 o.status,
                 new Date(o.createdAt).toLocaleDateString(),
             ]),
             campaignTable: campaigns.map(c => [
                 c.title || 'Untitled',
-                `Rs. ${c.goalAmount}`,
-                `Rs. ${c.raisedAmount}`,
-                `${((c.raisedAmount / c.goalAmount) * 100).toFixed(1)}%`
+                `Rs. ${c.goalAmount || 0}`,
+                `Rs. ${c.collectedAmount || 0}`,
+                c.goalAmount ? `${(((c.collectedAmount || 0) / c.goalAmount) * 100).toFixed(1)}%` : 'N/A'
             ]),
             userTable: users.slice(-100).map(u => [
                 (u.fullname || '').substring(0, 15),
                 (u.email || '').substring(0, 15),
                 new Date(u.createdAt).toLocaleDateString(),
-                u.status || 'enabled',
+                u.role || 'user',
                 donations.filter(d => d.userId?._id?.toString() === u._id.toString()).length.toString(),
                 orders.filter(o => o.userId?._id?.toString() === u._id.toString()).length.toString()
             ]),

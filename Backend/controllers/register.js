@@ -5,8 +5,8 @@ const phoneRegex = /^[6-9]\d{9}$/;
 const role = "externalMember";
 const status = "enabled";
 
-async function handleMemberRegistration(req,res){
-    const {fullName, email, phoneNo, gender, dob, password, address} = req.body;
+async function handleMemberRegistration(req, res) {
+    const { fullName, email, phoneNo, gender, dob, password, address } = req.body;
     //console.log("variables",fullName, email, phoneNo, gender, dob, password);
     if (!validator.isEmail(email)) {
         return res.status(400).json({ message: "Invalid email format" });
@@ -24,13 +24,13 @@ async function handleMemberRegistration(req,res){
     if (phoneExist) {
         return res.status(409).json({ message: "Phone number already exists" });
     }
-    
 
-    const salt = await bcrypt.genSalt(10); 
+
+    const salt = await bcrypt.genSalt(10);
     const hashed = await bcrypt.hash(password, salt);
-    
+
     try {
-            await User.create({
+        await User.create({
             fullname: fullName,
             email,
             phoneNo,
@@ -42,12 +42,12 @@ async function handleMemberRegistration(req,res){
             status,
         });
         return res.status(201).json("msg: Account created successfully");
-    } 
+    }
 
     catch (err) {
         console.log(err);
         return res.status(400).json({ error: err.message });
-    }  
+    }
 
 }
 

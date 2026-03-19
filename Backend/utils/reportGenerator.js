@@ -43,6 +43,7 @@ function sectionHeader(doc, text) {
     if (doc.y > doc.page.height - 150) {
         doc.addPage();
     }
+    doc.x = 50;
     doc.moveDown(1.5);
     doc.fillColor('#2d3748').fontSize(16).font('Helvetica-Bold').text(text.toUpperCase(), { align: 'left' });
     doc.moveTo(50, doc.y + 2).lineTo(550, doc.y + 2).strokeColor('#CBD5E0').stroke();
@@ -53,11 +54,12 @@ function drawBarChart(doc, data, title) {
     const chartHeight = 150;
     const chartWidth = 400;
     const startX = 100;
-    const startY = doc.y + 20;
 
-    if (startY + chartHeight > doc.page.height - 100) {
+    if (doc.y + 20 + chartHeight > doc.page.height - 100) {
         doc.addPage();
     }
+
+    const startY = doc.y + 20;
 
     doc.font('Helvetica-Bold').fontSize(12).text(title, 50, doc.y);
     doc.moveDown(0.5);
@@ -83,44 +85,98 @@ function drawBarChart(doc, data, title) {
     });
 
     doc.y = startY + chartHeight + 40;
+    doc.x = 50;
 }
 
-function drawPieChart(doc, data, title) {
+function drawPieChart(doc, data, title, isCurrency = true) {
     const chartSize = 120;
     const centerX = 200;
-    const centerY = doc.y + 70;
+    const entries = Object.entries(data);
 
-    if (centerY + chartSize > doc.page.height - 100) {
+    // Calculate max height needed securely
+    const legendHeight = entries.length * 22;
+    const requiredSpace = 70 + Math.max(chartSize, legendHeight) + 40;
+
+    if (doc.y + requiredSpace > doc.page.height - 50) {
         doc.addPage();
     }
 
+    const centerY = doc.y + 70;
     doc.font('Helvetica-Bold').fontSize(12).text(title, 50, doc.y);
 
-    const entries = Object.entries(data);
     const total = entries.reduce((s, [_, v]) => s + v, 0);
-    let currentAngle = -90; // Start at top
 
     const colors = ['#4C51BF', '#38B2AC', '#F6AD55', '#E53E3E', '#805AD5'];
 
-    // Draw slices (simplified as background circles for cleaner look)
-    doc.circle(centerX, centerY, chartSize / 2).lineWidth(1).strokeColor('#E2E8F0').stroke();
+    function polarToCartesian(cx, cy, r, angle) {
+        const rad = (angle - 90) * Math.PI / 180.0;
+        return {
+            x: cx + (r * Math.cos(rad)),
+            y: cy + (r * Math.sin(rad))
+        };
+    }
+
+    function describeArc(cx, cy, r, startAngle, endAngle) {
+        if (Math.abs(endAngle - startAngle) >= 360) return null;
+        const start = polarToCartesian(cx, cy, r, endAngle);
+        const end = polarToCartesian(cx, cy, r, startAngle);
+        const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+        return [
+            "M", cx, cy,
+            "L", start.x, start.y,
+            "A", r, r, 0, largeArcFlag, 0, end.x, end.y,
+            "Z"
+        ].join(" ");
+    }
+
+    let currentAngle = 0;
+
+    if (total === 0) {
+        doc.circle(centerX, centerY, chartSize / 2).lineWidth(1).strokeColor('#E2E8F0').stroke();
+    } else {
+        entries.forEach(([label, value], i) => {
+            if (value <= 0) return;
+            const color = colors[i % colors.length];
+            const sliceAngle = (value / total) * 360;
+
+            if (Math.abs(sliceAngle) >= 359.9) {
+                doc.circle(centerX, centerY, chartSize / 2).fill(color);
+            } else {
+                const arcPath = describeArc(centerX, centerY, chartSize / 2, currentAngle, currentAngle + sliceAngle);
+                if (arcPath) {
+                    doc.path(arcPath).fill(color);
+                }
+            }
+
+            currentAngle += sliceAngle;
+        });
+    }
 
     entries.forEach(([label, value], i) => {
         const color = colors[i % colors.length];
+        const valueStr = isCurrency ? `Rs. ${value.toFixed(2)}` : `${value}`;
 
         // Legend
         doc.fillColor(color).rect(350, centerY - (chartSize / 2) + (i * 22), 12, 12).fill();
         doc.fillColor('#4A5568').fontSize(9).font('Helvetica').text(
-            `${label}: Rs. ${value.toFixed(2)} (${((value / total) * 100).toFixed(1)}%)`,
+            `${label}: ${valueStr} (${((value / total) * 100).toFixed(1)}%)`,
             370,
             centerY - (chartSize / 2) + (i * 22) + 2
         );
     });
 
-    // Center Label
-    doc.fillColor('#2D3748').font('Helvetica-Bold').fontSize(14).text("BREAKDOWN", centerX - 45, centerY - 7, { width: 90, align: 'center' });
+    // Center Label creating a Donut effect
+    doc.circle(centerX, centerY, (chartSize / 2) * 0.55).fill('#FFFFFF');
 
-    doc.y = centerY + chartSize / 2 + 40;
+    // Display actual total inside the donut center
+    const totalStr = isCurrency ? `Rs. ${total > 1000 ? (total / 1000).toFixed(1) + 'k' : total}` : `${total}`;
+    doc.fillColor('#718096').font('Helvetica').fontSize(10).text("Total", centerX - 45, centerY - 12, { width: 90, align: 'center' });
+    doc.fillColor('#2D3748').font('Helvetica-Bold').fontSize(12).text(totalStr, centerX - 45, centerY, { width: 90, align: 'center' });
+
+    const legendEndY = centerY - (chartSize / 2) + legendHeight;
+    const chartEndY = centerY + (chartSize / 2);
+    doc.y = Math.max(legendEndY, chartEndY) + 40;
+    doc.x = 50;
 }
 
 // Generate the whole report
@@ -164,17 +220,17 @@ async function generateAdminReport(reportData, res) {
             };
             drawBarChart(doc, revenueData, 'Revenue Comparison (Donations vs Merchandise)');
 
-            if (reportData.summary.donation.collected > 0) {
-                const campaignDistribution = {};
-                reportData.campaignTable.forEach(row => {
-                    const amount = parseFloat(row[2].replace('Rs. ', ''));
-                    if (amount > 0) campaignDistribution[row[0]] = amount;
-                });
-                if (Object.keys(campaignDistribution).length > 0) {
-                    drawPieChart(doc, campaignDistribution, 'Donation Distribution by Campaign');
-                }
+            if (reportData.pieCharts && Object.keys(reportData.pieCharts.campaigns || {}).length > 0) {
+                drawPieChart(doc, reportData.pieCharts.campaigns, 'Donation Distribution by Campaign', true);
+            }
+            if (reportData.pieCharts && Object.keys(reportData.pieCharts.userTypes || {}).length > 0) {
+                drawPieChart(doc, reportData.pieCharts.userTypes, 'User Distribution by Type', false);
+            }
+            if (reportData.pieCharts && Object.keys(reportData.pieCharts.merchSales || {}).length > 0) {
+                drawPieChart(doc, reportData.pieCharts.merchSales, 'Merchandise Sold by Product', false);
             }
 
+            doc.x = 50;
             doc.font('Helvetica-Bold').fontSize(14).fillColor('#000').text('User Statistics');
             doc.font('Helvetica').fontSize(12).fillColor('#444')
                 .text(`• Total Registered Users: ${reportData.summary.user.total || 0}`)
@@ -186,7 +242,15 @@ async function generateAdminReport(reportData, res) {
             // SECTION 2: DONATION REPORT TABLE
             sectionHeader(doc, 'Donation Report');
             const donationTable = {
-                headers: ['Date', 'Donor Name', 'Email', 'Campaign Name', 'Pay. Method', 'Amount', 'Txn ID', 'Status'],
+                headers: [
+                    { label: 'Date', property: 'date', width: 60 },
+                    { label: 'Donor Name', property: 'donor', width: 80 },
+                    { label: 'Email', property: 'email', width: 110 },
+                    { label: 'Campaign', property: 'campaign', width: 80 },
+                    { label: 'Amount', property: 'amount', width: 60 },
+                    { label: 'Txn ID', property: 'txn', width: 55 },
+                    { label: 'Status', property: 'status', width: 50 }
+                ],
                 rows: reportData.donationTable || []
             };
             await doc.table(donationTable, {
@@ -197,7 +261,15 @@ async function generateAdminReport(reportData, res) {
             // SECTION 3: MERCHANDISE ORDERS REPORT
             sectionHeader(doc, 'Merchandise Orders Report');
             const merchTable = {
-                headers: ['Order ID', 'Customer', 'Product', 'Qty', 'Price', 'Total', 'Pay. Method', 'Status', 'Date'],
+                headers: [
+                    { label: 'Order ID', property: 'id', width: 60 },
+                    { label: 'Customer', property: 'customer', width: 80 },
+                    { label: 'Product', property: 'product', width: 120 },
+                    { label: 'Qty', property: 'qty', width: 30 },
+                    { label: 'Total', property: 'total', width: 50 },
+                    { label: 'Status', property: 'status', width: 60 },
+                    { label: 'Date', property: 'date', width: 80 }
+                ],
                 rows: reportData.merchTable || []
             };
             await doc.table(merchTable, {
@@ -208,7 +280,12 @@ async function generateAdminReport(reportData, res) {
             // SECTION 4: CAMPAIGN PERFORMANCE REPORT
             sectionHeader(doc, 'Campaign Performance Report');
             const campaignTable = {
-                headers: ['Campaign Name', 'Goal Amount', 'Amount Collected', 'Completion %'],
+                headers: [
+                    { label: 'Campaign Name', property: 'name', width: 180 },
+                    { label: 'Goal Amount', property: 'goal', width: 100 },
+                    { label: 'Collected', property: 'collected', width: 100 },
+                    { label: 'Completion %', property: 'completion', width: 100 }
+                ],
                 rows: reportData.campaignTable || []
             };
             await doc.table(campaignTable, {
@@ -219,7 +296,14 @@ async function generateAdminReport(reportData, res) {
             // SECTION 5: USER REGISTRATION REPORT
             sectionHeader(doc, 'User Registration Report');
             const userTable = {
-                headers: ['User Name', 'Email', 'Reg. Date', 'Status', 'Total Donations', 'Total Orders'],
+                headers: [
+                    { label: 'User Name', property: 'name', width: 90 },
+                    { label: 'Email', property: 'email', width: 120 },
+                    { label: 'Reg. Date', property: 'date', width: 70 },
+                    { label: 'User Type', property: 'type', width: 70 },
+                    { label: 'Donations', property: 'donations', width: 70 },
+                    { label: 'Orders', property: 'orders', width: 60 }
+                ],
                 rows: reportData.userTable || []
             };
             await doc.table(userTable, {
@@ -232,9 +316,7 @@ async function generateAdminReport(reportData, res) {
             doc.font('Helvetica').fontSize(12).fillColor('#444')
                 .text(`• Month with the highest donations: ${reportData.analytics.topMonth || 'N/A'}`)
                 .text(`• Most popular donation campaign: ${reportData.analytics.popularCampaign || 'N/A'}`)
-                .text(`• Most purchased merchandise item: ${reportData.analytics.popularMerch || 'N/A'}`)
-                .text(`• Percentage of verified users: ${reportData.analytics.verifiedPercent || 'N/A'}`)
-                .text(`• Donation growth compared to previous period: ${reportData.analytics.growth || 'N/A'}`);
+                .text(`• Most purchased merchandise item: ${reportData.analytics.popularMerch || 'N/A'}`);
 
             doc.moveDown(2);
             doc.fontSize(10).fillColor('#666').text(reportData.notes, { align: 'right' });
