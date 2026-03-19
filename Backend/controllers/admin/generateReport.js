@@ -7,32 +7,51 @@ const { generateAdminReport } = require("../../utils/reportGenerator");
 
 async function handleGenerateAdminReport(req, res) {
     try {
-        // Parse months from query (comma separated: e.g., ?months=3,4,5)
-        const selectedMonths = req.query.months ? req.query.months.split(',').map(Number) : [];
-        const currentYear = new Date().getFullYear();
+        const { months, year, startDate, endDate } = req.query;
+        const selectedMonths = months ? months.split(',').map(Number) : [];
+        const selectedYear = year ? Number(year) : new Date().getFullYear();
 
         // Build filter object for time
         let timeFilter = {};
-        if (selectedMonths.length > 0) {
+
+        if (startDate && endDate) {
+            // Custom Duration
+            timeFilter = {
+                createdAt: {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                }
+            };
+        } else if (selectedMonths.length > 0) {
+            // Monthly in a specific year
             timeFilter = {
                 $expr: {
                     $and: [
                         { $in: [{ $month: "$createdAt" }, selectedMonths] },
-                        { $eq: [{ $year: "$createdAt" }, currentYear] } // Default to current year for simplicity
+                        { $eq: [{ $year: "$createdAt" }, selectedYear] }
                     ]
+                }
+            };
+        } else if (year) {
+            // Full Year
+            timeFilter = {
+                $expr: {
+                    $eq: [{ $year: "$createdAt" }, selectedYear]
                 }
             };
         }
 
+        const isFiltered = (startDate && endDate) || selectedMonths.length > 0 || year;
+
         // Fetch filtered data
-        const users = await User.find(selectedMonths.length > 0 ? timeFilter : {});
-        const donations = await Donation.find(selectedMonths.length > 0 ? timeFilter : {}).populate('userId donationCampaignId');
-        const orders = await Order.find(selectedMonths.length > 0 ? timeFilter : {}).populate('userId items.itemId');
+        const users = await User.find(isFiltered ? timeFilter : {});
+        const donations = await Donation.find(isFiltered ? timeFilter : {}).populate('userId donationCampaignId');
+        const orders = await Order.find(isFiltered ? timeFilter : {}).populate('userId items.itemId');
         const campaigns = await DonationCampaign.find({}); // Campaigns usually stay as is for tracking progress
 
 
         // 1. Summary
-        const donationCollected = donations.reduce((sum, d) => sum + (d.paymentStatus === 'completed' ? d.amount : 0), 0);
+        const donationCollected = donations.reduce((sum, d) => sum + (d.paymentStatus === 'paid' ? d.amount : 0), 0);
         const uniqueDonors = new Set(donations.map(d => d.userId?._id?.toString())).size;
         const avgDonation = donations.length > 0 ? donationCollected / donations.length : 0;
         
@@ -41,9 +60,8 @@ async function handleGenerateAdminReport(req, res) {
             topCampaign = campaigns.reduce((max, c) => c.raisedAmount > max.raisedAmount ? c : max).title;
         }
 
-        const merchRevenue = orders.reduce((sum, o) => sum + (o.status === 'completed' || o.status === 'delivered' ? o.totalAmount : 0), 0);
-        const pendingOrders = orders.filter(o => o.status === 'pending' || o.status === 'processing').length;
-        const completedOrders = orders.filter(o => o.status === 'completed' || o.status === 'delivered').length;
+        const merchRevenue = orders.reduce((sum, o) => sum + (o.status === 'paid' ? o.totalAmount : 0), 0);
+        const completedOrders = orders.filter(o => o.status === 'paid').length;
 
         // Count top selling merch
         let merchCounts = {};
@@ -64,7 +82,7 @@ async function handleGenerateAdminReport(req, res) {
         const reportData = {
             summary: {
                 donation: { collected: donationCollected, donors: uniqueDonors, average: avgDonation, topCampaign },
-                merch: { totalOrders: orders.length, revenue: merchRevenue, pending: pendingOrders, completed: completedOrders, topProduct },
+                merch: { totalOrders: orders.length, revenue: merchRevenue, completed: completedOrders, topProduct },
                 user: { total: users.length, new: newUsers, verified: users.length, active: activeDonors }
             },
             donationTable: donations.slice(-100).map(d => [ 
@@ -92,7 +110,6 @@ async function handleGenerateAdminReport(req, res) {
                 c.title || 'Untitled',
                 `Rs. ${c.goalAmount}`,
                 `Rs. ${c.raisedAmount}`,
-                "N/A", 
                 `${((c.raisedAmount / c.goalAmount) * 100).toFixed(1)}%`
             ]),
             userTable: users.slice(-100).map(u => [
@@ -104,16 +121,22 @@ async function handleGenerateAdminReport(req, res) {
                 orders.filter(o => o.userId?._id?.toString() === u._id.toString()).length.toString()
             ]),
             analytics: {
-                topMonth: new Date().toLocaleString('default', { month: 'long' }),
+                topMonth: Object.keys(merchCounts).length > 0 ? 
+                    new Date(0, selectedMonths[0] - 1 || new Date().getMonth()).toLocaleString('default', { month: 'long' }) : 
+                    new Date().toLocaleString('default', { month: 'long' }),
                 popularCampaign: topCampaign,
                 popularMerch: topProduct,
-                verifiedPercent: "100%",
-                growth: "+10%"
+                verifiedPercent: users.length > 0 ? 
+                    `${((users.filter(u => u.status === 'enabled').length / users.length) * 100).toFixed(1)}%` : 
+                    "N/A",
+                growth: "Calculated based on current period data"
             },
-            period: selectedMonths.length > 0 
-                ? selectedMonths.map(m => new Date(0, m - 1).toLocaleString('default', { month: 'long' })).join(', ') 
-                : 'All Time',
-            notes: `This report covers: ${selectedMonths.length > 0 ? selectedMonths.map(m => new Date(0, m - 1).toLocaleString('default', { month: 'long' })).join(', ') : 'All Time'}`
+            period: (startDate && endDate) 
+                ? `${startDate} to ${endDate}` 
+                : (selectedMonths.length > 0 
+                    ? `${selectedMonths.map(m => new Date(0, m - 1).toLocaleString('default', { month: 'long' })).join(', ')} ${selectedYear}`
+                    : (year ? `Year ${selectedYear}` : 'All Time')),
+            notes: `Report generated on ${new Date().toLocaleDateString()}`
         };
 
         await generateAdminReport(reportData, res);

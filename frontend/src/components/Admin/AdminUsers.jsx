@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import AdminUserCard from "./AdminUserCard";
 import api from "../../api/axios";
 import Papa from "papaparse";
 import bcrypt from "bcryptjs";
@@ -233,26 +232,84 @@ const AdminUsers = () => {
             className="border rounded-lg px-4 py-2 w-full md:w-1/4 focus:ring-2 focus:ring-black outline-none"
           >
             <option value="all">All Roles</option>
-            <option value="admin">Admin</option>
             <option value="churchMember">Church Member</option>
             <option value="externalMember">External Member</option>
           </select>
         </div>
 
-        {/* User Cards */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredUsers.length > 0 ? (
-            filteredUsers.map(user => (
-              <AdminUserCard
-                key={user._id}
-                user={user}
-                onToggleStatus={handleToggleStatus}
-                onView={handleViewUser}
-              />
-            ))
-          ) : (
-            <p className="text-muted-foreground">No users found.</p>
-          )}
+        {/* User Table */}
+        <div className="bg-card border rounded-2xl overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-muted/50 border-b">
+                  <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-widest">User</th>
+                  <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-widest">Contact</th>
+                  <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-widest">Role</th>
+                  <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-widest text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {filteredUsers.length > 0 ? (
+                  filteredUsers.map(user => (
+                    <tr key={user._id} className="hover:bg-muted/30 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                            {user.fullname.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-bold text-foreground">{user.fullname}</p>
+                            <p className="text-xs text-muted-foreground capitalize">{user.gender}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <p className="text-sm font-medium">{user.email}</p>
+                        <p className="text-xs text-muted-foreground">{user.phoneNo || "—"}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                          user.role === 'admin' ? "bg-purple-100 text-purple-700" :
+                          user.role === 'churchMember' ? "bg-blue-100 text-primary" : "bg-yellow-100 text-yellow-700"
+                        }`}>
+                          {user.role}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                          user.status === "enabled" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                        }`}>
+                          {user.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => handleToggleStatus(user._id)}
+                            className={`px-4 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                              user.status === "enabled"
+                                ? "border-red-200 text-red-600 hover:bg-red-50"
+                                : "border-green-200 text-green-600 hover:bg-green-50"
+                            }`}
+                          >
+                            {user.status === "enabled" ? "Disable" : "Enable"}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-12 text-center text-muted-foreground">
+                      No users found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </div>
@@ -331,18 +388,11 @@ const AdminUsers = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Role *</label>
-                  <select
-                    name="role"
-                    value={formData.role}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full bg-card border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-bold"
-                  >
-                    <option value="churchMember">Church Member</option>
-                    <option value="externalMember">External Member</option>
-                    <option value="admin">Admin</option>
-                  </select>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Role</label>
+                  <div className="w-full bg-muted border border-border rounded-2xl p-4 font-bold text-muted-foreground">
+                    Church Member
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1 px-1">Adding church members only as per policy.</p>
                 </div>
               </div>
 

@@ -62,8 +62,8 @@ const Regis = () => {
 
     if (!formInput.phoneNo?.trim()) {
       inputError.phoneNo = "Phone number is required";
-    } else if (!/^\d{10}$/.test(formInput.phoneNo)) {
-      inputError.phoneNo = "Phone number must be exactly 10 digits";
+    } else if (!/^[6-9]\d{9}$/.test(formInput.phoneNo)) {
+      inputError.phoneNo = "Phone number must be exactly 10 digits and start with 6-9";
     }
 
     if (!formInput.password) {
@@ -127,7 +127,14 @@ const Regis = () => {
         { fullName, email, phoneNo, gender, dob, password, address });
       navigate("/");
     }
-    catch (err) { console.log("Error : ", err) }
+    catch (err) {
+      console.log("Error : ", err);
+      if (err.response && err.response.data && err.response.data.message) {
+        setFormError(prev => ({ ...prev, backend: err.response.data.message }));
+      } else {
+        setFormError(prev => ({ ...prev, backend: "An unexpected error occurred. Please try again." }));
+      }
+    }
     console.log("Form submitted : ", formInput);
   }
 
@@ -158,6 +165,11 @@ const Regis = () => {
           <form className="flex flex-col gap-5"
             onSubmit={handleFormValidation}
           >
+            {formError.backend && (
+              <p className="text-red-600 text-sm font-bold text-center bg-red-100 p-2 rounded">
+                {formError.backend}
+              </p>
+            )}
             <div className="flex flex-col gap-1">
               <input
                 name="fullName"

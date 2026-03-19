@@ -4,10 +4,8 @@ import { toast } from "react-hot-toast";
 
 const STATUS_OPTIONS = [
   "all",
-  "confirmed",
-  "shipped",
-  "completed",
-  "cancelled",
+  "paid",
+  "failed",
 ];
 
 const AdminOrders = () => {
@@ -15,18 +13,7 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeDropdown, setActiveDropdown] = useState(null);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (!e.target.closest('.status-dropdown-container')) {
-        setActiveDropdown(null);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   useEffect(() => {
     fetchOrders();
@@ -44,21 +31,6 @@ const AdminOrders = () => {
     }
   };
 
-  const handleStatusChange = async (orderId, newStatus) => {
-    try {
-      await api.patch(`admin/orders/update/${orderId}`, { status: newStatus });
-      setOrders(orders.map(order =>
-        order._id === orderId
-          ? { ...order, status: newStatus }
-          : order
-      ));
-      toast.success(`Order status updated to ${newStatus}`);
-      setActiveDropdown(null); // Close dropdown after selection
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to update status");
-    }
-  };
 
   const filteredOrders =
     selectedStatus === "all"
@@ -74,18 +46,12 @@ const AdminOrders = () => {
 
   const statusColor = status => {
     switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-700";
-      case "confirmed":
-        return "bg-blue-100 text-primary";
-      case "shipped":
-        return "bg-purple-100 text-purple-700";
-      case "completed":
+      case "paid":
         return "bg-green-100 text-green-700";
-      case "cancelled":
+      case "failed":
         return "bg-red-100 text-red-700";
       default:
-        return "";
+        return "bg-gray-100 text-gray-700";
     }
   };
 
@@ -125,14 +91,13 @@ const AdminOrders = () => {
               <th className="p-3">Total</th>
               <th className="p-3">Order Date</th>
               <th className="p-3">Status</th>
-              <th className="p-3">Action</th>
             </tr>
           </thead>
 
           <tbody>
             {filteredOrders.length === 0 ? (
               <tr>
-                <td colSpan="7" className="p-6 text-center text-muted-foreground">
+                <td colSpan="6" className="p-6 text-center text-muted-foreground">
                   No orders found for this status
                 </td>
               </tr>
@@ -142,56 +107,20 @@ const AdminOrders = () => {
                   <td className="p-3 font-mono text-xs">{o._id}</td>
 
                   <td className="p-3">
-                    <div className="font-medium">{o.userId?.fullname || "Unknown Customer"}</div>
+                    <div className="font-medium text-foreground">{o.userId?.fullname || "Unknown Customer"}</div>
                     <div className="text-xs text-muted-foreground">{o.userId?.email || "N/A"}</div>
                   </td>
 
-                  <td className="p-3">{o.items?.length || 0}</td>
+                  <td className="p-3">{o.items?.length || 1}</td>
 
                   <td className="p-3 font-semibold">₹{o.totalAmount}</td>
 
                   <td className="p-3">{formatDate(o.orderDate)}</td>
 
                   <td className="p-3">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-medium capitalize ${statusColor(
-                        o.status
-                      )}`}
-                    >
+                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${statusColor(o.status)}`}>
                       {o.status}
                     </span>
-                  </td>
-
-                  <td className="p-3">
-                    <div className="relative status-dropdown-container">
-                      <button
-                        onClick={() => setActiveDropdown(activeDropdown === o._id ? null : o._id)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-gray-300 bg-white text-xs font-medium hover:bg-gray-50 active:scale-95 transition-all w-32 justify-between"
-                      >
-                        Update Status
-                        <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-
-                      {activeDropdown === o._id && (
-                        <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg border border-gray-100 z-50 overflow-hidden">
-                          {STATUS_OPTIONS.filter(s => s !== "all").map((s) => (
-                            <button
-                              key={s}
-                              onClick={() => handleStatusChange(o._id, s)}
-                              disabled={s === "confirmed" || s === o.status}
-                              className={`w-full text-left px-4 py-2 text-xs capitalize hover:bg-gray-50 transition-colors
-                                ${s === o.status ? 'bg-gray-50 text-black font-semibold' : 'text-gray-600'}
-                                ${s === 'confirmed' ? 'opacity-50 cursor-not-allowed' : ''}
-                              `}
-                            >
-                              {s}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
                   </td>
                 </tr>
               ))

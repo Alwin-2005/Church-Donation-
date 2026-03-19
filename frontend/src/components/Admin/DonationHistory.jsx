@@ -4,20 +4,26 @@ import { toast } from "react-hot-toast";
 
 const DonationHistory = () => {
   const [donations, setDonations] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [downloadingId, setDownloadingId] = useState(null);
   const [filterType, setFilterType] = useState("all");
+  const [selectedCampaign, setSelectedCampaign] = useState("all");
   const [sortDate, setSortDate] = useState("desc");
 
   useEffect(() => {
-    fetchDonations();
+    fetchData();
   }, []);
 
-  const fetchDonations = async () => {
+  const fetchData = async () => {
     try {
-      const res = await api.get("admin/donations/view");
-      setDonations(res.data);
+      const [donationsRes, campaignsRes] = await Promise.all([
+        api.get("admin/donations/view"),
+        api.get("admin/donationcampaigns/view")
+      ]);
+      setDonations(donationsRes.data || []);
+      setCampaigns(campaignsRes.data.Result || []);
     } catch (err) {
       console.error(err);
       setError("Failed to fetch donation history");
@@ -59,7 +65,8 @@ const DonationHistory = () => {
     });
 
   const filteredDonations = donations
-    .filter((d) => filterType === "all" || d.donationCampaignId?.donationType === filterType)
+    .filter((d) => (filterType === "all" || d.donationCampaignId?.donationType === filterType) && 
+                   (selectedCampaign === "all" || d.donationCampaignId?._id === selectedCampaign))
     .sort((a, b) => {
       const dateA = new Date(a.createdAt);
       const dateB = new Date(b.createdAt);
@@ -82,6 +89,16 @@ const DonationHistory = () => {
             <option value="all">All Types</option>
             <option value="internal">Internal</option>
             <option value="external">External</option>
+          </select>
+          <select
+            value={selectedCampaign}
+            onChange={(e) => setSelectedCampaign(e.target.value)}
+            className="border p-2 rounded-md bg-background text-sm max-w-[200px]"
+          >
+            <option value="all">All Campaigns</option>
+            {campaigns.map(c => (
+              <option key={c._id} value={c._id}>{c.title}</option>
+            ))}
           </select>
           <select
             value={sortDate}

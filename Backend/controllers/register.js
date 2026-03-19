@@ -9,15 +9,20 @@ async function handleMemberRegistration(req,res){
     const {fullName, email, phoneNo, gender, dob, password, address} = req.body;
     //console.log("variables",fullName, email, phoneNo, gender, dob, password);
     if (!validator.isEmail(email)) {
-        return res.status(409).json({ message: "Invalid email format" });
+        return res.status(400).json({ message: "Invalid email format" });
     }
     if (!phoneRegex.test(phoneNo)) {
-        return res.status(409).json({ message: "Invalid phone number" });
+        return res.status(400).json({ message: "Invalid phone number" });
     }
 
-    const result = await User.find({email});
-    if(result.length > 0){
-        return res.status(409).json({message: "Email already exists, do you want to login?"});
+    const emailExist = await User.findOne({ email });
+    if (emailExist) {
+        return res.status(409).json({ message: "Email already exists, do you want to login?" });
+    }
+
+    const phoneExist = await User.findOne({ phoneNo });
+    if (phoneExist) {
+        return res.status(409).json({ message: "Phone number already exists" });
     }
     
 

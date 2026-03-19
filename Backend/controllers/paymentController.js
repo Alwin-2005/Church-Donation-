@@ -66,7 +66,9 @@ async function verifyMerchPayment(req, res) {
                 items,
                 totalAmount,
                 orderDate: new Date(),
-                status: 'confirmed'
+                status: 'paid',
+                razorpayOrderId: razorpay_order_id,
+                razorpayPaymentId: razorpay_payment_id
             });
 
             // 2. Create Payment record
