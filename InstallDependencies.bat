@@ -13,7 +13,7 @@ cd ..
 echo Installing Frontend Dependencies...
 cd frontend
 
-npm install @tailwindcss/vite axios bcryptjs js-cookie jwt-decode lucide-react papaparse react react-dom react-hot-toast react-router-dom tailwindcss
+npm install @tailwindcss/vite axios bcryptjs js-cookie jwt-decode lucide-react papaparse react react-dom react-hot-toast react-router-dom tailwindcss vite 
 
 echo Frontend dependencies installed.
 echo.

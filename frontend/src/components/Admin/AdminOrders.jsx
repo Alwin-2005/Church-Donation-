@@ -14,6 +14,15 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [downloadingId, setDownloadingId] = useState(null);
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("all");
+
+  const TIME_PERIODS = [
+    { label: "All Time", value: "all" },
+    { label: "Today", value: "today" },
+    { label: "Yesterday", value: "yesterday" },
+    { label: "Last 7 Days", value: "last7" },
+    { label: "Last 30 Days", value: "last30" },
+  ];
 
 
   useEffect(() => {
@@ -33,10 +42,37 @@ const AdminOrders = () => {
   };
 
 
-  const filteredOrders =
-    selectedStatus === "all"
-      ? orders
-      : orders.filter(o => o.status === selectedStatus);
+  const filteredOrders = orders.filter(o => {
+    // Status filter
+    const statusMatch = selectedStatus === "all" || o.status === selectedStatus;
+    if (!statusMatch) return false;
+
+    // Time period filter
+    if (selectedTimePeriod === "all") return true;
+
+    const orderDate = new Date(o.orderDate);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    switch (selectedTimePeriod) {
+      case "today":
+        return orderDate >= today;
+      case "yesterday":
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        return orderDate >= yesterday && orderDate < today;
+      case "last7":
+        const last7Days = new Date(today);
+        last7Days.setDate(last7Days.getDate() - 7);
+        return orderDate >= last7Days;
+      case "last30":
+        const last30Days = new Date(today);
+        last30Days.setDate(last30Days.getDate() - 30);
+        return orderDate >= last30Days;
+      default:
+        return true;
+    }
+  });
 
   const formatDate = date =>
     new Date(date).toLocaleDateString("en-IN", {
@@ -85,16 +121,18 @@ const AdminOrders = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <h1 className="text-2xl font-semibold">Orders Status</h1>
 
+
+
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Filter by status:</span>
+          <span className="text-sm font-medium">Time period:</span>
           <select
-            value={selectedStatus}
-            onChange={e => setSelectedStatus(e.target.value)}
+            value={selectedTimePeriod}
+            onChange={e => setSelectedTimePeriod(e.target.value)}
             className="border rounded px-3 py-2 text-sm"
           >
-            {STATUS_OPTIONS.map(s => (
-              <option key={s} value={s}>
-                {s.charAt(0).toUpperCase() + s.slice(1)}
+            {TIME_PERIODS.map(tp => (
+              <option key={tp.value} value={tp.value}>
+                {tp.label}
               </option>
             ))}
           </select>
@@ -154,8 +192,8 @@ const AdminOrders = () => {
                       {downloadingId === o._id ? (
                         <>
                           <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24" fill="none">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                           </svg>
                           Downloading…
                         </>

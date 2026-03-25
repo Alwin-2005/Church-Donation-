@@ -17,6 +17,7 @@ const paymentRoutes = require("./routes/paymentRoutes");
 const { handleMemberRegistration, } = require("./controllers/register");
 const { handleUserLogin, } = require("./controllers/login");
 const { handleForgotPassword, handleResetPassword } = require("./controllers/passwordReset");
+const { sendOtp, verifyOtpAndRegister } = require("./controllers/otpController");
 const { handleAdminRole } = require("./middlewares/roleCheck");
 
 const app = express();
@@ -44,6 +45,8 @@ connectMongoDB(MongoDB)
 
 app.use("/api/login", handleUserLogin);
 app.use("/api/register", handleMemberRegistration);
+app.post("/api/send-otp", sendOtp);
+app.post("/api/verify-otp", verifyOtpAndRegister);
 app.post("/api/forgot-password", handleForgotPassword);
 app.post("/api/reset-password/:token", handleResetPassword);
 app.use("/api/admin", restrictToLoggedinUserOnly, handleAdminRole, adminRoute);

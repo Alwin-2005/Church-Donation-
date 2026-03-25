@@ -11,6 +11,15 @@ const DonationHistory = () => {
   const [filterType, setFilterType] = useState("all");
   const [selectedCampaign, setSelectedCampaign] = useState("all");
   const [sortDate, setSortDate] = useState("desc");
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("all");
+
+  const TIME_PERIODS = [
+    { label: "All Time", value: "all" },
+    { label: "Today", value: "today" },
+    { label: "Yesterday", value: "yesterday" },
+    { label: "Last 7 Days", value: "last7" },
+    { label: "Last 30 Days", value: "last30" },
+  ];
 
   useEffect(() => {
     fetchData();
@@ -65,8 +74,39 @@ const DonationHistory = () => {
     });
 
   const filteredDonations = donations
-    .filter((d) => (filterType === "all" || d.donationCampaignId?.donationType === filterType) && 
-                   (selectedCampaign === "all" || d.donationCampaignId?._id === selectedCampaign))
+    .filter((d) => {
+      // Existing filters
+      const typeMatch = filterType === "all" || d.donationCampaignId?.donationType === filterType;
+      const campaignMatch = selectedCampaign === "all" || d.donationCampaignId?._id === selectedCampaign;
+
+      // Time period filter
+      if (!typeMatch || !campaignMatch) return false;
+
+      if (selectedTimePeriod === "all") return true;
+
+      const donationDate = new Date(d.createdAt);
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      switch (selectedTimePeriod) {
+        case "today":
+          return donationDate >= today;
+        case "yesterday":
+          const yesterday = new Date(today);
+          yesterday.setDate(yesterday.getDate() - 1);
+          return donationDate >= yesterday && donationDate < today;
+        case "last7":
+          const last7Days = new Date(today);
+          last7Days.setDate(last7Days.getDate() - 7);
+          return donationDate >= last7Days;
+        case "last30":
+          const last30Days = new Date(today);
+          last30Days.setDate(last30Days.getDate() - 30);
+          return donationDate >= last30Days;
+        default:
+          return true;
+      }
+    })
     .sort((a, b) => {
       const dateA = new Date(a.createdAt);
       const dateB = new Date(b.createdAt);
@@ -100,13 +140,15 @@ const DonationHistory = () => {
               <option key={c._id} value={c._id}>{c.title}</option>
             ))}
           </select>
+
           <select
-            value={sortDate}
-            onChange={(e) => setSortDate(e.target.value)}
+            value={selectedTimePeriod}
+            onChange={(e) => setSelectedTimePeriod(e.target.value)}
             className="border p-2 rounded-md bg-background text-sm"
           >
-            <option value="desc">Date: Newest First</option>
-            <option value="asc">Date: Oldest First</option>
+            {TIME_PERIODS.map(tp => (
+              <option key={tp.value} value={tp.value}>{tp.label}</option>
+            ))}
           </select>
         </div>
       </div>
@@ -177,8 +219,8 @@ const DonationHistory = () => {
                       {downloadingId === d._id ? (
                         <>
                           <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24" fill="none">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                           </svg>
                           Downloading…
                         </>

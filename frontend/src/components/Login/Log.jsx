@@ -108,7 +108,7 @@ const Log = () => {
               to="/forgotpass"
               className="text-sm text-gray-300 hover:text-primary-foreground transition"
             >
-              Forgot Password???
+              Forgot Password?
             </Link>
           </div>
 

@@ -10,6 +10,15 @@ const AdminPayments = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [downloadingId, setDownloadingId] = useState(null);
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("all");
+
+  const TIME_PERIODS = [
+    { label: "All Time", value: "all" },
+    { label: "Today", value: "today" },
+    { label: "Yesterday", value: "yesterday" },
+    { label: "Last 7 Days", value: "last7" },
+    { label: "Last 30 Days", value: "last30" },
+  ];
 
   useEffect(() => {
     fetchPayments();
@@ -50,10 +59,37 @@ const AdminPayments = () => {
     }
   };
 
-  const filteredPayments =
-    selectedStatus === "all"
-      ? payments
-      : payments.filter(p => p.status === selectedStatus);
+  const filteredPayments = payments.filter(p => {
+    // Status filter
+    const statusMatch = selectedStatus === "all" || p.status === selectedStatus;
+    if (!statusMatch) return false;
+
+    // Time period filter
+    if (selectedTimePeriod === "all") return true;
+
+    const paymentDate = new Date(p.paymentDate);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    switch (selectedTimePeriod) {
+      case "today":
+        return paymentDate >= today;
+      case "yesterday":
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        return paymentDate >= yesterday && paymentDate < today;
+      case "last7":
+        const last7Days = new Date(today);
+        last7Days.setDate(last7Days.getDate() - 7);
+        return paymentDate >= last7Days;
+      case "last30":
+        const last30Days = new Date(today);
+        last30Days.setDate(last30Days.getDate() - 30);
+        return paymentDate >= last30Days;
+      default:
+        return true;
+    }
+  });
 
   const formatDate = date =>
     new Date(date).toLocaleDateString("en-IN", {
@@ -86,16 +122,18 @@ const AdminPayments = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <h1 className="text-2xl font-semibold">Payments</h1>
 
+
+
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Filter by status:</span>
+          <span className="text-sm font-medium">Time period:</span>
           <select
-            value={selectedStatus}
-            onChange={e => setSelectedStatus(e.target.value)}
+            value={selectedTimePeriod}
+            onChange={e => setSelectedTimePeriod(e.target.value)}
             className="border rounded px-3 py-2 text-sm"
           >
-            {STATUS_FILTERS.map(s => (
-              <option key={s} value={s}>
-                {s.charAt(0).toUpperCase() + s.slice(1)}
+            {TIME_PERIODS.map(tp => (
+              <option key={tp.value} value={tp.value}>
+                {tp.label}
               </option>
             ))}
           </select>
@@ -163,8 +201,8 @@ const AdminPayments = () => {
                         {downloadingId === p._id ? (
                           <>
                             <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24" fill="none">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                             </svg>
                             Downloading…
                           </>
