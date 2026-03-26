@@ -9,9 +9,12 @@ const { handleGetDonationInfo, handleDownloadDonationReceipt } = require("../con
 const { handleAddNewContent, handleViewAllContent, handleUpdateContent, handleDeleteContent } = require("../controllers/admin/manageContent");
 const { handleGetAllPaymentInfo, handleDownloadPaymentReceipt } = require("../controllers/admin/viewPayment");
 const { handleGenerateAdminReport } = require("../controllers/admin/generateReport");
+const { handleGetDashboardStats } = require("../controllers/admin/dashboardController");
 
 const app = express();
 const Router = express.Router();
+
+Router.get("/dashboard/stats", handleGetDashboardStats);
 
 //routes to view and add church member
 Router.get("/users/view", handleGetAllUsersInfo);

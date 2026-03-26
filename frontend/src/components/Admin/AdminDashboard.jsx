@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
-import { Users, ShoppingCart, TrendingUp, Package, Heart, Calendar, Download } from "lucide-react";
+import { Users, Heart, Calendar, Download, RefreshCw } from "lucide-react";
 import { toast } from "react-hot-toast";
+
+// Modular Components
+import Filters from "./Dashboard/Filters";
+import CampaignChart from "./Dashboard/CampaignChart";
+import DonationTrendChart from "./Dashboard/DonationTrendChart";
+import CategoryDistributionChart from "./Dashboard/CategoryDistributionChart";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -13,109 +19,77 @@ const AdminDashboard = () => {
     activeCampaigns: 0,
     totalProducts: 0
   });
-  const [recentActivity, setRecentActivity] = useState([]);
+  
+  const [chartData, setChartData] = useState({
+    campaignData: [],
+    donationTrend: [],
+    userGrowth: [],
+    distribution: []
+  });
+
   const [loading, setLoading] = useState(true);
-  const [selectedMonths, setSelectedMonths] = useState([]);
-  const [reportType, setReportType] = useState("monthly"); // "monthly", "yearly", "financial", "custom"
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [financialYear, setFinancialYear] = useState("");
-  const [dateRange, setDateRange] = useState({ start: "", end: "" });
+  const [refreshing, setRefreshing] = useState(false);
+  
+  // Filters State
+  const [duration, setDuration] = useState("monthly");
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
+    endDate: new Date().toISOString().split('T')[0]
+  });
+
+  // Report Modal State
   const [showReportOptions, setShowReportOptions] = useState(false);
-  const [exportFormat, setExportFormat] = useState("pdf"); // "pdf" or "excel"
+  const [reportType, setReportType] = useState("monthly");
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedMonths, setSelectedMonths] = useState([]);
+  const [financialYear, setFinancialYear] = useState("");
+  const [reportDateRange, setReportDateRange] = useState({ start: "", end: "" });
+  const [exportFormat, setExportFormat] = useState("pdf");
+
   const navigate = useNavigate();
 
-  const monthsList = [
-    { id: 1, name: "January" }, { id: 2, name: "February" }, { id: 3, name: "March" },
-    { id: 4, name: "April" }, { id: 5, name: "May" }, { id: 6, name: "June" },
-    { id: 7, name: "July" }, { id: 8, name: "August" }, { id: 9, name: "September" },
-    { id: 10, name: "October" }, { id: 11, name: "November" }, { id: 12, name: "December" }
-  ];
-
-  const toggleMonth = (id) => {
-    setSelectedMonths(prev => 
-      prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]
-    );
-  };
-
-
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    fetchDashboardStats();
+  }, [duration, dateRange]);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardStats = async () => {
+    setRefreshing(true);
     try {
-      // Fetch all data in parallel
-      const [usersRes, ordersRes, donationsRes, campaignsRes, productsRes] = await Promise.all([
-        api.get("/admin/users/view"),
-        api.get("/admin/orders/view"),
-        api.get("/admin/donations/view"),
-        api.get("/admin/donationcampaigns/view"),
-        api.get("/admin/merch/view")
-      ]);
+      let params = {};
+      
+      if (duration === "monthly") {
+        const now = new Date();
+        params.startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+        params.endDate = now.toISOString();
+      } else if (duration === "yearly") {
+        params.startDate = new Date(new Date().getFullYear(), 0, 1).toISOString();
+        params.endDate = new Date().toISOString();
+      } else if (duration === "financialYear") {
+        const now = new Date();
+        const startYear = now.getMonth() < 3 ? now.getFullYear() - 1 : now.getFullYear();
+        params.startDate = new Date(startYear, 3, 1).toISOString();
+        params.endDate = new Date().toISOString();
+      } else if (duration === "custom") {
+        params.startDate = new Date(dateRange.startDate).toISOString();
+        params.endDate = new Date(dateRange.endDate).toISOString();
+      }
 
-      const users = usersRes.data.Result || [];
-      const orders = ordersRes.data.Result || [];
-      const donations = donationsRes.data || [];
-      const campaigns = campaignsRes.data.Result || [];
-      const products = productsRes.data.Result || [];
-
-      // Calculate stats
-      const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
-      const totalDonationAmount = donations.reduce((sum, donation) => sum + (donation.amount || 0), 0);
-      const activeCampaigns = campaigns.filter(c => c.status === 'active').length;
-
-      setStats({
-        totalUsers: users.length,
-        totalOrders: orders.length,
-        totalRevenue,
-        totalDonations: totalDonationAmount,
-        activeCampaigns,
-        totalProducts: products.length
+      const res = await api.get("/admin/dashboard/stats", { params });
+      const { campaignData, donationTrend, userGrowth, distribution, stats: overallStats } = res.data;
+      
+      setChartData({
+        campaignData,
+        donationTrend,
+        userGrowth,
+        distribution
       });
-
-      // Build recent activity
-      const activity = [];
-
-      // Recent users
-      users.slice(-5).reverse().forEach(user => {
-        const readableRole = user.role === 'churchMember' ? 'Church Member' : 
-                            user.role === 'externalMember' ? 'External Member' : 
-                            user.role;
-        activity.push({
-          type: 'user',
-          icon: '👤',
-          text: `New user: ${user.fullname} (${readableRole})`,
-          time: new Date(user.createdAt).toLocaleDateString()
-        });
-      });
-
-      // Recent orders
-      orders.slice(-3).reverse().forEach(order => {
-        activity.push({
-          type: 'order',
-          icon: '🛒',
-          text: `Order #${order._id.slice(-6)} - ${order.status}`,
-          time: new Date(order.createdAt).toLocaleDateString()
-        });
-      });
-
-      // Recent donations
-      donations.slice(-3).reverse().forEach(donation => {
-        activity.push({
-          type: 'donation',
-          icon: '💝',
-          text: `Donation of ₹${donation.amount}`,
-          time: new Date(donation.createdAt).toLocaleDateString()
-        });
-      });
-
-      // Limit to 8
-      setRecentActivity(activity.slice(0, 8));
-
+      setStats(overallStats);
     } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+      console.error("Error fetching dashboard stats:", error);
+      toast.error("Failed to fetch dashboard analytics");
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -137,11 +111,11 @@ const AdminDashboard = () => {
         const startYear = parseInt(financialYear.split("-")[0]);
         queryParams = `?startDate=${startYear}-04-01&endDate=${startYear + 1}-03-31`;
       } else if (reportType === "custom") {
-        if (!dateRange.start || !dateRange.end) {
+        if (!reportDateRange.start || !reportDateRange.end) {
           toast.error("Please select both start and end dates");
           return;
         }
-        queryParams = `?startDate=${dateRange.start}&endDate=${dateRange.end}`;
+        queryParams = `?startDate=${reportDateRange.start}&endDate=${reportDateRange.end}`;
       }
       
       queryParams += queryParams ? `&format=${exportFormat}` : `?format=${exportFormat}`;
@@ -162,15 +136,16 @@ const AdminDashboard = () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading report:", error);
-      toast.error("Failed to download report. Ensure you have admin access.");
+      toast.error("Failed to download report.");
     }
   };
 
   if (loading) {
     return (
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-gray-400 animate-pulse">Loading dashboard...</div>
+      <main className="flex-1 p-8 bg-background h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <RefreshCw className="w-10 h-10 text-primary animate-spin" />
+          <p className="text-muted-foreground font-bold animate-pulse">Initializing Analytics...</p>
         </div>
       </main>
     );
@@ -180,265 +155,37 @@ const AdminDashboard = () => {
     <main className="flex-1 p-8 overflow-y-auto bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <h1 className="text-3xl font-bold text-foreground">Dashboard Overview</h1>
+          <div>
+            <h1 className="text-3xl font-black text-foreground tracking-tight">Admin Dashboard</h1>
+            <p className="text-muted-foreground font-medium mt-1 flex items-center gap-1">
+              {refreshing ? <RefreshCw className="w-3 h-3 animate-spin"/> : <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"/>}
+              Real-time system analytics
+            </p>
+          </div>
           <button
             onClick={() => setShowReportOptions(true)}
-            className="flex items-center gap-2 bg-black text-primary-foreground px-6 py-3 rounded-xl font-bold hover:bg-secondary transition active:scale-95 shadow-lg"
+            className="flex items-center gap-2 bg-black text-primary-foreground px-6 py-3 rounded-2xl font-black hover:bg-secondary transition active:scale-95 shadow-xl shadow-black/10 group"
           >
-            <Download className="w-5 h-5" />
+            <Download className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
             Generate Report
           </button>
         </div>
 
-        {/* Report Options Modal */}
-        {showReportOptions && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-            {/* Backdrop */}
-            <div 
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setShowReportOptions(false)}
-            />
-            
-            {/* Modal Content */}
-            <div className="relative bg-card w-full max-w-2xl rounded-3xl shadow-2xl border border-border overflow-hidden animate-in fade-in zoom-in duration-200">
-              <div className="p-8">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h3 className="text-2xl font-black text-foreground tracking-tight">Generate Report</h3>
-                    <p className="text-muted-foreground text-sm mt-1">Configure your analytics summary</p>
-                  </div>
-                  <button 
-                    onClick={() => setShowReportOptions(false)}
-                    className="p-2 hover:bg-muted rounded-full transition-colors"
-                  >
-                    <span className="text-xl">✕</span>
-                  </button>
-                </div>
-
-                {/* Report Type Tabs */}
-                <div className="flex bg-muted p-1 rounded-2xl mb-8 overflow-x-auto no-scrollbar">
-                  {["monthly", "yearly", "financial", "custom"].map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setReportType(type)}
-                      className={`flex-1 min-w-[100px] py-2.5 rounded-xl text-xs font-bold capitalize transition-all whitespace-nowrap ${
-                        reportType === type 
-                          ? "bg-card text-foreground shadow-sm" 
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {type === "financial" ? "Financial Year" : type === "custom" ? "Custom Duration" : type}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Export Format Selection */}
-                <div className="mb-8">
-                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Export Format</label>
-                  <div className="flex gap-4">
-                    <button
-                      onClick={() => setExportFormat("pdf")}
-                      className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${
-                        exportFormat === "pdf"
-                          ? "border-black bg-black text-white"
-                          : "border-border text-muted-foreground hover:border-black/20"
-                      }`}
-                    >
-                      <span className="font-bold">PDF Report</span>
-                      <span className="text-[10px] opacity-70">(Summary & Charts)</span>
-                    </button>
-                    <button
-                      onClick={() => setExportFormat("excel")}
-                      className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${
-                        exportFormat === "excel"
-                          ? "border-black bg-black text-white"
-                          : "border-border text-muted-foreground hover:border-black/20"
-                      }`}
-                    >
-                      <span className="font-bold">Excel Sheet</span>
-                      <span className="text-[10px] opacity-70">(Detailed Data)</span>
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Tab Content */}
-                <div className="min-h-[220px]">
-                  {reportType === "monthly" && (
-                    <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
-                      <div>
-                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Select Year</label>
-                        <select 
-                          value={selectedYear}
-                          onChange={(e) => setSelectedYear(Number(e.target.value))}
-                          className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold focus:ring-2 focus:ring-black outline-none"
-                        >
-                          {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Select Month</label>
-                        <select 
-                          value={selectedMonths[0] || ""}
-                          onChange={(e) => setSelectedMonths(e.target.value ? [Number(e.target.value)] : [])}
-                          className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold focus:ring-2 focus:ring-black outline-none"
-                        >
-                          <option value="">All Months (Full Year)</option>
-                          {monthsList.map(month => (
-                            <option key={month.id} value={month.id}>{month.name}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  )}
-
-                  {reportType === "yearly" && (
-                    <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
-                      <div>
-                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Select Year</label>
-                        <select 
-                          value={selectedYear}
-                          onChange={(e) => setSelectedYear(Number(e.target.value))}
-                          className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold focus:ring-2 focus:ring-black outline-none"
-                        >
-                          {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
-                        </select>
-                        <p className="text-muted-foreground text-xs mt-4">
-                          This will generate a full comprehensive report for all activity in {selectedYear}.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {reportType === "financial" && (
-                    <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
-                      <div>
-                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Select Financial Year</label>
-                        <select 
-                          value={financialYear}
-                          onChange={(e) => setFinancialYear(e.target.value)}
-                          className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold focus:ring-2 focus:ring-black outline-none"
-                        >
-                          <option value="">Select range...</option>
-                          <option value="2023-2024">2023–2024</option>
-                          <option value="2024-2025">2024–2025</option>
-                          <option value="2025-2026">2025–2026</option>
-                        </select>
-                        <p className="text-muted-foreground text-xs mt-4 flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-primary rounded-full"></span>
-                          Financial year runs from April 1 to March 31
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {reportType === "custom" && (
-                    <div className="space-y-6 animate-in slide-in-from-bottom-2 duration-300">
-                      <div>
-                        <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Quick Selection</label>
-                        <div className="flex flex-wrap gap-2">
-                          {[
-                            { label: "Today", days: 0 },
-                            { label: "Last 7 Days", days: 7 },
-                            { label: "Last 30 Days", days: 30 },
-                            { label: "This Month", type: 'thisMonth' }
-                          ].map((opt) => (
-                            <button
-                              key={opt.label}
-                              type="button"
-                              onClick={() => {
-                                const end = new Date();
-                                let start = new Date();
-                                if (opt.type === 'thisMonth') {
-                                  start = new Date(end.getFullYear(), end.getMonth(), 1);
-                                } else {
-                                  start.setDate(end.getDate() - opt.days);
-                                }
-                                setDateRange({
-                                  start: start.toISOString().split('T')[0],
-                                  end: end.toISOString().split('T')[0]
-                                });
-                              }}
-                              className="px-4 py-2 rounded-lg bg-muted text-foreground text-xs font-bold hover:bg-border transition-colors border border-transparent hover:border-muted-foreground/20"
-                            >
-                              {opt.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Start Date</label>
-                          <input 
-                            type="date"
-                            value={dateRange.start}
-                            onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                            className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold focus:ring-2 focus:ring-black outline-none"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">End Date</label>
-                          <input 
-                            type="date"
-                            value={dateRange.end}
-                            onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                            className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold focus:ring-2 focus:ring-black outline-none"
-                          />
-                        </div>
-                      </div>
-                      <p className="text-muted-foreground text-xs">
-                        Specify a custom time frame to track growth and performance across specific events or campaigns.
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between pt-8 mt-4 border-t border-border">
-                  <button 
-                    onClick={() => {
-                      setSelectedMonths([]);
-                      setDateRange({ start: "", end: "" });
-                    }}
-                    className="text-sm font-bold text-red-500 hover:text-red-600 transition-colors uppercase tracking-widest"
-                  >
-                    Reset
-                  </button>
-                  <button
-                    onClick={handleDownloadReport}
-                    className="flex items-center gap-2 bg-black text-white px-10 py-4 rounded-2xl font-black hover:bg-secondary transition shadow-xl active:scale-95 group"
-                  >
-                    <Download className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
-                    Download {exportFormat.toUpperCase()}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
+        <Filters 
+          duration={duration} 
+          setDuration={setDuration}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
+        />
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           <StatCard
-            title="Total Users"
+            title="Total Members"
             value={stats.totalUsers}
             icon={<Users className="w-6 h-6" />}
             color="blue"
             onClick={() => navigate("/admin/users")}
-          />
-          <StatCard
-            title="Total Orders"
-            value={stats.totalOrders}
-            icon={<ShoppingCart className="w-6 h-6" />}
-            color="green"
-            onClick={() => navigate("/admin/orders")}
-          />
-          <StatCard
-            title="Revenue"
-            value={`₹${stats.totalRevenue.toLocaleString()}`}
-            icon={<TrendingUp className="w-6 h-6" />}
-            color="purple"
-            onClick={() => navigate("/admin/payments")}
           />
           <StatCard
             title="Total Donations"
@@ -454,46 +201,108 @@ const AdminDashboard = () => {
             color="orange"
             onClick={() => navigate("/admin/campaigns")}
           />
-          <StatCard
-            title="Products"
-            value={stats.totalProducts}
-            icon={<Package className="w-6 h-6" />}
-            color="indigo"
-            onClick={() => navigate("/admin/products")}
-          />
         </div>
 
-        {/* Recent Activity */}
-        <section className="bg-card rounded-2xl shadow-sm border border-border p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-foreground">Recent Activity</h2>
-            <button
-              onClick={fetchDashboardData}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Refresh
-            </button>
+        {/* Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          <DonationTrendChart data={chartData.donationTrend} />
+          <CampaignChart data={chartData.campaignData} />
+          <div className="lg:col-span-2">
+            <CategoryDistributionChart data={chartData.distribution} />
           </div>
+        </div>
 
-          {recentActivity.length === 0 ? (
-            <p className="text-gray-400 text-center py-8">No recent activity</p>
-          ) : (
-            <ul className="space-y-3">
-              {recentActivity.map((activity, index) => (
-                <li
-                  key={index}
-                  className="flex items-start gap-3 p-3 rounded-lg hover:bg-background transition-colors"
-                >
-                  <span className="text-2xl">{activity.icon}</span>
-                  <div className="flex-1">
-                    <p className="text-sm text-foreground font-medium">{activity.text}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{activity.time}</p>
+        {/* Report Options Modal */}
+        {showReportOptions && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowReportOptions(false)} />
+            <div className="relative bg-card w-full max-w-2xl rounded-3xl shadow-2xl border border-border overflow-hidden animate-in fade-in zoom-in duration-200">
+              <div className="p-8">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h3 className="text-2xl font-black text-foreground tracking-tight">Generate Report</h3>
+                    <p className="text-muted-foreground text-sm mt-1">Configure your analytics summary for export</p>
                   </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+                  <button onClick={() => setShowReportOptions(false)} className="p-2 hover:bg-muted rounded-full transition-colors">✕</button>
+                </div>
+
+                <div className="flex bg-muted p-1 rounded-2xl mb-8 overflow-x-auto no-scrollbar">
+                  {["monthly", "yearly", "financial", "custom"].map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setReportType(type)}
+                      className={`flex-1 min-w-[100px] py-2.5 rounded-xl text-xs font-bold capitalize transition-all whitespace-nowrap ${
+                        reportType === type ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {type === "financial" ? "Financial Year" : type === "custom" ? "Custom Range" : type}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mb-8">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Export Format</label>
+                  <div className="flex gap-4">
+                    {["pdf", "excel"].map(fmt => (
+                      <button
+                        key={fmt}
+                        onClick={() => setExportFormat(fmt)}
+                        className={`flex-1 flex flex-col items-center justify-center py-3 rounded-xl border-2 transition-all ${
+                          exportFormat === fmt ? "border-black bg-black text-white" : "border-border text-muted-foreground hover:border-black/20"
+                        }`}
+                      >
+                        <span className="font-bold">{fmt.toUpperCase()} Report</span>
+                        <span className="text-[10px] opacity-70">{fmt === 'pdf' ? '(Charts & Summary)' : '(Raw Data Dump)'}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="min-h-[220px]">
+                  {reportType === "monthly" && (
+                    <div className="space-y-6">
+                      <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold">
+                        {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
+                      </select>
+                      <select value={selectedMonths[0] || ""} onChange={(e) => setSelectedMonths(e.target.value ? [Number(e.target.value)] : [])} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold">
+                        <option value="">Full Year</option>
+                        {[
+                          "January", "February", "March", "April", "May", "June", 
+                          "July", "August", "September", "October", "November", "December"
+                        ].map((m, i) => <option key={i+1} value={i+1}>{m}</option>)}
+                      </select>
+                    </div>
+                  )}
+
+                  {reportType === "financial" && (
+                    <select value={financialYear} onChange={(e) => setFinancialYear(e.target.value)} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold">
+                      <option value="">Select Financial Year...</option>
+                      {["2023-2024", "2024-2025", "2025-2026"].map(fy => <option key={fy} value={fy}>{fy}</option>)}
+                    </select>
+                  )}
+
+                  {reportType === "custom" && (
+                    <div className="grid grid-cols-2 gap-4">
+                      <input type="date" value={reportDateRange.start} onChange={(e) => setReportDateRange(prev => ({ ...prev, start: e.target.value }))} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold" />
+                      <input type="date" value={reportDateRange.end} onChange={(e) => setReportDateRange(prev => ({ ...prev, end: e.target.value }))} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between pt-8 mt-4 border-t border-border">
+                  <button onClick={() => setShowReportOptions(false)} className="text-sm font-bold text-muted-foreground hover:text-foreground">Cancel</button>
+                  <button
+                    onClick={handleDownloadReport}
+                    className="flex items-center gap-2 bg-black text-white px-10 py-4 rounded-2xl font-black hover:opacity-90 transition active:scale-95"
+                  >
+                    <Download className="w-5 h-5" />
+                    Download {exportFormat.toUpperCase()}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );
@@ -501,26 +310,24 @@ const AdminDashboard = () => {
 
 const StatCard = ({ title, value, icon, color, onClick }) => {
   const colorClasses = {
-    blue: 'bg-blue-50 text-primary',
+    blue: 'bg-blue-50 text-blue-600',
     green: 'bg-emerald-50 text-emerald-600',
     purple: 'bg-purple-50 text-purple-600',
     red: 'bg-red-50 text-red-600',
     orange: 'bg-orange-50 text-orange-600',
-    indigo: 'bg-indigo-50 text-primary'
+    indigo: 'bg-indigo-50 text-indigo-600'
   };
 
   return (
     <div 
       onClick={onClick}
-      className={`bg-card rounded-2xl shadow-sm border border-border p-6 hover:shadow-md transition-all cursor-pointer hover:border-primary/20 active:scale-[0.98]`}
+      className={`bg-card rounded-2xl shadow-sm border border-border p-6 hover:shadow-md transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]`}
     >
-      <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-xl ${colorClasses[color]}`}>
-          {icon}
-        </div>
+      <div className={`w-12 h-12 rounded-xl ${colorClasses[color]} flex items-center justify-center mb-4`}>
+        {icon}
       </div>
-      <h3 className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{title}</h3>
-      <p className="text-3xl font-bold mt-2 text-foreground">{value}</p>
+      <h3 className="text-xs text-muted-foreground font-bold uppercase tracking-widest">{title}</h3>
+      <p className="text-2xl font-black mt-1 text-foreground">{value}</p>
     </div>
   );
 };
