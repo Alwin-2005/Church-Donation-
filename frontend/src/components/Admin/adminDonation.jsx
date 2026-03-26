@@ -371,7 +371,7 @@ const AdminDonation = () => {
                     type="date"
                     name="startDate"
                     value={formData.startDate}
-                    min={todayDateStr}
+                    min={editingCampaign ? undefined : todayDateStr}
                     onChange={handleInputChange}
                     className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
                     required
