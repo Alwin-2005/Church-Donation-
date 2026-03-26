@@ -475,7 +475,7 @@ const AdminUsers = () => {
                     Required columns: <code className="bg-muted px-1 rounded">fullname, email, phoneNo, gender, dob, address, role</code>
                   </p>
                   <p className="text-[11px] text-primary font-bold">
-                    Note: If password column is empty, a secure password will be auto-generated and emailed.
+                    Note: Phone number must be exactly 10 digits. If password column is empty, a secure password will be auto-generated and emailed.
                   </p>
                   <a 
                     href="/sample_church_members.csv" 

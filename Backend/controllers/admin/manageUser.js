@@ -10,7 +10,7 @@ async function handleGetAllUsersInfo(req, res) {
 }
 
 async function handleAddNewUsers(req, res) {
-    const phoneRegex = /^[1-9]\d{9}$/;
+    const phoneRegex = /^\d{10}$/;
     const status = "enabled";
     const { fullname, email, phoneNo, gender, dob, address, role } = req.body;
     let { password } = req.body;
@@ -75,7 +75,7 @@ async function handleAddNewUsers(req, res) {
 }
 
 async function handleAddBulkUsers(req, res) {
-    const phoneRegex = /^[1-9]\d{9}$/;
+    const phoneRegex = /^\d{10}$/;
     const { users } = req.body; // Expecting array of user objects
 
     if (!Array.isArray(users) || users.length === 0) {
