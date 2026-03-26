@@ -10,7 +10,7 @@ async function handleGetAllUsersInfo(req, res) {
 }
 
 async function handleAddNewUsers(req, res) {
-    const phoneRegex = /^[6-9]\d{9}$/;
+    const phoneRegex = /^[1-9]\d{9}$/;
     const status = "enabled";
     const { fullname, email, phoneNo, gender, dob, address, role } = req.body;
     let { password } = req.body;
@@ -75,7 +75,7 @@ async function handleAddNewUsers(req, res) {
 }
 
 async function handleAddBulkUsers(req, res) {
-    const phoneRegex = /^[6-9]\d{9}$/;
+    const phoneRegex = /^[1-9]\d{9}$/;
     const { users } = req.body; // Expecting array of user objects
 
     if (!Array.isArray(users) || users.length === 0) {
@@ -90,47 +90,69 @@ async function handleAddBulkUsers(req, res) {
 
     for (let i = 0; i < users.length; i++) {
         const user = users[i];
+        let { password } = user;
+        let generatedPassword = null;
 
         try {
             // Validate email
-            if (!validator.isEmail(user.email)) {
-                throw new Error(`Row ${i + 1}: Invalid email format`);
+            if (!user.email || !validator.isEmail(user.email)) {
+                throw new Error(`Row ${i + 1}: Invalid or missing email`);
             }
 
             // Validate phone (optional field)
             if (user.phoneNo && !phoneRegex.test(user.phoneNo)) {
-                throw new Error(`Row ${i + 1}: Invalid phone number`);
+                throw new Error(`Row ${i + 1}: Invalid phone number (must be 10 digits)`);
+            }
+
+            // Auto-generate password if not provided
+            if (!password) {
+                generatedPassword = crypto.randomBytes(4).toString("hex");
+                password = generatedPassword;
             }
 
             // Hash password
-            const passwordHash = await bcrypt.hash(user.password, 10);
+            const passwordHash = await bcrypt.hash(password, 10);
 
             // Create user
             await User.create({
-                fullname: user.fullname,
+                fullname: user.fullname || "Unknown User",
                 email: user.email,
                 phoneNo: user.phoneNo || "",
-                gender: user.gender,
+                gender: user.gender || "Other",
                 dob: user.dob,
                 address: user.address || "",
-                role: user.role,
+                role: user.role || "churchMember",
                 passwordHash,
                 status: "enabled"
             });
+
+            // Send email with credentials
+            const message = `Welcome to Church Donation App!\n\nYour account has been created by the admin.\n\nUsername: ${user.email}\nPassword: ${password}\n\nPlease login and change your password immediately.`;
+
+            try {
+                await sendEmail({
+                    email: user.email,
+                    subject: "Your Account Credentials",
+                    message: message,
+                });
+            } catch (emailErr) {
+                console.error(`Failed to send email to ${user.email}:`, emailErr);
+                // We don't fail the user creation if email fails, but we could log it
+            }
 
             results.success++;
         } catch (err) {
             results.failed++;
             results.errors.push({
                 row: i + 1,
-                email: user.email,
+                email: user.email || "N/A",
                 error: err.message
             });
         }
     }
 
     return res.status(200).json({
-        message: `Bulk upload completed: ${results.success} created, ${results.failed} failed`,
+        message: `Bulk upload completed: ${results.success} created successfully. Credentials have been sent to their emails.`,
         results
     });
 }

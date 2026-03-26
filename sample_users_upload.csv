@@ -1,4 +1,0 @@
-fullname,email,phoneNo,gender,dob,address,role,password
-John Doe,john.doe@example.com,9876543210,Male,1990-01-01,123 Main St City,churchMember,password123
-Jane Smith,jane.smith@example.com,9876543211,Female,1992-05-15,456 Oak Ave Town,externalMember,securepass
-Robert Brown,robert.brown@example.com,,Male,1985-11-20,,churchMember,pass2024

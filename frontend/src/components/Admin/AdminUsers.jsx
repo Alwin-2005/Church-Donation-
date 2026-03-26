@@ -470,9 +470,22 @@ const AdminUsers = () => {
                 >
                   Click here to upload your CSV file
                 </label>
-                <p className="text-sm text-muted-foreground mt-2 pointer-events-none">
-                  Required columns: fullname, email, phoneNo, gender, dob, address, role, password
-                </p>
+                <div className="mt-4 flex flex-col items-center gap-2">
+                  <p className="text-sm text-muted-foreground">
+                    Required columns: <code className="bg-muted px-1 rounded">fullname, email, phoneNo, gender, dob, address, role</code>
+                  </p>
+                  <p className="text-[11px] text-primary font-bold">
+                    Note: If password column is empty, a secure password will be auto-generated and emailed.
+                  </p>
+                  <a 
+                    href="/sample_church_members.csv" 
+                    download 
+                    className="mt-2 text-xs text-blue-600 hover:text-blue-800 underline font-bold"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Download Sample CSV Template
+                  </a>
+                </div>
               </div>
 
               {csvFile && (

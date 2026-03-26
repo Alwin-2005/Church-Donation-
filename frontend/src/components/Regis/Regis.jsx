@@ -69,8 +69,8 @@ const Regis = () => {
 
     if (!formInput.phoneNo?.trim()) {
       inputError.phoneNo = "Phone number is required";
-    } else if (!/^[6-9]\d{9}$/.test(formInput.phoneNo)) {
-      inputError.phoneNo = "Phone number must be exactly 10 digits and start with 6-9";
+    } else if (!/^[1-9]\d{9}$/.test(formInput.phoneNo)) {
+      inputError.phoneNo = "Phone number must be exactly 10 digits and start with 1-9";
     }
 
     if (!formInput.password) {
