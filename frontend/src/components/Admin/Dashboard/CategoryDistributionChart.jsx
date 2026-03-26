@@ -35,9 +35,17 @@ const CategoryDistributionChart = ({ data }) => {
               ))}
             </Pie>
             <Tooltip 
+              formatter={(val) => `₹${val.toLocaleString()}`}
               contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
             />
-            <Legend verticalAlign="bottom" height={36}/>
+            <Legend 
+              layout="vertical" 
+              verticalAlign="middle" 
+              align="right" 
+              iconType="circle" 
+              wrapperStyle={{ paddingLeft: '20px' }} 
+              formatter={(value, entry) => `${value} (₹${entry.payload.value.toLocaleString()})`}
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>

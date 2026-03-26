@@ -1,5 +1,6 @@
 const ExcelJS = require('exceljs');
 
+
 async function generateExcelReport(reportData, res) {
     const workbook = new ExcelJS.Workbook();
     workbook.creator = 'Church Of God';
@@ -7,154 +8,147 @@ async function generateExcelReport(reportData, res) {
     workbook.created = new Date();
     workbook.modified = new Date();
 
-    // 1. Donations Sheet
-    const donationSheet = workbook.addWorksheet('Donations');
-    donationSheet.columns = [
-        { header: 'Date', key: 'date', width: 15 },
-        { header: 'Donor Name', key: 'donor', width: 25 },
-        { header: 'Email', key: 'email', width: 30 },
-        { header: 'Campaign', key: 'campaign', width: 25 },
-        { header: 'Amount', key: 'amount', width: 15 },
-        { header: 'Receipt No', key: 'receipt', width: 20 },
-        { header: 'DB ID', key: 'id', width: 25 },
-        { header: 'Status', key: 'status', width: 15 }
-    ];
+    const addSheet = (name, columns, data) => {
+        const sheet = workbook.addWorksheet(name);
+        sheet.columns = columns;
+        if (data && data.length > 0) {
+            sheet.addRows(data);
+        }
+        sheet.getRow(1).font = { bold: true };
+    };
 
-    if (reportData.donationTable) {
-        reportData.donationTable.forEach(row => {
-            donationSheet.addRow({
-                date: row[0],
-                donor: row[1],
-                email: row[2],
-                campaign: row[3],
-                amount: row[4],
-                receipt: row[5],
-                id: row[6],
-                status: row[7]
-            });
-        });
-    }
-    donationSheet.getRow(1).font = { bold: true };
+    // 1. Donations Sheet - Map raw donation model
+    addSheet('Donations', [
+        { header: '_id', key: '_id', width: 25 },
+        { header: 'userId', key: 'userId', width: 25 },
+        { header: 'donationCampaignId', key: 'donationCampaignId', width: 25 },
+        { header: 'amount', key: 'amount', width: 15 },
+        { header: 'paymentStatus', key: 'paymentStatus', width: 15 },
+        { header: 'receiptNo', key: 'receiptNo', width: 20 },
+        { header: 'createdAt', key: 'createdAt', width: 25 },
+        { header: 'updatedAt', key: 'updatedAt', width: 25 }
+    ], reportData.donations?.map(d => ({
+        _id: d._id?.toString(),
+        userId: d.userId?._id?.toString() || d.userId?.toString(),
+        donationCampaignId: d.donationCampaignId?._id?.toString() || d.donationCampaignId?.toString(),
+        amount: d.amount,
+        paymentStatus: d.paymentStatus,
+        receiptNo: d.receiptNo,
+        createdAt: d.createdAt?.toISOString(),
+        updatedAt: d.updatedAt?.toISOString()
+    })));
 
-    // 2. Merchandise Orders Sheet
-    const merchSheet = workbook.addWorksheet('Merchandise Orders');
-    merchSheet.columns = [
-        { header: 'Order ID', key: 'id', width: 25 },
-        { header: 'Customer', key: 'customer', width: 25 },
-        { header: 'Products', key: 'products', width: 40 },
-        { header: 'Qty', key: 'qty', width: 10 },
-        { header: 'Total', key: 'total', width: 15 },
-        { header: 'Status', key: 'status', width: 15 },
-        { header: 'Date', key: 'date', width: 15 },
-        { header: 'Razorpay Order ID', key: 'rzpOrder', width: 25 },
-        { header: 'Razorpay Payment ID', key: 'rzpPayment', width: 25 }
-    ];
+    // 2. Merchandise Orders Sheet - Map raw order model
+    addSheet('Orders', [
+        { header: '_id', key: '_id', width: 25 },
+        { header: 'userId', key: 'userId', width: 25 },
+        { header: 'items', key: 'items', width: 50 },
+        { header: 'totalAmount', key: 'totalAmount', width: 15 },
+        { header: 'status', key: 'status', width: 15 },
+        { header: 'razorpayOrderId', key: 'razorpayOrderId', width: 25 },
+        { header: 'razorpayPaymentId', key: 'razorpayPaymentId', width: 25 },
+        { header: 'createdAt', key: 'createdAt', width: 25 },
+        { header: 'updatedAt', key: 'updatedAt', width: 25 }
+    ], reportData.orders?.map(o => ({
+        _id: o._id?.toString(),
+        userId: o.userId?._id?.toString() || o.userId?.toString(),
+        items: JSON.stringify(o.items?.map(i => ({
+            itemId: i.itemId?._id?.toString() || i.itemId?.toString(),
+            quantity: i.quantity,
+            price: i.price
+        })) || []),
+        totalAmount: o.totalAmount,
+        status: o.status,
+        razorpayOrderId: o.razorpayOrderId,
+        razorpayPaymentId: o.razorpayPaymentId,
+        createdAt: o.createdAt?.toISOString(),
+        updatedAt: o.updatedAt?.toISOString()
+    })));
 
-    if (reportData.merchTable) {
-        reportData.merchTable.forEach(row => {
-            merchSheet.addRow({
-                id: row[0],
-                customer: row[1],
-                products: row[2],
-                qty: row[3],
-                total: row[4],
-                status: row[5],
-                date: row[6],
-                rzpOrder: row[7],
-                rzpPayment: row[8]
-            });
-        });
-    }
-    merchSheet.getRow(1).font = { bold: true };
+    // 3. Payments Sheet - Map raw payment model
+    addSheet('Payments', [
+        { header: '_id', key: '_id', width: 25 },
+        { header: 'orderId', key: 'orderId', width: 25 },
+        { header: 'amount', key: 'amount', width: 15 },
+        { header: 'method', key: 'method', width: 15 },
+        { header: 'status', key: 'status', width: 15 },
+        { header: 'transactionNo', key: 'transactionNo', width: 25 },
+        { header: 'paymentDate', key: 'paymentDate', width: 25 },
+        { header: 'createdAt', key: 'createdAt', width: 25 },
+        { header: 'updatedAt', key: 'updatedAt', width: 25 }
+    ], reportData.payments?.map(p => ({
+        _id: p._id?.toString(),
+        orderId: p.orderId?._id?.toString() || p.orderId?.toString(),
+        amount: p.amount,
+        method: p.method,
+        status: p.status,
+        transactionNo: p.transactionNo,
+        paymentDate: p.paymentDate?.toISOString(),
+        createdAt: p.createdAt?.toISOString(),
+        updatedAt: p.updatedAt?.toISOString()
+    })));
 
-    // 3. Payments Sheet
-    const paymentSheet = workbook.addWorksheet('Payments');
-    paymentSheet.columns = [
-        { header: 'Payment ID', key: 'id', width: 20 },
-        { header: 'Date', key: 'date', width: 15 },
-        { header: 'Payer Name', key: 'payer', width: 25 },
-        { header: 'Email', key: 'email', width: 30 },
-        { header: 'Amount', key: 'amount', width: 15 },
-        { header: 'Method', key: 'method', width: 20 },
-        { header: 'Status', key: 'status', width: 15 },
-        { header: 'Reference', key: 'reference', width: 25 }
-    ];
+    // 4. Donation Campaigns Sheet - Map raw campaign model
+    addSheet('DonationCampaigns', [
+        { header: '_id', key: '_id', width: 25 },
+        { header: 'title', key: 'title', width: 30 },
+        { header: 'description', key: 'description', width: 40 },
+        { header: 'goalAmount', key: 'goalAmount', width: 15 },
+        { header: 'collectedAmount', key: 'collectedAmount', width: 15 },
+        { header: 'startDate', key: 'startDate', width: 25 },
+        { header: 'endDate', key: 'endDate', width: 25 },
+        { header: 'status', key: 'status', width: 15 },
+        { header: 'createdBy', key: 'createdBy', width: 25 },
+        { header: 'isTithe', key: 'isTithe', width: 15 },
+        { header: 'donationType', key: 'donationType', width: 20 },
+        { header: 'createdAt', key: 'createdAt', width: 25 },
+        { header: 'updatedAt', key: 'updatedAt', width: 25 }
+    ], reportData.campaigns?.map(c => ({
+        _id: c._id?.toString(),
+        title: c.title,
+        description: c.description,
+        goalAmount: c.goalAmount,
+        collectedAmount: c.collectedAmount,
+        startDate: c.startDate?.toISOString(),
+        endDate: c.endDate?.toISOString(),
+        status: c.status,
+        createdBy: c.createdBy?._id?.toString() || c.createdBy?.toString(),
+        isTithe: c.isTithe,
+        donationType: c.donationType,
+        createdAt: c.createdAt?.toISOString(),
+        updatedAt: c.updatedAt?.toISOString()
+    })));
 
-    if (reportData.paymentTable) {
-        reportData.paymentTable.forEach(row => {
-            paymentSheet.addRow({
-                id: row[0],
-                date: row[6],
-                payer: row[1],
-                email: row[2],
-                amount: row[4],
-                method: row[5],
-                status: row[7],
-                reference: row[3]
-            });
-        });
-    }
-    paymentSheet.getRow(1).font = { bold: true };
-
-    // 4. Campaign Performance Sheet
-    const campaignSheet = workbook.addWorksheet('Campaign Performance');
-    campaignSheet.columns = [
-        { header: 'Campaign Name', key: 'name', width: 35 },
-        { header: 'Goal Amount', key: 'goal', width: 20 },
-        { header: 'Collected', key: 'collected', width: 20 },
-        { header: 'Completion %', key: 'completion', width: 15 }
-    ];
-
-    if (reportData.campaignTable) {
-        reportData.campaignTable.forEach(row => {
-            campaignSheet.addRow({
-                name: row[0],
-                goal: row[1],
-                collected: row[2],
-                completion: row[3]
-            });
-        });
-    }
-    campaignSheet.getRow(1).font = { bold: true };
-
-    // 5. User Registration Sheet
-    const userSheet = workbook.addWorksheet('Users');
-    userSheet.columns = [
-        { header: 'Full Name', key: 'name', width: 25 },
-        { header: 'Email', key: 'email', width: 30 },
-        { header: 'Phone', key: 'phone', width: 15 },
-        { header: 'Gender', key: 'gender', width: 10 },
-        { header: 'DOB', key: 'dob', width: 15 },
-        { header: 'Address', key: 'address', width: 35 },
-        { header: 'Reg. Date', key: 'date', width: 15 },
-        { header: 'Role', key: 'role', width: 15 },
-        { header: 'Status', key: 'status', width: 10 },
-        { header: 'Donations', key: 'donations', width: 12 },
-        { header: 'Orders', key: 'orders', width: 12 }
-    ];
-
-    if (reportData.userTable) {
-        reportData.userTable.forEach(row => {
-            userSheet.addRow({
-                name: row[0],
-                email: row[1],
-                phone: row[2],
-                gender: row[3],
-                dob: row[4],
-                address: row[5],
-                date: row[6],
-                role: row[7],
-                status: row[8],
-                donations: row[9],
-                orders: row[10]
-            });
-        });
-    }
-    userSheet.getRow(1).font = { bold: true };
+    // 5. Users Sheet - Map raw user model
+    addSheet('Users', [
+        { header: '_id', key: '_id', width: 25 },
+        { header: 'fullname', key: 'fullname', width: 25 },
+        { header: 'email', key: 'email', width: 30 },
+        { header: 'phoneNo', key: 'phoneNo', width: 15 },
+        { header: 'gender', key: 'gender', width: 10 },
+        { header: 'dob', key: 'dob', width: 25 },
+        { header: 'address', key: 'address', width: 35 },
+        { header: 'role', key: 'role', width: 15 },
+        { header: 'status', key: 'status', width: 15 },
+        { header: 'createdAt', key: 'createdAt', width: 25 },
+        { header: 'updatedAt', key: 'updatedAt', width: 25 }
+    ], reportData.users?.map(u => ({
+        _id: u._id?.toString(),
+        fullname: u.fullname,
+        email: u.email,
+        phoneNo: u.phoneNo,
+        gender: u.gender,
+        dob: u.dob?.toISOString() || null,
+        address: u.address,
+        role: u.role,
+        status: u.status,
+        createdAt: u.createdAt?.toISOString(),
+        updatedAt: u.updatedAt?.toISOString()
+    })));
 
     // Set Response Headers
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', `attachment; filename=Admin_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+    res.setHeader('Content-Disposition', `attachment; filename=Admin_Raw_Data_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
 
     await workbook.xlsx.write(res);
     res.end();
@@ -163,3 +157,4 @@ async function generateExcelReport(reportData, res) {
 module.exports = {
     generateExcelReport
 };
+

@@ -61,6 +61,17 @@ async function handleGenerateAdminReport(req, res) {
         });
 
 
+        if (format === 'excel') {
+            await generateExcelReport({
+                donations,
+                orders,
+                payments,
+                campaigns,
+                users
+            }, res);
+            return;
+        }
+
         // 1. Summary
         const donationCollected = donations.reduce((sum, d) => sum + (d.paymentStatus === 'paid' ? d.amount : 0), 0);
         const uniqueDonors = new Set(donations.map(d => d.userId?._id?.toString())).size;
@@ -134,22 +145,22 @@ async function handleGenerateAdminReport(req, res) {
                 merch: { totalOrders: orders.length, revenue: merchRevenue, completed: completedOrders, topProduct },
                 user: { total: users.length, new: newUsers, verified: users.length, active: activeDonors }
             },
-            donationTable: (format === 'excel' ? donations : donations.slice(-100)).map(d => [
+            donationTable: donations.slice(-100).map(d => [
                 new Date(d.createdAt).toLocaleDateString(), // 0
-                format === 'excel' ? (d.userId?.fullname || 'Guest') : (d.userId?.fullname || 'Guest').substring(0, 15), // 1
-                format === 'excel' ? (d.userId?.email || 'N/A') : (d.userId?.email || 'N/A').substring(0, 15), // 2
-                format === 'excel' ? (d.donationCampaignId?.title || 'General') : (d.donationCampaignId?.title || 'General').substring(0, 15), // 3
-                format === 'excel' ? (d.amount || 0) : `Rs. ${d.amount}`, // 4
+                (d.userId?.fullname || 'Guest').substring(0, 15), // 1
+                (d.userId?.email || 'N/A').substring(0, 15), // 2
+                (d.donationCampaignId?.title || 'General').substring(0, 15), // 3
+                `Rs. ${d.amount}`, // 4
                 d.receiptNo || 'N/A', // 5
                 d._id.toString(), // 6
                 d.paymentStatus // 7
             ]),
-            merchTable: (format === 'excel' ? orders : orders.slice(-100)).map(o => [
+            merchTable: orders.slice(-100).map(o => [
                 o._id.toString(), // 0
-                format === 'excel' ? (o.userId?.fullname || 'Guest') : (o.userId?.fullname || 'Guest').substring(0, 10), // 1
-                format === 'excel' ? o.items.map(i => i.itemId?.itemName).join(', ') : o.items.map(i => i.itemId?.itemName).join(', ').substring(0, 10), // 2
-                format === 'excel' ? (o.items.reduce((sum, i) => sum + i.quantity, 0)) : (o.items.reduce((sum, i) => sum + i.quantity, 0).toString()), // 3
-                format === 'excel' ? (o.totalAmount || 0) : `Rs. ${o.totalAmount}`, // 4
+                (o.userId?.fullname || 'Guest').substring(0, 10), // 1
+                o.items.map(i => i.itemId?.itemName).join(', ').substring(0, 10), // 2
+                (o.items.reduce((sum, i) => sum + i.quantity, 0).toString()), // 3
+                `Rs. ${o.totalAmount}`, // 4
                 o.status, // 5
                 new Date(o.createdAt).toLocaleDateString(), // 6
                 o.razorpayOrderId || 'N/A', // 7
@@ -157,13 +168,13 @@ async function handleGenerateAdminReport(req, res) {
             ]),
             campaignTable: campaigns.map(c => [
                 c.title || 'Untitled', // 0
-                format === 'excel' ? (c.goalAmount || 0) : `Rs. ${c.goalAmount || 0}`, // 1
-                format === 'excel' ? (c.collectedAmount || 0) : `Rs. ${c.collectedAmount || 0}`, // 2
-                format === 'excel' ? (c.goalAmount ? (c.collectedAmount || 0) / c.goalAmount : 0) : (c.goalAmount ? `${(((c.collectedAmount || 0) / c.goalAmount) * 100).toFixed(1)}%` : 'N/A') // 3
+                `Rs. ${c.goalAmount || 0}`, // 1
+                `Rs. ${c.collectedAmount || 0}`, // 2
+                (c.goalAmount ? `${(((c.collectedAmount || 0) / c.goalAmount) * 100).toFixed(1)}%` : 'N/A') // 3
             ]),
-            userTable: (format === 'excel' ? users : users.slice(-100)).map(u => [
-                format === 'excel' ? (u.fullname || '') : (u.fullname || '').substring(0, 15),
-                format === 'excel' ? (u.email || '') : (u.email || '').substring(0, 15),
+            userTable: users.slice(-100).map(u => [
+                (u.fullname || '').substring(0, 15),
+                (u.email || '').substring(0, 15),
                 u.phoneNo || 'N/A',
                 u.gender || 'N/A',
                 u.dob ? new Date(u.dob).toLocaleDateString() : 'N/A',
@@ -179,7 +190,7 @@ async function handleGenerateAdminReport(req, res) {
                 p.orderId?.userId?.fullname || 'N/A',
                 p.orderId?.userId?.email || 'N/A',
                 p.orderId?._id?.toString() || 'N/A',
-                format === 'excel' ? (p.amount || 0) : `Rs. ${p.amount}`,
+                `Rs. ${p.amount}`,
                 p.method,
                 new Date(p.paymentDate).toLocaleDateString(),
                 p.status
@@ -203,11 +214,7 @@ async function handleGenerateAdminReport(req, res) {
             notes: `Report generated on ${new Date().toLocaleDateString()}`
         };
 
-        if (format === 'excel') {
-            await generateExcelReport(reportData, res);
-        } else {
-            await generateAdminReport(reportData, res);
-        }
+        await generateAdminReport(reportData, res);
 
     } catch (error) {
         console.error("Report gen error:", error);

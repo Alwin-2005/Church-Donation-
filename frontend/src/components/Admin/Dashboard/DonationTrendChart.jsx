@@ -24,8 +24,9 @@ const DonationTrendChart = ({ data }) => {
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
             <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#888' }} />
-            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#888' }} />
+            <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `₹${val.toLocaleString()}`} tick={{ fontSize: 11, fill: '#888' }} />
             <Tooltip 
+              formatter={(val) => `₹${val.toLocaleString()}`}
               contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
             />
             <Area 

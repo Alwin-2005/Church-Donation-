@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { X, Calendar, Clock, FileText, Check } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const EventForm = ({ onClose, onSubmit, initialData }) => {
+  const formatForDateInput = (dateStr) => {
+    if (!dateStr) return "";
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return "";
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    } catch {
+      return "";
+    }
+  };
+
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -16,12 +28,11 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
     if (initialData) {
       setFormData({
         title: initialData.title || "",
-        date: initialData.date || "",
+        date: formatForDateInput(initialData.date),
         time: initialData.time || "",
         note: initialData.note || "",
         status: initialData.status || "visible",
         type: initialData.type || "event",
-        link: initialData.link || "",
       });
     }
   }, [initialData]);
@@ -32,6 +43,14 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Date validation: prevent past dates
+    const today = new Date().toISOString().split("T")[0];
+    if (formData.date < today && (!initialData || formatForDateInput(initialData.date) !== formData.date)) {
+        toast.error("Announcement date cannot be in the past");
+        return;
+    }
+
     onSubmit(formData);
   };
 
@@ -78,6 +97,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
               name="date"
               value={formData.date}
               onChange={handleChange}
+              min={initialData ? undefined : new Date().toISOString().split("T")[0]}
               className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
               required
             />
@@ -108,19 +128,6 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
           />
         </div>
 
-        <div>
-          <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">External Link (e.g. Google Form)</label>
-          <input
-            name="link"
-            placeholder="https://forms.gle/..."
-            value={formData.link}
-            onChange={handleChange}
-            className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
-          />
-        </div>
-
-
-
         <div className="flex gap-6 items-center pt-4 border-t border-gray-100">
           <div className="flex-1">
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Visibility</label>
@@ -130,8 +137,8 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
               onChange={handleChange}
               className="w-full bg-card border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-bold"
             >
-              <option value="visible">Public Exposure</option>
-              <option value="hidden">Draft Context</option>
+              <option value="visible">Visible</option>
+              <option value="hidden">Hidden</option>
             </select>
           </div>
 

@@ -1,8 +1,8 @@
 import React from "react";
-import { Clock, MapPin, Edit3, Trash2, BookOpen } from "lucide-react";
+import { Clock, Edit3, Trash2 } from "lucide-react";
 
 const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit, onDelete }) => {
-  const { title, date, time, note, status, type, link } = event;
+  const { title, date, time, note, status, type } = event;
 
   const formatDate = (dateStr) => {
     if (!dateStr) return { day: "--", month: "---" };
@@ -32,8 +32,7 @@ const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit, onDelete
 
   return (
     <div
-      onClick={() => !isAdmin && link && window.open(link, '_blank')}
-      className={`group relative bg-card rounded-[24px] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 flex flex-col h-full ${isCompact ? "max-w-sm" : ""} ${!isAdmin && link ? "cursor-pointer" : ""}`}
+      className={`group relative bg-card rounded-[24px] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 flex flex-col h-full ${isCompact ? "max-w-sm" : ""}`}
     >
       {/* Visual Identity Section - Emphasized Date */}
       <div className={`relative ${isCompact ? "h-20" : "h-44"} bg-foreground overflow-hidden flex-shrink-0`}>
@@ -84,22 +83,6 @@ const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit, onDelete
           <p className={`text-muted-foreground font-medium italic ${isCompact ? "text-xs leading-normal line-clamp-1" : "text-sm leading-relaxed line-clamp-2"}`}>
             {note}
           </p>
-        </div>
-
-        {/* Footer / Location */}
-        <div className={`${isCompact ? "mt-3 pt-3" : "mt-8 pt-6"} border-t border-gray-50 flex items-center justify-between`}>
-          <div className="flex items-center gap-1.5 text-gray-400">
-            <MapPin size={isCompact ? 12 : 14} />
-            <span className={`font-bold uppercase tracking-widest truncate max-w-[150px] ${isCompact ? "text-[9px]" : "text-[10px]"}`}>
-              {note || "Main Sanctuary"}
-            </span>
-          </div>
-          <div 
-            title={link ? "Register" : "View Announcement"}
-            className={`${isCompact ? "w-6 h-6" : "w-8 h-8"} rounded-full bg-background flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500`}
-          >
-            <BookOpen size={isCompact ? 10 : 14} className="opacity-20 group-hover:opacity-100" />
-          </div>
         </div>
       </div>
     </div>

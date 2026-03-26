@@ -107,9 +107,8 @@ const AdminDonation = () => {
       return;
     }
 
-    const today = new Date().toISOString().split('T')[0];
-    
     // Only enforce that the start date must be today or future when CREATING a new campaign
+    const today = new Date().toISOString().split('T')[0];
     if (!editingCampaign && formData.startDate < today) {
       toast.error("Start date cannot be before the current date");
       return;
@@ -130,7 +129,7 @@ const AdminDonation = () => {
       let res;
       if (editingCampaign) {
         // UPDATE
-        res = await api.put(
+        res = await api.patch(
           `admin/donationcampaigns/update/${editingCampaign._id}`,
           payload,
           { withCredentials: true }

@@ -247,11 +247,9 @@ const AdminProducts = () => {
         >
           <option value="All">All Categories</option>
           <option value="Books & Bibles">Books & Bibles</option>
-          <option value="Apparel">Apparel</option>
+          <option value="Clothing">Clothing</option>
           <option value="Accessories">Accessories</option>
-          <option value="Home Decor">Home Decor</option>
           <option value="Stationery">Stationery</option>
-          <option value="Other">Other</option>
         </select>
 
         <select 
@@ -440,11 +438,9 @@ const AdminProducts = () => {
                   >
                     <option value="" disabled>Select Category</option>
                     <option value="Books & Bibles">Books & Bibles</option>
-                    <option value="Apparel">Apparel</option>
+                    <option value="Clothing">Clothing</option>
                     <option value="Accessories">Accessories</option>
-                    <option value="Home Decor">Home Decor</option>
                     <option value="Stationery">Stationery</option>
-                    <option value="Other">Other</option>
                   </select>
                 </div>
               </div>

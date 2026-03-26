@@ -240,23 +240,7 @@ const AdminDashboard = () => {
                   ))}
                 </div>
 
-                <div className="mb-8">
-                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Export Format</label>
-                  <div className="flex gap-4">
-                    {["pdf", "excel"].map(fmt => (
-                      <button
-                        key={fmt}
-                        onClick={() => setExportFormat(fmt)}
-                        className={`flex-1 flex flex-col items-center justify-center py-3 rounded-xl border-2 transition-all ${
-                          exportFormat === fmt ? "border-black bg-black text-white" : "border-border text-muted-foreground hover:border-black/20"
-                        }`}
-                      >
-                        <span className="font-bold">{fmt.toUpperCase()} Report</span>
-                        <span className="text-[10px] opacity-70">{fmt === 'pdf' ? '(Charts & Summary)' : '(Raw Data Dump)'}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+
                 
                 <div className="min-h-[220px]">
                   {reportType === "monthly" && (
@@ -270,6 +254,14 @@ const AdminDashboard = () => {
                           "January", "February", "March", "April", "May", "June", 
                           "July", "August", "September", "October", "November", "December"
                         ].map((m, i) => <option key={i+1} value={i+1}>{m}</option>)}
+                      </select>
+                    </div>
+                  )}
+
+                  {reportType === "yearly" && (
+                    <div className="space-y-6">
+                      <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold">
+                        {[2023, 2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
                       </select>
                     </div>
                   )}
