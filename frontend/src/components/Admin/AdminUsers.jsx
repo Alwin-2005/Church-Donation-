@@ -128,13 +128,13 @@ const AdminUsers = () => {
 
     try {
       await api.patch(`/admin/users/status/${id}`, { status: newStatus });
-      
+
       setUsers(prev =>
         prev.map(u =>
           u._id === id ? { ...u, status: newStatus } : u
         )
       );
-      
+
       toast.success(`User ${newStatus === "enabled" ? "enabled" : "disabled"} successfully`);
     } catch (error) {
       console.error("Error updating user status:", error);
@@ -270,17 +270,15 @@ const AdminUsers = () => {
                         <p className="text-xs text-muted-foreground">{user.phoneNo || "—"}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                          user.role === 'admin' ? "bg-purple-100 text-purple-700" :
-                          user.role === 'churchMember' ? "bg-blue-100 text-primary" : "bg-yellow-100 text-yellow-700"
-                        }`}>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${user.role === 'admin' ? "bg-purple-100 text-purple-700" :
+                            user.role === 'churchMember' ? "bg-blue-100 text-primary" : "bg-yellow-100 text-yellow-700"
+                          }`}>
                           {user.role}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                          user.status === "enabled" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                        }`}>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${user.status === "enabled" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                          }`}>
                           {user.status}
                         </span>
                       </td>
@@ -288,11 +286,10 @@ const AdminUsers = () => {
                         <div className="flex justify-end gap-2">
                           <button
                             onClick={() => handleToggleStatus(user._id)}
-                            className={`px-4 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                              user.status === "enabled"
+                            className={`px-4 py-1.5 rounded-lg text-xs font-bold border transition-all ${user.status === "enabled"
                                 ? "border-red-200 text-red-600 hover:bg-red-50"
                                 : "border-green-200 text-green-600 hover:bg-green-50"
-                            }`}
+                              }`}
                           >
                             {user.status === "enabled" ? "Disable" : "Enable"}
                           </button>
@@ -451,7 +448,7 @@ const AdminUsers = () => {
             </div>
 
             <div className="p-6 space-y-4">
-              <div 
+              <div
                 className="group relative border-2 border-dashed border-border rounded-lg p-8 text-center transition-all hover:bg-background hover:border-black focus-within:ring-2 focus-within:ring-black focus-within:border-black hover:scale-[1.01] cursor-pointer"
                 onClick={() => document.getElementById("csv-upload").click()}
               >
@@ -477,14 +474,7 @@ const AdminUsers = () => {
                   <p className="text-[11px] text-primary font-bold">
                     Note: Phone number must be exactly 10 digits. If password column is empty, a secure password will be auto-generated and emailed.
                   </p>
-                  <a 
-                    href="/sample_church_members.csv" 
-                    download 
-                    className="mt-2 text-xs text-blue-600 hover:text-blue-800 underline font-bold"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    Download Sample CSV Template
-                  </a>
+
                 </div>
               </div>
 

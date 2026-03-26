@@ -46,7 +46,7 @@ const Navbar = () => {
               ["Users", "/admin/users"],
               ["Donation Campaigns", "/admin/campaigns"],
               ["Donations", "/admin/donations"],
-              ["Products", "/admin/products"],
+              ["Merchandise", "/admin/products"],
               ["Orders", "/admin/orders"],
               ["Payments", "/admin/payments"],
               ["Announcements", "/admin/announcements"],

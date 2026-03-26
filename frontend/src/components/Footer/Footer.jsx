@@ -30,6 +30,9 @@ const Footer = () => {
           <p className="text-sm">
             ✉️ <span className="ml-2">aaronsinai2005@gmail.com</span>
           </p>
+          <p className="text-sm mt-2 flex items-start">
+            📍 <span className="ml-2">Church of God Full Gospel In India, Ahmedabad, Christian Society, 29B, opp. Vinay Vihar, Behrampura, Ahmedabad, Gujarat 380022</span>
+          </p>
         </div>
 
         {/* Legal / Links */}

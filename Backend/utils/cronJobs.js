@@ -15,7 +15,10 @@ async function checkExpiredCampaigns() {
     try {
         const now = new Date();
         const campaignResult = await DonationCampaign.updateMany(
-            { status: 'active', endDate: { $lt: now } },
+            { 
+                status: { $in: ['active', 'paused'] }, 
+                endDate: { $lt: now } 
+            },
             { $set: { status: 'closed' } }
         );
         if(campaignResult.modifiedCount > 0) {
@@ -34,7 +37,7 @@ async function checkExpiredEvents() {
 
         const eventResult = await Content.updateMany(
             { 
-                type: 'event', 
+                type: { $in: ['event', 'notice'] }, 
                 status: 'visible', 
                 $or: [
                     { date: { $lt: todayStr } },
@@ -45,26 +48,33 @@ async function checkExpiredEvents() {
         );
         
         if (eventResult.modifiedCount > 0) {
-            console.log(`[CRON] Real-time precision hide triggered. Events hidden: ${eventResult.modifiedCount}`);
+            console.log(`[CRON] Real-time precision hide. Announcements/Events hidden: ${eventResult.modifiedCount}`);
         }
     } catch (error) {
         console.error('[CRON] Error during minute-schedule event hide:', error);
     }
 }
 
-function startCronJobs() {
+async function startCronJobs() {
     // 1. Run once immediately on server start
-    console.log('[CRON] Running initial startup sweep for expired data...');
-    checkExpiredCampaigns();
-    checkExpiredEvents();
+    console.log('[CRON] Initiating startup sweep for expired data...');
+    try {
+        await Promise.all([
+            checkExpiredCampaigns(),
+            checkExpiredEvents()
+        ]);
+        console.log('[CRON] Startup sweep completed successfully.');
+    } catch (err) {
+        console.error('[CRON] Critical error during startup sweep:', err);
+    }
 
-    // 2. Schedule daily campaign end check (00:00 IST)
-    cron.schedule('30 18 * * *', () => checkExpiredCampaigns());
+    // 2. Schedule regular checks (every minute) for "expired" campaigns and events
+    cron.schedule('* * * * *', () => {
+        checkExpiredCampaigns();
+        checkExpiredEvents();
+    });
 
-    // 3. Schedule minute-level real-time event check
-    cron.schedule('* * * * *', () => checkExpiredEvents());
-
-    console.log('[CRON] Initialization complete: Schedules are active in the background.');
+    console.log('[CRON] Background schedules are now active.');
 }
 
 module.exports = {

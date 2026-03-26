@@ -1,6 +1,10 @@
 const nodemailer = require("nodemailer");
 
 const sendEmail = async (options) => {
+    if (!process.env.EMAIL_USERNAME || !process.env.EMAIL_PASSWORD) {
+        console.error("[EMAIL] Missing credentials: EMAIL_USERNAME or EMAIL_PASSWORD is not set in environment variables.");
+    }
+
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 587,

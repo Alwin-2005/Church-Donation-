@@ -30,11 +30,11 @@ function generateHeader(doc, title) {
     }
 
     fill(doc, COLORS.primary);
-    doc.font('Helvetica-Bold').fontSize(17).text('Church Of God', 104, 24);
+    doc.font('Helvetica-Bold').fontSize(17).text('Church Of God Full Gospel In India', 104, 24);
     fill(doc, COLORS.muted);
     doc.font('Helvetica').fontSize(9)
-        .text('742 Evergreen Terrace Street, Maplewood Heights', 104, 45)
-        .text('Springfield Illinois 62704, United States', 104, 57)
+        .text('Christian Society, 29B, opp. Vinay Vihar, Behrampura', 104, 45)
+        .text('Ahmedabad, Gujarat 380022', 104, 57)
         .text('contact@churchofgod.org', 104, 69);
 
     fill(doc, COLORS.primaryPale);

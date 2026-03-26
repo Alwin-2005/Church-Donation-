@@ -2,7 +2,7 @@ const dc = require("../models/donationCampaign");
 
 async function handleGetExternalDonation(req,res){
     try{
-        const Result = await dc.find({donationType: "external"});
+        const Result = await dc.find({donationType: "external", status: "active"});
         return res.status(202).json({Result});
     }
     catch(err){
@@ -13,7 +13,7 @@ async function handleGetExternalDonation(req,res){
 
 async function handleGetInternaDonation(req,res){
     try{
-        const Result = await dc.find({donationType: "internal"});
+        const Result = await dc.find({donationType: "internal", status: "active"});
         return res.status(202).json({Result});
     }
     catch(err){
@@ -25,7 +25,7 @@ async function handleGetInternaDonation(req,res){
 const handleGetDonationCampaignById = async (req, res) => {
   try {
     const { campaignId } = req.params;
-    const Result = await dc.findById(campaignId);
+    const Result = await dc.findOne({ _id: campaignId, status: "active" });
     console.log(Result);    
     if (!Result) {
       return res.status(404).json({
