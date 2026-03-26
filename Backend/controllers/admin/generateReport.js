@@ -14,37 +14,37 @@ async function handleGenerateAdminReport(req, res) {
         const selectedMonths = months ? months.split(',').map(Number) : [];
         const selectedYear = year ? Number(year) : new Date().getFullYear();
 
-        // Build filter object for time
-        let timeFilter = {};
-
-        if (startDate && endDate) {
-            // Custom Duration
-            timeFilter = {
-                createdAt: {
-                    $gte: new Date(startDate),
-                    $lte: new Date(endDate)
-                }
-            };
-        } else if (selectedMonths.length > 0) {
-            // Monthly in a specific year
-            timeFilter = {
-                $expr: {
-                    $and: [
-                        { $in: [{ $month: "$createdAt" }, selectedMonths] },
-                        { $eq: [{ $year: "$createdAt" }, selectedYear] }
-                    ]
-                }
-            };
-        } else if (year) {
-            // Full Year
-            timeFilter = {
-                $expr: {
-                    $eq: [{ $year: "$createdAt" }, selectedYear]
-                }
-            };
-        }
+        // Helper to build date filters for different fields
+        const buildFilter = (dateField) => {
+            if (startDate && endDate) {
+                return {
+                    [dateField]: {
+                        $gte: new Date(startDate),
+                        $lte: new Date(endDate)
+                    }
+                };
+            } else if (selectedMonths.length > 0) {
+                return {
+                    $expr: {
+                        $and: [
+                            { $in: [{ $month: `$${dateField}` }, selectedMonths] },
+                            { $eq: [{ $year: `$${dateField}` }, selectedYear] }
+                        ]
+                    }
+                };
+            } else if (year) {
+                return {
+                    $expr: {
+                        $eq: [{ $year: `$${dateField}` }, selectedYear]
+                    }
+                };
+            }
+            return {};
+        };
 
         const isFiltered = (startDate && endDate) || selectedMonths.length > 0 || year;
+        const timeFilter = buildFilter('createdAt');
+        const campaignFilter = buildFilter('startDate');
 
         // Fetch filtered data
         let users = await User.find(isFiltered ? timeFilter : {});
@@ -54,7 +54,7 @@ async function handleGenerateAdminReport(req, res) {
         donations = donations.filter(d => !d.donationCampaignId?.isTithe); // Exclude tithes
 
         const orders = await Order.find(isFiltered ? timeFilter : {}).populate('userId items.itemId');
-        const campaigns = await DonationCampaign.find({}); 
+        const campaigns = await DonationCampaign.find(isFiltered ? campaignFilter : {}); 
         const payments = await Payment.find(isFiltered ? timeFilter : {}).populate({
             path: 'orderId',
             populate: { path: 'userId' }

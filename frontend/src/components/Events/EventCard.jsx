@@ -1,7 +1,7 @@
 import React from "react";
-import { Clock, Edit3, Trash2 } from "lucide-react";
+import { Clock, Edit3 } from "lucide-react";
 
-const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit, onDelete }) => {
+const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit }) => {
   const { title, date, time, note, status, type } = event;
 
   const formatDate = (dateStr) => {
@@ -53,9 +53,6 @@ const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit, onDelete
           <div className={`absolute flex gap-1.5 ${isCompact ? "top-2 right-2" : "top-4 right-4"}`}>
             <button onClick={(e) => { e.stopPropagation(); onEdit(); }} className={`bg-card/10 backdrop-blur-md rounded-full text-primary-foreground hover:bg-card hover:text-foreground transition-all shadow-xl border border-white/20 flex items-center justify-center ${isCompact ? "w-7 h-7" : "p-2"}`}>
               <Edit3 size={isCompact ? 12 : 16} />
-            </button>
-            <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className={`bg-card/10 backdrop-blur-md rounded-full text-primary-foreground hover:bg-rose-500 hover:text-primary-foreground transition-all shadow-xl border border-white/20 flex items-center justify-center ${isCompact ? "w-7 h-7" : "p-2"}`}>
-              <Trash2 size={isCompact ? 12 : 16} />
             </button>
           </div>
         )}

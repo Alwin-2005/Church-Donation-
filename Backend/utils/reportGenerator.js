@@ -16,7 +16,12 @@ const COLORS = {
     border: '#D1FAF6',
     rowAlt: '#F0FDFA',
     white: '#FFFFFF',
-    chartColors: ['#0D9488', '#F59E0B', '#6366F1', '#EF4444', '#10B981'],
+    chartColors: [
+        '#0D9488', '#F59E0B', '#6366F1', '#EF4444', '#10B981', 
+        '#F43F5E', '#8B5CF6', '#3B82F6', '#F97316', '#06B6D4', 
+        '#84CC16', '#D946EF', '#64748B', '#A855F7', '#EAB308',
+        '#2DD4BF', '#FB923C', '#A78BFA', '#F472B6', '#22C55E'
+    ],
 };
 
 // PDFKit accepts hex strings directly
@@ -58,30 +63,30 @@ function generateHeader(doc, title, period) {
     fill(doc, COLORS.primaryLight);
     doc.rect(50, 153, doc.page.width - 100, 0.5).fill();
 
-    doc.y = 168;
+    doc.y = 160;
     doc.x = 50;
 }
 
 // ─── Section Header ───────────────────────────────────────────────────────────
 function sectionHeader(doc, text) {
-    if (doc.y > doc.page.height - 160) doc.addPage();
+    if (doc.y > doc.page.height - 140) doc.addPage();
     doc.x = 50;
-    doc.moveDown(1.2);
+    doc.moveDown(0.8);
 
     const barY = doc.y;
     fill(doc, COLORS.primary);
-    doc.rect(50, barY, 4, 20).fill();
+    doc.rect(50, barY, 4, 18).fill();
 
     fill(doc, COLORS.heading);
-    doc.font('Helvetica-Bold').fontSize(13)
+    doc.font('Helvetica-Bold').fontSize(12)
         .text(text.toUpperCase(), 62, barY + 3, { lineBreak: false });
 
-    doc.y = barY + 26;
+    doc.y = barY + 24;
     doc.x = 50;
 
     fill(doc, COLORS.border);
     doc.rect(50, doc.y, doc.page.width - 100, 1).fill();
-    doc.y += 12;
+    doc.y += 8;
     doc.x = 50;
 }
 
@@ -91,18 +96,18 @@ function subHeader(doc, text) {
     fill(doc, COLORS.heading);
     doc.font('Helvetica-Bold').fontSize(11)
         .text(text, 50, doc.y, { lineBreak: false });
-    doc.y += 18;
+    doc.y += 14;
     doc.x = 50;
 }
 
 // ─── KPI Cards Row ────────────────────────────────────────────────────────────
 function drawKpiRow(doc, items) {
-    if (doc.y + 60 > doc.page.height - 80) doc.addPage();
+    if (doc.y + 50 > doc.page.height - 80) doc.addPage();
 
     const pageW = doc.page.width - 100;
     const GAP = 4;
     const cardW = (pageW - GAP * (items.length - 1)) / items.length;
-    const cardH = 54;
+    const cardH = 48;
     const startY = doc.y;
     const startX = 50;
 
@@ -113,32 +118,32 @@ function drawKpiRow(doc, items) {
         doc.roundedRect(x, startY, cardW, cardH, 5).fill();
 
         fill(doc, COLORS.primary);
-        doc.rect(x, startY, cardW, 3).fill();
+        doc.rect(x, startY, cardW, 2.5).fill();
 
         fill(doc, COLORS.primary);
-        doc.font('Helvetica-Bold').fontSize(12)
-            .text(item.value, x, startY + 10, { width: cardW, align: 'center', lineBreak: false });
+        doc.font('Helvetica-Bold').fontSize(11)
+            .text(item.value, x, startY + 8, { width: cardW, align: 'center', lineBreak: false });
 
         fill(doc, COLORS.body);
-        doc.font('Helvetica-Bold').fontSize(8)
-            .text(item.label, x, startY + 29, { width: cardW, align: 'center', lineBreak: false });
+        doc.font('Helvetica-Bold').fontSize(7.5)
+            .text(item.label, x, startY + 25, { width: cardW, align: 'center', lineBreak: false });
 
         if (item.sub) {
             fill(doc, COLORS.muted);
-            doc.font('Helvetica').fontSize(7)
-                .text(item.sub, x, startY + 41, { width: cardW, align: 'center', lineBreak: false });
+            doc.font('Helvetica').fontSize(6.5)
+                .text(item.sub, x, startY + 36, { width: cardW, align: 'center', lineBreak: false });
         }
     });
 
-    doc.y = startY + cardH + 12;
+    doc.y = startY + cardH + 8;
     doc.x = 50;
 }
 
 // ─── Summary Line ─────────────────────────────────────────────────────────────
 // Always pass explicit y; returns next y. Caller must update doc.y.
 function drawSummaryLine(doc, label, value, y, isAlt = false) {
-    const ROW_H = 22;
-    const PAD_TOP = 5;
+    const ROW_H = 18;
+    const PAD_TOP = 4;
 
     // Draw background first so text renders on top
     if (isAlt) {
@@ -149,11 +154,11 @@ function drawSummaryLine(doc, label, value, y, isAlt = false) {
     const textY = y + PAD_TOP;
 
     fill(doc, COLORS.body);
-    doc.font('Helvetica').fontSize(10)
+    doc.font('Helvetica').fontSize(9.5)
         .text(label, 70, textY, { lineBreak: false });
 
     fill(doc, COLORS.dark);
-    doc.font('Helvetica-Bold').fontSize(10)
+    doc.font('Helvetica-Bold').fontSize(9.5)
         .text(value, 280, textY, { lineBreak: false });
 
     const nextY = y + ROW_H;
@@ -262,7 +267,7 @@ function drawPieChart(doc, data, title, isCurrency = true, options = {}) {
     if (!options.keepY) {
         const legendEndY = centerY - (chartSize / 2) + legendHeight;
         const chartEndY = centerY + (chartSize / 2);
-        doc.y = Math.max(legendEndY, chartEndY) + 40;
+        doc.y = Math.max(legendEndY, chartEndY) + 20;
         doc.x = 50;
     }
 }
@@ -364,7 +369,7 @@ async function generateAdminReport(reportData, res) {
             y = drawSummaryLine(doc, 'Average Donation Amount:', `Rs. ${(reportData.summary.donation.average || 0).toFixed(2)}`, y, false);
             y = drawSummaryLine(doc, 'Top Performing Campaign:', `${reportData.summary.donation.topCampaign || 'N/A'}`, y, true);
 
-            doc.y = y + 14;
+            doc.y = y + 8;
             doc.x = 50;
 
             subHeader(doc, 'Merchandise Orders Summary');
@@ -373,7 +378,7 @@ async function generateAdminReport(reportData, res) {
             y = drawSummaryLine(doc, 'Total Revenue:', `Rs. ${(reportData.summary.merch.revenue || 0).toFixed(2)}`, y, true);
             y = drawSummaryLine(doc, 'Top Selling Product:', `${reportData.summary.merch.topProduct || 'N/A'}`, y, false);
 
-            doc.y = y + 14;
+            doc.y = y + 8;
             doc.x = 50;
 
             // ── Pie charts
@@ -420,19 +425,22 @@ async function generateAdminReport(reportData, res) {
             y = drawSummaryLine(doc, 'Verified Users:', `${reportData.summary.user.verified || 0}`, y, false);
             y = drawSummaryLine(doc, 'Active Donors:', `${reportData.summary.user.active || 0}`, y, true);
 
-            doc.y = y + 14;
+            doc.y = y + 8;
             doc.x = 50;
 
             // ── SECTION 2: ANALYTICS SUMMARY
             sectionHeader(doc, 'Analytics Summary');
 
-            drawKpiRow(doc, [
-                { label: 'Highest Donation Month', value: reportData.analytics.topMonth || 'N/A', sub: 'Peak activity' },
-                { label: 'Most Popular Campaign', value: reportData.analytics.popularCampaign || 'N/A', sub: 'By donation value' },
-                { label: 'Top-Selling Merch', value: reportData.analytics.popularMerch || 'N/A', sub: 'Best seller' },
-            ]);
+            let ay = doc.y;
+            ay = drawSummaryLine(doc, 'Highest Donation Month:', reportData.analytics.topMonth || 'N/A', ay, false);
+            ay = drawSummaryLine(doc, 'Most Popular Campaign:', reportData.analytics.popularCampaign || 'N/A', ay, true);
+            ay = drawSummaryLine(doc, 'Top-Selling Merchandise:', reportData.analytics.popularMerch || 'N/A', ay, false);
+            ay = drawSummaryLine(doc, 'User Verification Rate:', reportData.analytics.verifiedPercent || 'N/A', ay, true);
+            ay = drawSummaryLine(doc, 'Growth Insight:', reportData.analytics.growth || 'N/A', ay, false);
 
-            doc.moveDown(2);
+            doc.y = ay + 8;
+
+            doc.moveDown(1);
             drawFooter(doc, reportData.notes);
 
             doc.end();

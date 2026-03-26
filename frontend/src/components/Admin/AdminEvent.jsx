@@ -45,17 +45,7 @@ const AdminEvents = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this event?")) return;
-    try {
-      await api.delete(`/admin/content/delete/${id}`);
-      fetchEvents();
-      toast.success("Announcement deleted");
-    } catch (error) {
-      console.error("Error deleting event:", error);
-      toast.error("Failed to delete announcement");
-    }
-  };
+
 
   const filteredEvents = filter === "all"
     ? events
@@ -114,7 +104,6 @@ const AdminEvents = () => {
                   setEditingEvent(event);
                   setShowForm(true);
                 }}
-                onDelete={() => handleDelete(event._id)}
               />
             ))
           )}
