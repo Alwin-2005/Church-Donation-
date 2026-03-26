@@ -21,6 +21,7 @@ const AdminDashboard = () => {
   const [financialYear, setFinancialYear] = useState("");
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
   const [showReportOptions, setShowReportOptions] = useState(false);
+  const [exportFormat, setExportFormat] = useState("pdf"); // "pdf" or "excel"
   const navigate = useNavigate();
 
   const monthsList = [
@@ -142,6 +143,8 @@ const AdminDashboard = () => {
         }
         queryParams = `?startDate=${dateRange.start}&endDate=${dateRange.end}`;
       }
+      
+      queryParams += queryParams ? `&format=${exportFormat}` : `?format=${exportFormat}`;
 
       const response = await api.get(`/admin/report/download${queryParams}`, {
         responseType: 'blob'
@@ -150,7 +153,8 @@ const AdminDashboard = () => {
       const link = document.createElement('a');
       link.href = url;
       
-      const reportName = `Admin_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+      const extension = exportFormat === "excel" ? "xlsx" : "pdf";
+      const reportName = `Admin_Report_${new Date().toISOString().split('T')[0]}.${extension}`;
       link.setAttribute('download', reportName);
       document.body.appendChild(link);
       link.click();
@@ -182,7 +186,7 @@ const AdminDashboard = () => {
             className="flex items-center gap-2 bg-black text-primary-foreground px-6 py-3 rounded-xl font-bold hover:bg-secondary transition active:scale-95 shadow-lg"
           >
             <Download className="w-5 h-5" />
-            Generate PDF Report
+            Generate Report
           </button>
         </div>
 
@@ -226,6 +230,35 @@ const AdminDashboard = () => {
                       {type === "financial" ? "Financial Year" : type === "custom" ? "Custom Duration" : type}
                     </button>
                   ))}
+                </div>
+
+                {/* Export Format Selection */}
+                <div className="mb-8">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Export Format</label>
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => setExportFormat("pdf")}
+                      className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${
+                        exportFormat === "pdf"
+                          ? "border-black bg-black text-white"
+                          : "border-border text-muted-foreground hover:border-black/20"
+                      }`}
+                    >
+                      <span className="font-bold">PDF Report</span>
+                      <span className="text-[10px] opacity-70">(Summary & Charts)</span>
+                    </button>
+                    <button
+                      onClick={() => setExportFormat("excel")}
+                      className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${
+                        exportFormat === "excel"
+                          ? "border-black bg-black text-white"
+                          : "border-border text-muted-foreground hover:border-black/20"
+                      }`}
+                    >
+                      <span className="font-bold">Excel Sheet</span>
+                      <span className="text-[10px] opacity-70">(Detailed Data)</span>
+                    </button>
+                  </div>
                 </div>
                 
                 {/* Tab Content */}
@@ -375,7 +408,7 @@ const AdminDashboard = () => {
                     className="flex items-center gap-2 bg-black text-white px-10 py-4 rounded-2xl font-black hover:bg-secondary transition shadow-xl active:scale-95 group"
                   >
                     <Download className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
-                    Download PDF
+                    Download {exportFormat.toUpperCase()}
                   </button>
                 </div>
               </div>

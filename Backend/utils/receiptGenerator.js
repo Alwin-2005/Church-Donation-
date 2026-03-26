@@ -4,42 +4,98 @@ const fs = require('fs');
 
 const LOGO_PATH = path.join(__dirname, '..', 'assets', 'COG.png');
 
-// Helper to generate a generic professional header
+// ─── Design Tokens ────────────────────────────────────────────────────────────
+const COLORS = {
+    primary: '#0F766E',
+    primaryLight: '#14B8A6',
+    primaryPale: '#CCFBF1',
+    dark: '#0F172A',
+    heading: '#134E4A',
+    body: '#374151',
+    muted: '#6B7280',
+    border: '#D1FAF6',
+    rowAlt: '#F0FDFA',
+    white: '#FFFFFF',
+};
+
+const fill = (doc, hex) => doc.fillColor(hex);
+
+// ─── Header ───────────────────────────────────────────────────────────────────
 function generateHeader(doc, title) {
+    fill(doc, COLORS.primary);
+    doc.rect(0, 0, doc.page.width, 6).fill();
+
     if (fs.existsSync(LOGO_PATH)) {
-        doc.image(LOGO_PATH, 50, 45, { width: 50 });
+        doc.image(LOGO_PATH, 50, 22, { width: 44 });
     }
 
-    doc
-        .fillColor('#444444')
-        .fontSize(20)
-        .text('Church Of God', 110, 57)
-        .fontSize(10)
-        .text('742 Evergreen Terrace Street, Maplewood Heights', 110, 80)
-        .text('Springfield Illinois 62704, United States', 110, 95)
-        .text('contact@churchofgod.org', 110, 110)
-        .moveDown();
+    fill(doc, COLORS.primary);
+    doc.font('Helvetica-Bold').fontSize(17).text('Church Of God', 104, 24);
+    fill(doc, COLORS.muted);
+    doc.font('Helvetica').fontSize(9)
+        .text('742 Evergreen Terrace Street, Maplewood Heights', 104, 45)
+        .text('Springfield Illinois 62704, United States', 104, 57)
+        .text('contact@churchofgod.org', 104, 69);
 
-    doc
-        .fillColor('#000000')
-        .fontSize(24)
-        .text(title, 50, 160, { align: 'center' })
-        .moveDown();
+    fill(doc, COLORS.primaryPale);
+    doc.rect(50, 88, doc.page.width - 100, 1).fill();
 
-    doc.moveTo(50, 195).lineTo(550, 195).stroke();
-    doc.moveDown();
+    fill(doc, COLORS.dark);
+    doc.font('Helvetica-Bold').fontSize(22)
+        .text(title, 50, 100, { align: 'center', width: doc.page.width - 100 });
+
+    fill(doc, COLORS.primary);
+    doc.rect(50, 140, doc.page.width - 100, 2).fill();
+    fill(doc, COLORS.primaryLight);
+    doc.rect(50, 143, doc.page.width - 100, 0.5).fill();
+
+    doc.y = 160;
+    doc.x = 50;
 }
 
-// Helper to generate footer
-function generateFooter(doc) {
-    const pageBottom = doc.page.height - 100;
-    doc.moveTo(50, pageBottom - 10).lineTo(550, pageBottom - 10).stroke();
+// ─── Footer ───────────────────────────────────────────────────────────────────
+function generateFooter(doc, notes) {
+    const y = doc.page.height - 38;
+    fill(doc, COLORS.primary);
+    doc.rect(0, y - 2, doc.page.width, 2).fill();
+    
+    fill(doc, COLORS.muted);
+    doc.font('Helvetica').fontSize(8)
+        .text(notes || `Generated on ${new Date().toLocaleDateString()}`, 50, y + 4, { align: 'right', width: doc.page.width - 100 });
+}
 
-    doc
-        .fontSize(10)
-        .fillColor('#888888')
-        .text('Thank you for your continued support and generosity.', 50, pageBottom + 10, { align: 'center' })
-        .text('May God bless you!', 50, pageBottom + 25, { align: 'center' });
+function drawThankYou(doc) {
+    doc.moveDown(4);
+    fill(doc, COLORS.muted);
+    doc.font('Helvetica').fontSize(10)
+        .text('Thank you for your continued support and generosity.', { align: 'center' });
+    doc.moveDown(0.2);
+    fill(doc, COLORS.primary);
+    doc.font('Helvetica-Bold').fontSize(11)
+        .text('May God bless you!', { align: 'center' });
+}
+
+// ─── Summary Line ─────────────────────────────────────────────────────────────
+function drawSummaryLine(doc, label, value, y, isAlt = false) {
+    const ROW_H = 24;
+    const PAD_TOP = 6;
+
+    if (isAlt) {
+        fill(doc, COLORS.rowAlt);
+        doc.rect(50, y, doc.page.width - 100, ROW_H).fill();
+    }
+
+    const textY = y + PAD_TOP;
+    fill(doc, COLORS.body);
+    doc.font('Helvetica').fontSize(10).text(label, 70, textY);
+    
+    fill(doc, COLORS.dark);
+    doc.font('Helvetica-Bold').fontSize(10).text(value, 200, textY);
+
+    const nextY = y + ROW_H;
+    doc.y = nextY;
+    doc.x = 50;
+    return nextY;
 }
 
 async function buildDonationReceipt(donation, res) {
@@ -54,30 +110,16 @@ async function buildDonationReceipt(donation, res) {
 
             generateHeader(doc, 'Donation Receipt');
 
-            doc.fontSize(12).fillColor('#000');
+            let currentY = 180;
+            currentY = drawSummaryLine(doc, 'Receipt No:', donation.receiptNo, currentY, false);
+            currentY = drawSummaryLine(doc, 'Date:', new Date(donation.createdAt).toLocaleDateString(), currentY, true);
+            currentY = drawSummaryLine(doc, 'Donor Name:', donation.userId?.fullname || 'N/A', currentY, false);
+            currentY = drawSummaryLine(doc, 'Donor Email:', donation.userId?.email || 'N/A', currentY, true);
+            currentY = drawSummaryLine(doc, 'Campaign:', donation.donationCampaignId?.title || 'General Donation', currentY, false);
+            currentY = drawSummaryLine(doc, 'Amount:', `Rs. ${donation.amount.toFixed(2)}`, currentY, true);
+            currentY = drawSummaryLine(doc, 'Payment Status:', donation.paymentStatus.toUpperCase(), currentY, false);
 
-            const topY = 220;
-            doc.font('Helvetica-Bold').text('Receipt No:', 50, topY);
-            doc.font('Helvetica').text(donation.receiptNo, 150, topY);
-
-            doc.font('Helvetica-Bold').text('Date:', 350, topY);
-            doc.font('Helvetica').text(new Date(donation.createdAt).toLocaleDateString(), 400, topY);
-
-            doc.font('Helvetica-Bold').text('Donor Name:', 50, topY + 25);
-            doc.font('Helvetica').text(donation.userId?.fullname || 'N/A', 150, topY + 25);
-
-            doc.font('Helvetica-Bold').text('Donor Email:', 50, topY + 50);
-            doc.font('Helvetica').text(donation.userId?.email || 'N/A', 150, topY + 50);
-
-            doc.font('Helvetica-Bold').text('Campaign:', 50, topY + 75);
-            doc.font('Helvetica').text(donation.donationCampaignId?.title || 'General Donation', 150, topY + 75);
-
-            doc.font('Helvetica-Bold').text('Amount:', 50, topY + 100);
-            doc.font('Helvetica').text(`Rs. ${donation.amount.toFixed(2)}`, 150, topY + 100);
-
-            doc.font('Helvetica-Bold').text('Payment Status:', 50, topY + 125);
-            doc.font('Helvetica').text(donation.paymentStatus.toUpperCase(), 150, topY + 125);
-
+            drawThankYou(doc);
             generateFooter(doc);
             doc.end();
 
@@ -100,32 +142,22 @@ async function buildOrderReceipt(order, res) {
 
             generateHeader(doc, 'Purchase Receipt');
 
-            doc.fontSize(12).fillColor('#000');
+            generateHeader(doc, 'Purchase Receipt');
 
-            const topY = 220;
-            doc.font('Helvetica-Bold').text('Order ID:', 50, topY);
-            doc.font('Helvetica').text(order._id.toString(), 150, topY);
-
-            doc.font('Helvetica-Bold').text('Date:', 350, topY);
-            doc.font('Helvetica').text(new Date(order.createdAt).toLocaleDateString(), 400, topY);
-
-            doc.font('Helvetica-Bold').text('Customer:', 50, topY + 25);
-            doc.font('Helvetica').text(order.userId?.fullname || 'N/A', 150, topY + 25);
-
-            doc.font('Helvetica-Bold').text('Email:', 50, topY + 50);
-            doc.font('Helvetica').text(order.userId?.email || 'N/A', 150, topY + 50);
-
-            doc.font('Helvetica-Bold').text('Status:', 50, topY + 75);
-            doc.font('Helvetica').text(order.status.toUpperCase(), 150, topY + 75);
+            let currentY = 180;
+            currentY = drawSummaryLine(doc, 'Order ID:', order._id.toString(), currentY, false);
+            currentY = drawSummaryLine(doc, 'Date:', new Date(order.createdAt).toLocaleDateString(), currentY, true);
+            currentY = drawSummaryLine(doc, 'Customer:', order.userId?.fullname || 'N/A', currentY, false);
+            currentY = drawSummaryLine(doc, 'Email:', order.userId?.email || 'N/A', currentY, true);
+            currentY = drawSummaryLine(doc, 'Status:', order.status.toUpperCase(), currentY, false);
 
             // Itemized Table
-            doc.moveDown(4);
-            doc.x = 50;
+            doc.moveDown(2);
             const tableData = {
                 headers: [
                     { label: 'Item Name', property: 'name', width: 150 },
                     { label: 'Category', property: 'category', width: 100 },
-                    { label: 'Quantity', property: 'qty', width: 60 },
+                    { label: 'Qty', property: 'qty', width: 60 },
                     { label: 'Price (Rs)', property: 'price', width: 80 },
                     { label: 'Total (Rs)', property: 'total', width: 80 }
                 ],
@@ -139,15 +171,23 @@ async function buildOrderReceipt(order, res) {
             };
 
             await doc.table(tableData, {
-                prepareHeader: () => doc.font("Helvetica-Bold").fontSize(10),
-                prepareRow: () => doc.font("Helvetica").fontSize(10),
-                width: 500
+                prepareHeader: () => doc.font("Helvetica-Bold").fontSize(10).fillColor(COLORS.primary),
+                prepareRow: (row, i) => doc.font("Helvetica").fontSize(10).fillColor(COLORS.body),
+                width: 500,
+                padding: 10,
+                columnSpacing: 10,
+                divider: {
+                    header: { disabled: false, width: 2, opacity: 1 },
+                    horizontal: { disabled: false, width: 0.5, opacity: 0.1 },
+                }
             });
 
             // Total Amount
             doc.moveDown(1);
-            doc.font('Helvetica-Bold').fontSize(12).text(`Total Amount: Rs. ${order.totalAmount.toFixed(2)}`, { align: 'right' });
+            fill(doc, COLORS.primary);
+            doc.font('Helvetica-Bold').fontSize(14).text(`Total Amount: Rs. ${order.totalAmount.toFixed(2)}`, { align: 'right' });
 
+            drawThankYou(doc);
             generateFooter(doc);
             doc.end();
 
@@ -170,30 +210,18 @@ async function buildPaymentReceipt(payment, res) {
 
             generateHeader(doc, 'Payment Receipt');
 
-            doc.fontSize(12).fillColor('#000');
+            generateHeader(doc, 'Payment Receipt');
 
-            const topY = 220;
-            doc.font('Helvetica-Bold').text('Transaction No:', 50, topY);
-            doc.font('Helvetica').text(payment.transactionNo, 180, topY);
+            let currentY = 180;
+            currentY = drawSummaryLine(doc, 'Transaction No:', payment.transactionNo, currentY, false);
+            currentY = drawSummaryLine(doc, 'Date:', new Date(payment.paymentDate).toLocaleDateString(), currentY, true);
+            currentY = drawSummaryLine(doc, 'Customer Name:', payment.orderId?.userId?.fullname || 'N/A', currentY, false);
+            currentY = drawSummaryLine(doc, 'Customer Email:', payment.orderId?.userId?.email || 'N/A', currentY, true);
+            currentY = drawSummaryLine(doc, 'Payment Method:', payment.method ? payment.method.toUpperCase() : 'N/A', currentY, false);
+            currentY = drawSummaryLine(doc, 'Amount:', `Rs. ${Number(payment.amount).toFixed(2)}`, currentY, true);
+            currentY = drawSummaryLine(doc, 'Payment Status:', payment.status.toUpperCase(), currentY, false);
 
-            doc.font('Helvetica-Bold').text('Date:', 350, topY);
-            doc.font('Helvetica').text(new Date(payment.paymentDate).toLocaleDateString(), 400, topY);
-
-            doc.font('Helvetica-Bold').text('Customer Name:', 50, topY + 25);
-            doc.font('Helvetica').text(payment.orderId?.userId?.fullname || 'N/A', 180, topY + 25);
-
-            doc.font('Helvetica-Bold').text('Customer Email:', 50, topY + 50);
-            doc.font('Helvetica').text(payment.orderId?.userId?.email || 'N/A', 180, topY + 50);
-
-            doc.font('Helvetica-Bold').text('Payment Method:', 50, topY + 75);
-            doc.font('Helvetica').text(payment.method ? payment.method.toUpperCase() : 'N/A', 180, topY + 75);
-
-            doc.font('Helvetica-Bold').text('Amount:', 50, topY + 100);
-            doc.font('Helvetica').text(`Rs. ${Number(payment.amount).toFixed(2)}`, 180, topY + 100);
-
-            doc.font('Helvetica-Bold').text('Payment Status:', 50, topY + 125);
-            doc.font('Helvetica').text(payment.status.toUpperCase(), 180, topY + 125);
-
+            drawThankYou(doc);
             generateFooter(doc);
             doc.end();
 
