@@ -10,7 +10,8 @@ import {
   TrendingUp,
   Clock,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  ArrowRight
 } from "lucide-react";
 
 const DonationCampaignCard = ({
@@ -72,26 +73,26 @@ const DonationCampaignCard = ({
   };
 
   return (
-    <div className={`group relative w-full ${compact ? "sm:w-[280px]" : "sm:w-[350px]"} bg-card/95 backdrop-blur-sm rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-300 border border-border overflow-hidden flex flex-col ${compact ? "h-[320px]" : ""}`}>
+    <div className={`group relative w-full ${compact ? "sm:w-[280px]" : "sm:w-[350px]"} bg-background transition-all duration-300 border border-line overflow-hidden flex flex-col ${compact ? "h-[320px]" : ""}`}>
 
-      {/* DECORATIVE HEADER / STATUS */}
-      <div className="h-2 bg-black w-full" />
+      {/* DECORATIVE HEADER */}
+      <div className="h-1 bg-accent w-full" />
 
       <div className={`${compact ? "p-4" : "p-6"} flex-1 flex flex-col`}>
         {/* HEADER SECTION */}
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1 pr-2">
-            <h2 className={`font-bold text-foreground leading-tight group-hover:text-foreground transition-colors ${compact ? "text-lg line-clamp-2" : "text-xl"}`}>
+            <h2 className={`font-serif font-bold text-foreground leading-tight tracking-tight group-hover:text-accent transition-colors ${compact ? "text-lg line-clamp-2" : "text-xl"}`}>
               {title}
             </h2>
             {role === "admin" && !compact && (
-              <span className={`mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider border ${getStatusColor(status)}`}>
+              <span className={`mt-2 inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest border ${getStatusColor(status)}`}>
                 {status}
               </span>
             )}
           </div>
           {!compact && (
-            <div className="bg-muted p-2 rounded-lg text-foreground">
+            <div className="text-accent/20 p-2">
               <CreditCard className="w-5 h-5" />
             </div>
           )}
@@ -99,46 +100,45 @@ const DonationCampaignCard = ({
 
         {/* DESCRIPTION */}
         {!compact && (
-          <p className="text-muted-foreground text-sm mb-6 line-clamp-3 leading-relaxed flex-1">
+          <p className="text-foreground/70 text-sm mb-6 line-clamp-3 leading-relaxed flex-1">
             {description}
           </p>
         )}
 
         {/* PROGRESS SECTION */}
         {campaign.isTithe ? (
-          <div className="mb-6 p-4 bg-yellow-50 rounded-xl border border-yellow-100">
-            <div className="flex items-center gap-2 text-yellow-800">
+          <div className="mb-6 p-6 border border-line bg-muted">
+            <div className="flex items-center gap-2 text-accent">
               <TrendingUp className="w-5 h-5" />
-              <span className="font-bold text-sm uppercase tracking-wider">Monthly Tithe</span>
+              <span className="font-bold text-[10px] uppercase tracking-widest">Monthly Tithe</span>
             </div>
-            <p className="text-xs text-yellow-700 mt-1 font-medium">Supporting our church's mission monthly</p>
+            <p className="text-xs text-foreground/60 mt-2 font-medium italic">Supporting our church's mission monthly</p>
           </div>
         ) : (
           <div className={compact ? "mt-auto mb-4" : "mb-6"}>
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-muted-foreground font-medium">Raised</span>
-              <span className="text-foreground font-bold">{percentage}%</span>
+            <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-3">
+              <span className="text-accent">Raised</span>
+              <span className="text-foreground">{percentage}%</span>
             </div>
 
             {/* Progress Bar Background */}
-            <div className="h-3 w-full bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-2 w-full bg-line overflow-hidden">
               {/* Progress Bar Fill */}
               <div
-                className="h-full bg-black rounded-full transition-all duration-1000 ease-out relative"
+                className="h-full bg-accent transition-all duration-1000 ease-out relative"
                 style={{ width: `${percentage}%` }}
               >
-                <div className="absolute inset-0 bg-card/20 animate-[shimmer_2s_infinite]" />
               </div>
             </div>
 
-            <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+            <div className="flex justify-between mt-3">
               <div>
-                <span className="block text-gray-400 uppercase tracking-wider text-[10px]">Raised</span>
-                <span className="font-bold text-foreground">{formatCurrency(collectedAmount)}</span>
+                <span className="block text-foreground/40 uppercase tracking-widest text-[9px] font-bold">Collected</span>
+                <span className="font-serif text-lg font-bold text-foreground leading-none">{formatCurrency(collectedAmount)}</span>
               </div>
               <div className="text-right">
-                <span className="block text-gray-400 uppercase tracking-wider text-[10px]">Goal</span>
-                <span className="font-bold text-foreground">{formatCurrency(goalAmount)}</span>
+                <span className="block text-foreground/40 uppercase tracking-widest text-[9px] font-bold">Goal</span>
+                <span className="font-serif text-lg font-bold text-foreground leading-none">{formatCurrency(goalAmount)}</span>
               </div>
             </div>
           </div>
@@ -146,20 +146,20 @@ const DonationCampaignCard = ({
 
         {/* DATES GRID */}
         {!compact && (
-          <div className="grid grid-cols-2 gap-3 mb-6 pt-4 border-t border-gray-100">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Calendar className="w-4 h-4 text-foreground" />
+          <div className="grid grid-cols-2 gap-3 mb-6 pt-6 border-t border-line">
+            <div className="flex items-center gap-3 text-xs">
+              <Calendar className="w-4 h-4 text-accent" />
               <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-wider text-gray-400">Starts</span>
+                <span className="text-[9px] uppercase tracking-widest text-foreground/40 font-bold">Starts</span>
                 <span className="font-medium text-foreground">{formatDate(startDate)}</span>
               </div>
             </div>
 
             {endDate && (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Clock className="w-4 h-4 text-foreground" />
+              <div className="flex items-center gap-3 text-xs">
+                <Clock className="w-4 h-4 text-accent" />
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase tracking-wider text-gray-400">Ends</span>
+                  <span className="text-[9px] uppercase tracking-widest text-foreground/40 font-bold">Ends</span>
                   <span className="font-medium text-foreground">{formatDate(endDate)}</span>
                 </div>
               </div>
@@ -172,10 +172,10 @@ const DonationCampaignCard = ({
           {(role === "churchMember" || role === "externalMember" || !role) && (
             <button
               onClick={handleDonateClick}
-              className={`w-full flex items-center justify-center gap-2 bg-black hover:bg-secondary text-primary-foreground font-bold tracking-wide rounded-xl transition-all shadow-md hover:shadow-xl focus:ring-4 focus:ring-gray-300 ${compact ? "py-2 text-sm" : "py-2.5 px-4"}`}
+              className={`w-full flex items-center justify-center gap-2 bg-accent hover:bg-foreground text-background font-bold tracking-widest uppercase transition-colors shadow-sm ${compact ? "py-3 text-[10px]" : "py-3.5 px-6 text-[11px]"}`}
             >
-              Donate
-              <TrendingUp className="w-4 h-4" />
+              Donate Now
+              <ArrowRight className="w-4 h-4" />
             </button>
           )}
 
@@ -183,7 +183,7 @@ const DonationCampaignCard = ({
             <div className="flex gap-2">
               <button
                 onClick={() => onEdit?.(campaign)}
-                className="flex-1 flex items-center justify-center gap-2 bg-card hover:bg-background text-foreground font-bold py-2 px-4 rounded-lg border-2 border-border hover:border-black transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 bg-background hover:bg-line text-foreground font-bold py-2.5 px-4 border border-line transition-colors text-[10px] uppercase tracking-widest"
               >
                 <Edit className="w-4 h-4" /> Edit
               </button>

@@ -200,7 +200,7 @@ const AdminDonation = () => {
         </div>
         <button
           onClick={handleAddClick}
-          className="bg-black hover:bg-secondary text-primary-foreground px-6 py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all font-medium flex items-center gap-2"
+          className="bg-accent hover:scale-[1.02] text-primary-foreground px-8 py-3 rounded-none shadow-lg shadow-accent/10 transition-all font-bold text-xs uppercase tracking-widest flex items-center gap-2"
         >
           <span>+</span> Add Campaign
         </button>
@@ -213,8 +213,8 @@ const AdminDonation = () => {
 
         {/* MONTHLY TITHES */}
         <section>
-          <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-            <span className="w-2 h-6 bg-yellow-400 rounded-full"></span>
+          <h2 className="text-xl font-serif font-bold text-foreground mb-8 flex items-center gap-3">
+            <span className="w-1.5 h-6 bg-accent"></span>
             Monthly Tithes
           </h2>
           <div className="flex flex-wrap gap-6">
@@ -236,8 +236,8 @@ const AdminDonation = () => {
 
         {/* INTERNAL */}
         <section>
-          <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-            <span className="w-2 h-6 bg-black rounded-full"></span>
+          <h2 className="text-xl font-serif font-bold text-foreground mb-8 flex items-center gap-3">
+            <span className="w-1.5 h-6 bg-black"></span>
             Church Campaigns
           </h2>
           <div className="flex flex-wrap gap-6">
@@ -259,8 +259,8 @@ const AdminDonation = () => {
 
         {/* EXTERNAL */}
         <section>
-          <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-            <span className="w-2 h-6 bg-gray-400 rounded-full"></span>
+          <h2 className="text-xl font-serif font-bold text-foreground mb-8 flex items-center gap-3">
+            <span className="w-1.5 h-6 bg-gray-400"></span>
             External Causes
           </h2>
           <div className="flex flex-wrap gap-6">
@@ -284,16 +284,16 @@ const AdminDonation = () => {
 
       {/* MODAL FORM */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-fadeIn">
-          <div className="bg-card rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden scale-100 animate-scaleIn max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[100] p-4 animate-fadeIn">
+          <div className="bg-card border border-border rounded-none w-full max-w-2xl shadow-2xl overflow-hidden scale-100 animate-scaleIn max-h-[90vh] overflow-y-auto">
 
-            <div className="px-6 py-4 border-b border-gray-100 bg-background flex justify-between items-center sticky top-0 z-10">
-              <h2 className="text-lg font-bold text-foreground">
+            <div className="px-8 py-5 border-b border-border bg-card flex justify-between items-center sticky top-0 z-10">
+              <h2 className="text-xl font-serif font-bold text-foreground">
                 {editingCampaign ? "Edit Campaign" : "Create New Campaign"}
               </h2>
               <button
                 onClick={() => setShowForm(false)}
-                className="text-gray-400 hover:text-foreground transition-colors text-xl"
+                className="text-foreground hover:rotate-90 transition-transform text-xl"
               >
                 ✕
               </button>
@@ -302,15 +302,15 @@ const AdminDonation = () => {
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
 
               {/* Type & Tithe */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-background rounded-xl border border-gray-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 bg-background rounded-none border border-border">
                 <div>
-                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Campaign Type</label>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Campaign Type</label>
                   <select
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
                     disabled={formData.isTithe}
-                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm bg-card font-medium disabled:bg-muted disabled:text-gray-400"
+                    className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-xs font-bold uppercase tracking-widest bg-background disabled:bg-muted disabled:text-gray-400"
                   >
                     <option value="internal">Internal (Church)</option>
                     <option value="external">External (Cause)</option>
@@ -334,14 +334,14 @@ const AdminDonation = () => {
 
               {/* Title */}
               <div>
-                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Campaign Title *</label>
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Campaign Title *</label>
                 <input
                   type="text"
                   name="ctitle"
                   value={formData.ctitle}
                   onChange={handleInputChange}
                   placeholder={formData.isTithe ? "e.g. Monthly Tithes" : "e.g. Church Building Fund"}
-                  className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
+                  className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm font-medium bg-background"
                   required
                 />
               </div>
@@ -349,7 +349,7 @@ const AdminDonation = () => {
               {/* Goal Amount - Hidden for Tithe */}
               {!formData.isTithe && (
                 <div>
-                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Goal Amount (₹) *</label>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Goal Amount (₹) *</label>
                   <input
                     type="number"
                     name="goalAmt"
@@ -357,7 +357,7 @@ const AdminDonation = () => {
                     onChange={handleInputChange}
                     placeholder="0"
                     min="0"
-                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
+                    className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm font-medium bg-background"
                     required
                   />
                 </div>
@@ -373,7 +373,7 @@ const AdminDonation = () => {
                     value={formData.startDate}
                     min={editingCampaign ? undefined : todayDateStr}
                     onChange={handleInputChange}
-                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
+                    className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm font-medium bg-background"
                     required
                   />
                 </div>
@@ -385,7 +385,7 @@ const AdminDonation = () => {
                     value={formData.endate}
                     min={formData.startDate || todayDateStr}
                     onChange={handleInputChange}
-                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
+                    className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm font-medium bg-background"
                     required
                   />
                 </div>
@@ -398,7 +398,7 @@ const AdminDonation = () => {
                   name="status"
                   value={formData.status}
                   onChange={handleInputChange}
-                  className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm bg-card"
+                  className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-xs font-bold uppercase tracking-widest bg-background"
                 >
                   <option value="active">Active</option>
                   <option value="paused">Paused</option>
@@ -415,22 +415,22 @@ const AdminDonation = () => {
                   onChange={handleInputChange}
                   rows="3"
                   placeholder="Describe the purpose of this campaign..."
-                  className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm min-h-[80px]"
+                  className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm min-h-[80px] bg-background"
                 />
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end space-x-3 pt-6 border-t border-gray-100">
+              <div className="flex justify-end space-x-3 pt-8 border-t border-border">
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-5 py-2.5 border border-border text-muted-foreground rounded-lg hover:bg-background font-medium text-sm transition-colors"
+                  className="px-8 py-3 border border-border text-muted-foreground hover:bg-muted font-bold text-xs uppercase tracking-widest transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-black text-primary-foreground rounded-lg hover:bg-foreground font-bold text-sm shadow-md transition-transform active:scale-95"
+                  className="px-10 py-3 bg-accent text-primary-foreground font-black text-xs uppercase tracking-widest shadow-lg shadow-accent/20 hover:scale-[1.02] transition-all active:scale-95"
                 >
                   {editingCampaign ? "Update Campaign" : "Create Campaign"}
                 </button>

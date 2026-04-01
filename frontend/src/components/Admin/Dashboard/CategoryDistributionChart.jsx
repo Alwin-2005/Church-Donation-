@@ -11,15 +11,15 @@ const CategoryDistributionChart = ({ data }) => {
 
   if (!filteredData || filteredData.length === 0) {
     return (
-      <div className="bg-card p-6 rounded-2xl shadow-sm border border-border h-[400px] flex items-center justify-center">
-        <p className="text-muted-foreground">No data available</p>
+      <div className="bg-card p-10 rounded-none border border-border h-[450px] flex items-center justify-center">
+        <p className="text-muted-foreground font-black uppercase tracking-widest text-[10px]">No distribution data available</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-card p-6 rounded-2xl shadow-sm border border-border h-[400px]">
-      <h3 className="text-lg font-bold mb-6 text-foreground">Donation Distribution</h3>
+    <div className="bg-card p-10 rounded-none border border-border h-[450px]">
+      <h3 className="text-xl font-serif font-bold mb-10 text-foreground tracking-tight">Donation Distribution</h3>
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -36,7 +36,7 @@ const CategoryDistributionChart = ({ data }) => {
             </Pie>
             <Tooltip 
               formatter={(val) => `₹${val.toLocaleString()}`}
-              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+              contentStyle={{ borderRadius: '0px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }}
             />
             <Legend 
               layout="vertical" 

@@ -32,52 +32,52 @@ const EventCard = ({ event, isAdmin = false, isCompact = false, onEdit }) => {
 
   return (
     <div
-      className={`group relative bg-card rounded-[24px] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 flex flex-col h-full ${isCompact ? "max-w-sm" : ""}`}
+      className={`group relative flex flex-col bg-background transition-all duration-500 h-full ${isCompact ? "max-w-sm" : ""}`}
     >
       {/* Visual Identity Section - Emphasized Date */}
-      <div className={`relative ${isCompact ? "h-20" : "h-44"} bg-foreground overflow-hidden flex-shrink-0`}>
-        <div className="absolute inset-0 bg-primary/20 mix-blend-overlay" />
-        <div className={`absolute inset-0 flex ${isCompact ? "flex-row gap-2 items-center justify-start pl-6" : "flex-col items-center justify-center"} text-primary-foreground pointer-events-none`}>
-          <span className={`${isCompact ? "text-3xl" : "text-7xl"} font-black tracking-tighter tabular-nums drop-shadow-2xl`}>{day}</span>
-          <span className={`${isCompact ? "text-xs" : "text-xl"} font-bold tracking-[0.4em] opacity-70 ${isCompact ? "" : "mb-1"}`}>{month}</span>
+      <div className={`relative ${isCompact ? "h-24" : "h-56"} bg-foreground overflow-hidden flex-shrink-0 border border-border`}>
+        <div className="absolute inset-0 bg-accent/10 mix-blend-overlay" />
+        <div className={`absolute inset-0 flex ${isCompact ? "flex-row gap-3 items-center justify-start pl-8" : "flex-col items-center justify-center"} text-background pointer-events-none transition-transform duration-700 group-hover:scale-105`}>
+          <span className={`${isCompact ? "text-4xl" : "text-8xl"} font-serif font-black tracking-tighter tabular-nums drop-shadow-2xl`}>{day}</span>
+          <span className={`${isCompact ? "text-[10px]" : "text-xl"} font-black tracking-[0.5em] opacity-80 uppercase ${isCompact ? "" : "mb-2"}`}>{month}</span>
         </div>
 
         {/* Floating Type Badge */}
-        <div className={`absolute ${isCompact ? "top-2 right-24" : "top-4 left-4"}`}>
-          <span className={`px-2 py-1 rounded-full text-[8px] sm:text-[10px] font-black uppercase tracking-widest shadow-lg ${typeColors[type] || typeColors.other}`}>
+        <div className={`absolute ${isCompact ? "top-3 right-20" : "top-6 left-6"}`}>
+          <span className={`px-4 py-1.5 rounded-none text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] shadow-xl border border-white/20 ${typeColors[type] || "bg-accent text-background"}`}>
             {type || 'Update'}
           </span>
         </div>
 
         {isAdmin && (
-          <div className={`absolute flex gap-1.5 ${isCompact ? "top-2 right-2" : "top-4 right-4"}`}>
-            <button onClick={(e) => { e.stopPropagation(); onEdit(); }} className={`bg-card/10 backdrop-blur-md rounded-full text-primary-foreground hover:bg-card hover:text-foreground transition-all shadow-xl border border-white/20 flex items-center justify-center ${isCompact ? "w-7 h-7" : "p-2"}`}>
-              <Edit3 size={isCompact ? 12 : 16} />
+          <div className={`absolute flex gap-2 ${isCompact ? "top-3 right-3" : "top-6 right-6"}`}>
+            <button onClick={(e) => { e.stopPropagation(); onEdit(); }} className={`bg-background/20 backdrop-blur-md rounded-none text-background hover:bg-background hover:text-foreground transition-all shadow-xl border border-white/10 flex items-center justify-center ${isCompact ? "w-8 h-8" : "w-12 h-12"}`}>
+              <Edit3 size={isCompact ? 14 : 20} />
             </button>
           </div>
         )}
       </div>
 
       {/* Content Section */}
-      <div className={`${isCompact ? "p-4" : "p-8"} flex-1 flex flex-col justify-between relative bg-card`}>
+      <div className={`${isCompact ? "pt-6" : "pt-8"} flex-1 flex flex-col justify-between relative bg-background`}>
         <div className="relative z-10">
-          <div className={`flex items-center gap-2 ${isCompact ? "mb-2" : "mb-4"}`}>
-            <div className={`flex items-center gap-1.5 bg-blue-50 rounded-full border border-blue-100 ${isCompact ? "px-2 py-0.5" : "px-3 py-1"}`}>
-              <Clock size={isCompact ? 10 : 12} className="text-primary" />
-              <span className={`${isCompact ? "text-[10px]" : "text-xs"} font-bold text-primary`}>{formatTime(time)}</span>
+          <div className={`flex items-center gap-3 ${isCompact ? "mb-3" : "mb-6"}`}>
+            <div className={`flex items-center gap-2 border border-border px-3 py-1.5 rounded-none bg-card shadow-sm`}>
+              <Clock size={isCompact ? 10 : 12} className="text-accent" />
+              <span className={`${isCompact ? "text-[10px]" : "text-xs"} font-black uppercase tracking-widest text-foreground`}>{formatTime(time)}</span>
             </div>
             {isAdmin && (
-              <span className={`text-[9px] font-black uppercase tracking-widest ${status === 'visible' ? 'text-emerald-500' : 'text-rose-500'}`}>
-                ● {status}
+              <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${status === 'visible' ? 'text-accent' : 'text-muted-foreground'}`}>
+                {status}
               </span>
             )}
           </div>
 
-          <h3 className={`${isCompact ? "text-lg mb-1 leading-snug" : "text-2xl mb-3 leading-tight"} font-black text-foreground group-hover:text-primary transition-colors line-clamp-2`}>
+          <h3 className={`${isCompact ? "text-xl mb-2 leading-tight" : "text-3xl mb-4 leading-[1.1]"} font-serif font-black text-foreground group-hover:text-accent transition-colors line-clamp-2`}>
             {title}
           </h3>
 
-          <p className={`text-muted-foreground font-medium italic ${isCompact ? "text-xs leading-normal line-clamp-1" : "text-sm leading-relaxed line-clamp-2"}`}>
+          <p className={`text-muted-foreground font-medium border-l-2 border-border pl-4 py-1 italic ${isCompact ? "text-xs leading-normal line-clamp-2" : "text-sm leading-relaxed line-clamp-3"}`}>
             {note}
           </p>
         </div>

@@ -116,19 +116,19 @@ const AdminOrders = () => {
   if (error) return <div className="pt-[96px] px-4 md:px-16 text-red-500">{error}</div>;
 
   return (
-    <div className="pt-[96px] px-4 md:px-16 py-10 bg-muted min-h-screen">
+    <div className="pt-[96px] px-4 md:px-16 py-10 bg-background min-h-screen">
       {/* Header + Filter */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <h1 className="text-2xl font-semibold">Orders Status</h1>
 
 
 
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Time period:</span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Period:</span>
           <select
             value={selectedTimePeriod}
             onChange={e => setSelectedTimePeriod(e.target.value)}
-            className="border rounded px-3 py-2 text-sm"
+            className="border border-border rounded-none px-4 py-2 text-xs font-bold uppercase tracking-widest bg-background focus:ring-1 focus:ring-accent outline-none"
           >
             {TIME_PERIODS.map(tp => (
               <option key={tp.value} value={tp.value}>
@@ -140,9 +140,9 @@ const AdminOrders = () => {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-card shadow rounded-lg overflow-x-auto animate-scaleIn">
+      <div className="bg-card border border-border rounded-none overflow-x-auto animate-scaleIn">
         <table className="w-full text-left text-sm">
-          <thead className="bg-muted">
+          <thead className="bg-background border-b border-border text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
             <tr>
               <th className="p-3">Order ID</th>
               <th className="p-3">Customer</th>
@@ -178,7 +178,7 @@ const AdminOrders = () => {
                   <td className="p-3">{formatDate(o.orderDate)}</td>
 
                   <td className="p-3">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${statusColor(o.status)}`}>
+                    <span className={`px-3 py-1 rounded-none text-[10px] font-black uppercase tracking-widest border ${statusColor(o.status)}`}>
                       {o.status}
                     </span>
                   </td>
@@ -187,7 +187,7 @@ const AdminOrders = () => {
                     <button
                       onClick={() => downloadReceipt(o._id)}
                       disabled={downloadingId === o._id}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-black text-white text-xs font-medium hover:bg-gray-800 active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-primary-foreground text-xs font-bold uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed shadow-md shadow-accent/10"
                     >
                       {downloadingId === o._id ? (
                         <>

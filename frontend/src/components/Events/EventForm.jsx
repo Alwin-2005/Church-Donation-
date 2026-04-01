@@ -55,9 +55,9 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
   };
 
   return (
-    <div className="bg-card/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden border border-white animate-scaleIn">
+    <div className="bg-card border border-border rounded-none shadow-2xl w-full max-w-xl overflow-hidden animate-scaleIn">
       {/* Header */}
-      <div className="px-8 py-6 bg-background/50 border-b border-gray-100 flex justify-between items-center">
+      <div className="px-8 py-6 bg-card border-b border-border flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-black text-foreground tracking-tight">
             {initialData ? "Edit Announcement" : "New Announcement"}
@@ -82,7 +82,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
             placeholder="e.g. Grand Sunday Celebration"
             value={formData.title}
             onChange={handleChange}
-            className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-foreground"
+            className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-medium text-foreground text-sm"
             required
           />
         </div>
@@ -98,7 +98,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
               value={formData.date}
               onChange={handleChange}
               min={initialData ? undefined : new Date().toISOString().split("T")[0]}
-              className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
+              className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-medium text-sm"
               required
             />
           </div>
@@ -111,7 +111,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
               name="time"
               value={formData.time}
               onChange={handleChange}
-              className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
+              className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-medium text-sm"
               required
             />
           </div>
@@ -124,7 +124,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
             placeholder="e.g. Main Sanctuary"
             value={formData.note}
             onChange={handleChange}
-            className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium"
+            className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-medium text-sm"
           />
         </div>
 
@@ -135,7 +135,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full bg-card border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-bold"
+              className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-bold text-xs uppercase tracking-widest"
             >
               <option value="visible">Visible</option>
               <option value="hidden">Hidden</option>
@@ -144,7 +144,7 @@ const EventForm = ({ onClose, onSubmit, initialData }) => {
 
           <button
             type="submit"
-            className="mt-6 px-10 py-4 bg-black hover:bg-secondary text-primary-foreground rounded-2xl font-black text-sm tracking-widest uppercase transition-all shadow-xl hover:shadow-black/20 active:scale-95 flex items-center gap-2"
+            className="mt-6 px-10 py-4 bg-accent hover:scale-[1.02] text-primary-foreground rounded-none font-black text-xs tracking-widest uppercase transition-all shadow-lg shadow-accent/20 active:scale-95 flex items-center justify-center gap-2"
           >
             <Check size={18} /> {initialData ? "Apply" : "Create"}
           </button>

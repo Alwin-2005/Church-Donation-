@@ -191,13 +191,13 @@ const AdminUsers = () => {
             </button>
 
             {showAddMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-card border rounded-lg shadow-lg z-10">
+              <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-none shadow-lg z-10">
                 <button
                   onClick={() => {
                     setShowSingleUserModal(true);
                     setShowAddMenu(false);
                   }}
-                  className="w-full text-left px-4 py-2 hover:bg-muted text-sm rounded-t-lg"
+                  className="w-full text-left px-4 py-3 hover:bg-muted text-xs font-bold uppercase tracking-widest border-b border-border"
                 >
                   Add Single User
                 </button>
@@ -207,7 +207,7 @@ const AdminUsers = () => {
                     setShowCSVModal(true);
                     setShowAddMenu(false);
                   }}
-                  className="w-full text-left px-4 py-2 hover:bg-muted text-sm rounded-b-lg"
+                  className="w-full text-left px-4 py-3 hover:bg-muted text-xs font-bold uppercase tracking-widest"
                 >
                   Upload CSV
                 </button>
@@ -223,13 +223,13 @@ const AdminUsers = () => {
             placeholder="Search by name or email"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border rounded-lg px-4 py-2 w-full md:w-1/3 focus:ring-2 focus:ring-black outline-none"
+            className="border border-border rounded-none px-4 py-2 w-full md:w-1/3 focus:ring-1 focus:ring-accent outline-none bg-background font-medium text-sm"
           />
 
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="border rounded-lg px-4 py-2 w-full md:w-1/4 focus:ring-2 focus:ring-black outline-none"
+            className="border border-border rounded-none px-4 py-2 w-full md:w-1/4 focus:ring-1 focus:ring-accent outline-none bg-background font-bold text-xs uppercase"
           >
             <option value="all">All Roles</option>
             <option value="churchMember">Church Member</option>
@@ -313,12 +313,12 @@ const AdminUsers = () => {
 
       {/* Single User Modal */}
       {showSingleUserModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-          <div className="bg-card rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-card">
-              <h2 className="text-xl font-bold">Add Single User</h2>
-              <button onClick={() => setShowSingleUserModal(false)}>
-                <X className="w-5 h-5" />
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[100] p-4">
+          <div className="bg-card border border-border rounded-none w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-8 border-b border-border flex justify-between items-center sticky top-0 bg-card">
+              <h2 className="text-2xl font-serif font-bold">Add Single User</h2>
+              <button onClick={() => setShowSingleUserModal(false)} className="hover:rotate-90 transition-transform">
+                <X className="w-6 h-6" />
               </button>
             </div>
 
@@ -331,7 +331,7 @@ const AdminUsers = () => {
                     value={formData.fullname}
                     onChange={handleInputChange}
                     required
-                    className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-foreground"
+                    className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-medium text-foreground"
                   />
                 </div>
 
@@ -343,7 +343,7 @@ const AdminUsers = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-foreground"
+                    className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-medium text-foreground"
                   />
                 </div>
 
@@ -354,7 +354,7 @@ const AdminUsers = () => {
                     value={formData.phoneNo}
                     onChange={handleInputChange}
                     placeholder="9876543210"
-                    className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-foreground"
+                    className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-medium text-foreground"
                   />
                 </div>
 
@@ -365,7 +365,7 @@ const AdminUsers = () => {
                     value={formData.gender}
                     onChange={handleInputChange}
                     required
-                    className="w-full bg-card border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-bold"
+                    className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-bold text-xs uppercase tracking-widest"
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -380,13 +380,13 @@ const AdminUsers = () => {
                     type="date"
                     value={formData.dob}
                     onChange={handleInputChange}
-                    className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium text-foreground"
+                    className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-medium text-foreground"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Role</label>
-                  <div className="w-full bg-muted border border-border rounded-2xl p-4 font-bold text-muted-foreground">
+                  <div className="w-full bg-muted/30 border border-border rounded-none p-4 font-bold text-xs uppercase tracking-widest text-muted-foreground">
                     Church Member
                   </div>
                   <p className="text-[10px] text-muted-foreground mt-1 px-1">Adding church members only as per policy.</p>
@@ -400,27 +400,27 @@ const AdminUsers = () => {
                   value={formData.address}
                   onChange={handleInputChange}
                   rows="2"
-                  className="w-full bg-background border border-border rounded-2xl p-4 focus:ring-2 focus:ring-black outline-none transition-all font-medium min-h-[80px] text-foreground"
+                  className="w-full bg-background border border-border rounded-none p-4 focus:ring-1 focus:ring-accent outline-none transition-all font-medium min-h-[80px] text-foreground"
                 />
               </div>
 
               <div className="flex flex-col sm:flex-row gap-6 items-center pt-4 border-t border-gray-100 mt-4">
-                <div className="flex-1 bg-blue-50/50 p-3 rounded-2xl text-sm text-primary border border-blue-100">
-                  <p className="font-bold">Password Auto-Generation</p>
-                  <p className="text-muted-foreground mt-1">A secure password will be automatically generated and emailed to the user upon creation.</p>
+                <div className="flex-1 bg-accent/5 p-4 border border-accent/20 rounded-none text-sm text-accent">
+                  <p className="font-bold uppercase tracking-widest text-xs mb-1">Password Auto-Generation</p>
+                  <p className="text-muted-foreground text-xs font-medium">A secure password will be automatically generated and emailed to the user upon creation.</p>
                 </div>
 
                 <div className="flex gap-3 w-full sm:w-auto">
                   <button
                     type="button"
                     onClick={() => setShowSingleUserModal(false)}
-                    className="flex-1 sm:flex-none px-6 py-4 border border-border text-muted-foreground rounded-2xl hover:bg-background font-bold text-sm transition-colors"
+                    className="flex-1 sm:flex-none px-8 py-4 border border-border text-muted-foreground hover:bg-muted font-bold text-xs uppercase tracking-widest transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-8 py-4 bg-black text-primary-foreground rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:shadow-black/20 hover:bg-secondary transition-all active:scale-95 whitespace-nowrap"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-10 py-4 bg-accent text-primary-foreground font-black text-xs uppercase tracking-widest shadow-lg hover:shadow-accent/20 hover:scale-[1.02] transition-all active:scale-95 whitespace-nowrap"
                   >
                     Create User
                   </button>
@@ -433,17 +433,19 @@ const AdminUsers = () => {
 
       {/* CSV Upload Modal */}
       {showCSVModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-          <div className="bg-card rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-card">
-              <h2 className="text-xl font-bold">Upload Users via CSV</h2>
-              <button onClick={() => {
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[100] p-4">
+          <div className="bg-card border border-border rounded-none w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="p-8 border-b border-border flex justify-between items-center sticky top-0 bg-card text-foreground">
+              <h2 className="text-2xl font-serif font-bold">Upload Users via CSV</h2>
+              <button 
+                className="hover:rotate-90 transition-transform"
+                onClick={() => {
                 setShowCSVModal(false);
                 setCsvFile(null);
                 setCsvData([]);
                 setUploadResult(null);
               }}>
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
 

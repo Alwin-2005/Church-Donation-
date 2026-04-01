@@ -25,17 +25,19 @@ async function handleGenerateAdminReport(req, res) {
                 };
             } else if (selectedMonths.length > 0) {
                 return {
+                    [dateField]: {
+                        $gte: new Date(`${selectedYear}-01-01T00:00:00.000Z`),
+                        $lte: new Date(`${selectedYear}-12-31T23:59:59.999Z`)
+                    },
                     $expr: {
-                        $and: [
-                            { $in: [{ $month: `$${dateField}` }, selectedMonths] },
-                            { $eq: [{ $year: `$${dateField}` }, selectedYear] }
-                        ]
+                        $in: [{ $month: `$${dateField}` }, selectedMonths]
                     }
                 };
             } else if (year) {
                 return {
-                    $expr: {
-                        $eq: [{ $year: `$${dateField}` }, selectedYear]
+                    [dateField]: {
+                        $gte: new Date(`${selectedYear}-01-01T00:00:00.000Z`),
+                        $lte: new Date(`${selectedYear}-12-31T23:59:59.999Z`)
                     }
                 };
             }

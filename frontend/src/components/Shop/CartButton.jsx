@@ -1,3 +1,5 @@
+import { ShoppingBag } from "lucide-react";
+
 const CartButton = ({ cart }) => {
   const totalItems = cart.reduce(
     (sum, item) => sum + item.qty,
@@ -5,23 +7,23 @@ const CartButton = ({ cart }) => {
   );
 
   return (
-    <button
-      className="relative bg-primary hover:bg-primary/90
-                 text-primary-foreground w-16 h-16 rounded-full shadow-lg
-                 flex items-center justify-center text-2xl"
-    >
-      🛒
+    <div className="relative group">
+      <button
+        className="w-16 h-16 bg-foreground text-background flex items-center justify-center transition-all hover:bg-accent border border-line"
+      >
+        <ShoppingBag className="w-6 h-6" />
 
-      {totalItems > 0 && (
-        <span
-          className="absolute -top-1 -right-1 bg-destructive text-primary-foreground
-                     text-xs w-6 h-6 rounded-full flex items-center
-                     justify-center font-bold"
-        >
-          {totalItems}
-        </span>
-      )}
-    </button>
+        {totalItems > 0 && (
+          <span
+            className="absolute -top-2 -right-2 bg-accent text-background
+                       text-[10px] w-6 h-6 flex items-center
+                       justify-center font-bold font-sans border border-line"
+          >
+            {totalItems}
+          </span>
+        )}
+      </button>
+    </div>
   );
 };
 

@@ -4,7 +4,7 @@ import CartButton from "./CartButton";
 import { Link } from "react-router-dom";
 import { useCart } from "./CartContext";
 import api from "../../api/axios";
-import footerImg from "../../assets/footer2.jpg";
+import { Loader2 } from "lucide-react";
 
 const Shop = () => {
   const { cart } = useCart();
@@ -29,54 +29,45 @@ const Shop = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen text-primary-foreground">
-      {/* Immersive Background */}
-      <div className="fixed inset-0 z-0">
-        <img
-          src={footerImg}
-          className="w-full h-full object-cover"
-          alt="Shop background"
-        />
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-[3px]" />
+    <div className="w-full min-h-screen bg-background text-foreground font-sans">
+      {/* HERO HEADER */}
+      <div className="pt-32 pb-16 px-4 md:px-16 border-b border-line text-center">
+        <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-accent mb-6 block">
+          Church Store
+        </span>
+        <h1 className="font-serif text-5xl md:text-7xl font-bold tracking-tight mb-6">
+          Shop
+        </h1>
+        <p className="text-base md:text-lg font-sans max-w-2xl mx-auto text-foreground/80 leading-relaxed">
+          Support our sanctuary by purchasing high-quality merchandise crafted with faith and purpose.
+        </p>
       </div>
 
-      <div className="relative z-10">
-        {/* HERO HEADER */}
-        <div className="pt-32 pb-14 px-6 text-center">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-4 text-primary-foreground uppercase italic">
-            SHOP
-          </h1>
-          <p className="text-gray-400 max-w-2xl mx-auto text-xl font-medium tracking-wide">
-            Support our sanctuary by purchasing high-quality merchandise crafted with faith and purpose.
-          </p>
-        </div>
-
-        {/* GRID */}
-        <div className="max-w-7xl mx-auto px-6 pb-32">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 bg-card/5 backdrop-blur-xl rounded-[40px] border border-white/10 shadow-2xl">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary mb-6"></div>
-              <p className="text-gray-400 font-black tracking-widest uppercase text-xs">Unboxing the Sanctuary...</p>
-            </div>
-          ) : error ? (
-            <div className="bg-rose-500/10 backdrop-blur-md text-rose-500 p-10 rounded-[40px] text-center border border-rose-500/20 max-w-xl mx-auto shadow-2xl">
-              <p className="font-black italic text-xl uppercase tracking-tighter">{error}</p>
-            </div>
-          ) : merchItems.length === 0 ? (
-            <div className="bg-card/5 backdrop-blur-md text-gray-400 p-20 rounded-[40px] text-center border border-white/10 max-w-2xl mx-auto shadow-inner">
-              <p className="text-3xl font-black uppercase italic tracking-tighter">Coming Soon!</p>
-              <p className="mt-4 font-medium text-lg">Our store is currently being restocked. Check back later!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 animate-fadeIn">
-              {merchItems.map(item => (
-                <div key={item._id} className="hover:scale-[1.02] transition-transform duration-500">
-                  <ShopCard {...item} id={item._id} />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      {/* GRID */}
+      <div className="py-24 px-4 md:px-16 max-w-7xl mx-auto">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 border border-line">
+            <Loader2 className="animate-spin mb-4 text-accent" size={32} />
+            <p className="font-bold tracking-widest text-[10px] uppercase text-foreground/50">Unboxing the Sanctuary...</p>
+          </div>
+        ) : error ? (
+          <div className="py-24 border border-accent text-center text-accent">
+            <p className="font-serif text-2xl font-bold">{error}</p>
+          </div>
+        ) : merchItems.length === 0 ? (
+          <div className="py-24 border border-line text-center">
+            <p className="font-serif text-2xl font-bold mb-2">Coming Soon!</p>
+            <p className="text-sm text-foreground/70">Our store is currently being restocked. Check back later!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            {merchItems.map(item => (
+              <div key={item._id} className="border-b border-line pb-12">
+                <ShopCard {...item} id={item._id} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* FLOAT CART BUTTON */}

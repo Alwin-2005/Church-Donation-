@@ -34,7 +34,8 @@ const AdminDashboard = () => {
   const [duration, setDuration] = useState("monthly");
   const [dateRange, setDateRange] = useState({
     startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
-    endDate: new Date().toISOString().split('T')[0]
+    endDate: new Date().toISOString().split('T')[0],
+    financialYear: ""
   });
 
   // Report Modal State
@@ -65,10 +66,16 @@ const AdminDashboard = () => {
         params.startDate = new Date(new Date().getFullYear(), 0, 1).toISOString();
         params.endDate = new Date().toISOString();
       } else if (duration === "financialYear") {
-        const now = new Date();
-        const startYear = now.getMonth() < 3 ? now.getFullYear() - 1 : now.getFullYear();
-        params.startDate = new Date(startYear, 3, 1).toISOString();
-        params.endDate = new Date().toISOString();
+        if (dateRange.financialYear) {
+          const startYear = parseInt(dateRange.financialYear.split("-")[0]);
+          params.startDate = new Date(startYear, 3, 1).toISOString();
+          params.endDate = new Date(startYear + 1, 2, 31, 23, 59, 59).toISOString();
+        } else {
+          const now = new Date();
+          const startYear = now.getMonth() < 3 ? now.getFullYear() - 1 : now.getFullYear();
+          params.startDate = new Date(startYear, 3, 1).toISOString();
+          params.endDate = now.toISOString();
+        }
       } else if (duration === "custom") {
         params.startDate = new Date(dateRange.startDate).toISOString();
         params.endDate = new Date(dateRange.endDate).toISOString();
@@ -144,8 +151,8 @@ const AdminDashboard = () => {
     return (
       <main className="flex-1 p-8 bg-background h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <RefreshCw className="w-10 h-10 text-primary animate-spin" />
-          <p className="text-muted-foreground font-bold animate-pulse">Initializing Analytics...</p>
+          <RefreshCw className="w-10 h-10 text-accent animate-spin" />
+          <p className="text-muted-foreground font-black uppercase tracking-widest text-xs animate-pulse">Initializing Analytics...</p>
         </div>
       </main>
     );
@@ -164,7 +171,7 @@ const AdminDashboard = () => {
           </div>
           <button
             onClick={() => setShowReportOptions(true)}
-            className="flex items-center gap-2 bg-black text-primary-foreground px-6 py-3 rounded-2xl font-black hover:bg-secondary transition active:scale-95 shadow-xl shadow-black/10 group"
+            className="flex items-center gap-2 bg-black text-primary-foreground px-8 py-3 rounded-none font-black text-xs uppercase tracking-widest hover:bg-secondary transition active:scale-95 shadow-xl shadow-black/10 group"
           >
             <Download className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
             Generate Report
@@ -215,8 +222,8 @@ const AdminDashboard = () => {
         {/* Report Options Modal */}
         {showReportOptions && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowReportOptions(false)} />
-            <div className="relative bg-card w-full max-w-2xl rounded-3xl shadow-2xl border border-border overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setShowReportOptions(false)} />
+            <div className="relative bg-card w-full max-w-2xl rounded-none shadow-2xl border border-border overflow-hidden animate-in fade-in zoom-in duration-200">
               <div className="p-8">
                 <div className="flex justify-between items-center mb-6">
                   <div>
@@ -226,12 +233,12 @@ const AdminDashboard = () => {
                   <button onClick={() => setShowReportOptions(false)} className="p-2 hover:bg-muted rounded-full transition-colors">✕</button>
                 </div>
 
-                <div className="flex bg-muted p-1 rounded-2xl mb-8 overflow-x-auto no-scrollbar">
+                <div className="flex bg-muted p-1 rounded-none mb-8 overflow-x-auto no-scrollbar border border-border">
                   {["monthly", "yearly", "financial", "custom"].map((type) => (
                     <button
                       key={type}
                       onClick={() => setReportType(type)}
-                      className={`flex-1 min-w-[100px] py-2.5 rounded-xl text-xs font-bold capitalize transition-all whitespace-nowrap ${
+                      className={`flex-1 min-w-[100px] py-3 rounded-none text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                         reportType === type ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
@@ -245,10 +252,10 @@ const AdminDashboard = () => {
                 <div className="min-h-[220px]">
                   {reportType === "monthly" && (
                     <div className="space-y-6">
-                      <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold">
+                      <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} className="w-full bg-background border border-border px-4 py-3 rounded-none font-bold text-xs uppercase tracking-widest">
                         {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
                       </select>
-                      <select value={selectedMonths[0] || ""} onChange={(e) => setSelectedMonths(e.target.value ? [Number(e.target.value)] : [])} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold">
+                      <select value={selectedMonths[0] || ""} onChange={(e) => setSelectedMonths(e.target.value ? [Number(e.target.value)] : [])} className="w-full bg-background border border-border px-4 py-3 rounded-none font-bold text-xs uppercase tracking-widest">
                         <option value="">Full Year</option>
                         {[
                           "January", "February", "March", "April", "May", "June", 
@@ -260,14 +267,14 @@ const AdminDashboard = () => {
 
                   {reportType === "yearly" && (
                     <div className="space-y-6">
-                      <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold">
+                      <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))} className="w-full bg-background border border-border px-4 py-3 rounded-none font-bold text-xs uppercase tracking-widest">
                         {[2023, 2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
                       </select>
                     </div>
                   )}
 
                   {reportType === "financial" && (
-                    <select value={financialYear} onChange={(e) => setFinancialYear(e.target.value)} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold">
+                    <select value={financialYear} onChange={(e) => setFinancialYear(e.target.value)} className="w-full bg-background border border-border px-4 py-3 rounded-none font-bold text-xs uppercase tracking-widest">
                       <option value="">Select Financial Year...</option>
                       {["2023-2024", "2024-2025", "2025-2026"].map(fy => <option key={fy} value={fy}>{fy}</option>)}
                     </select>
@@ -275,8 +282,8 @@ const AdminDashboard = () => {
 
                   {reportType === "custom" && (
                     <div className="grid grid-cols-2 gap-4">
-                      <input type="date" value={reportDateRange.start} onChange={(e) => setReportDateRange(prev => ({ ...prev, start: e.target.value }))} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold" />
-                      <input type="date" value={reportDateRange.end} onChange={(e) => setReportDateRange(prev => ({ ...prev, end: e.target.value }))} className="w-full bg-background border border-border px-4 py-3 rounded-xl font-bold" />
+                      <input type="date" value={reportDateRange.start} onChange={(e) => setReportDateRange(prev => ({ ...prev, start: e.target.value }))} className="w-full bg-background border border-border px-4 py-3 rounded-none font-bold text-xs" />
+                      <input type="date" value={reportDateRange.end} onChange={(e) => setReportDateRange(prev => ({ ...prev, end: e.target.value }))} className="w-full bg-background border border-border px-4 py-3 rounded-none font-bold text-xs" />
                     </div>
                   )}
                 </div>
@@ -285,7 +292,7 @@ const AdminDashboard = () => {
                   <button onClick={() => setShowReportOptions(false)} className="text-sm font-bold text-muted-foreground hover:text-foreground">Cancel</button>
                   <button
                     onClick={handleDownloadReport}
-                    className="flex items-center gap-2 bg-black text-white px-10 py-4 rounded-2xl font-black hover:opacity-90 transition active:scale-95"
+                    className="flex items-center gap-2 bg-accent text-primary-foreground px-10 py-4 rounded-none font-black text-xs uppercase tracking-widest hover:scale-[1.02] shadow-lg shadow-accent/20 transition active:scale-95"
                   >
                     <Download className="w-5 h-5" />
                     Download {exportFormat.toUpperCase()}
@@ -302,24 +309,28 @@ const AdminDashboard = () => {
 
 const StatCard = ({ title, value, icon, color, onClick }) => {
   const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600',
-    green: 'bg-emerald-50 text-emerald-600',
-    purple: 'bg-purple-50 text-purple-600',
-    red: 'bg-red-50 text-red-600',
-    orange: 'bg-orange-50 text-orange-600',
-    indigo: 'bg-indigo-50 text-indigo-600'
+    blue: 'border-blue-500/20 text-blue-600 bg-blue-50/10',
+    green: 'border-emerald-500/20 text-emerald-600 bg-emerald-50/10',
+    purple: 'border-purple-500/20 text-purple-600 bg-purple-50/10',
+    red: 'border-accent/20 text-accent bg-accent/5',
+    orange: 'border-orange-500/20 text-orange-600 bg-orange-50/10',
+    indigo: 'border-indigo-500/20 text-indigo-600 bg-indigo-50/10'
   };
 
   return (
     <div 
       onClick={onClick}
-      className={`bg-card rounded-2xl shadow-sm border border-border p-6 hover:shadow-md transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]`}
+      className={`bg-card rounded-none border border-border p-8 hover:shadow-xl hover:shadow-black/5 transition-all cursor-pointer group relative overflow-hidden`}
     >
-      <div className={`w-12 h-12 rounded-xl ${colorClasses[color]} flex items-center justify-center mb-4`}>
+      <div className={`w-12 h-12 border ${colorClasses[color]} flex items-center justify-center mb-6`}>
         {icon}
       </div>
-      <h3 className="text-xs text-muted-foreground font-bold uppercase tracking-widest">{title}</h3>
-      <p className="text-2xl font-black mt-1 text-foreground">{value}</p>
+      <h3 className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">{title}</h3>
+      <p className="text-3xl font-serif font-bold mt-2 text-foreground tracking-tight">{value}</p>
+      
+      <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+      </div>
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import EventCard from "./EventCard";
 import api from "../../api/axios";
-import evimg from "../../assets/evimg.jpg";
 import { Loader2 } from "lucide-react";
 
 const Event = () => {
@@ -27,48 +26,37 @@ const Event = () => {
   };
 
   return (
-    <div className="relative min-h-screen text-white overflow-x-hidden">
-      {/* GLOBAL FIXED BACKGROUND IMAGE */}
-      <div className="fixed inset-0 z-0">
-        <img
-          src={evimg}
-          className="h-full w-full object-cover scale-105"
-          alt="Events background"
-        />
-        <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" />
-      </div>
-
+    <div className="w-full min-h-screen bg-background text-foreground font-sans">
       {/* HERO SECTION */}
-      <div className="relative z-10 min-h-[60vh] w-full flex items-center justify-center">
-        {/* HERO CONTENT */}
-        <div className="relative z-20 text-center px-6 max-w-4xl pt-32 animate-fadeIn">
-          <h1 className="text-5xl md:text-7xl font-black text-primary-foreground tracking-tighter mb-4 uppercase italic">
-            ANNOUNCEMENTS
-          </h1>
-          <p className="text-gray-300 text-lg md:text-xl font-medium tracking-wide max-w-2xl mx-auto">
-            Join our community in spiritual growth, celebration, and service.
-            Your presence makes our gathering complete.
-          </p>
-        </div>
+      <div className="pt-32 pb-16 px-4 md:px-16 border-b border-line text-center">
+        <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-accent mb-6 block">
+          Upcoming Gatherings
+        </span>
+        <h1 className="font-serif text-5xl md:text-7xl font-bold tracking-tight mb-6">
+          Announcements
+        </h1>
+        <p className="text-base md:text-lg font-sans max-w-2xl mx-auto text-foreground/80 leading-relaxed">
+          Join our community in spiritual growth, celebration, and service. Your presence makes our gathering complete.
+        </p>
       </div>
 
       {/* EVENTS GRID */}
-      <div className="relative z-10 pb-20 px-6 max-w-7xl mx-auto">
+      <div className="py-24 px-4 md:px-16 max-w-7xl mx-auto">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-primary bg-card/5 backdrop-blur-xl rounded-3xl border border-white/10">
-            <Loader2 className="animate-spin mb-4" size={40} />
-            <p className="font-bold tracking-widest text-xs uppercase text-gray-400">Opening Sanctuary Doors...</p>
+          <div className="flex flex-col items-center justify-center py-20 border border-line">
+            <Loader2 className="animate-spin mb-4 text-accent" size={32} />
+            <p className="font-bold tracking-widest text-[10px] uppercase text-foreground/50">Loading Announcements...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events.length === 0 ? (
-              <div className="col-span-full py-20 bg-card/5 backdrop-blur-xl rounded-3xl border border-white/10 text-center">
-                <p className="text-gray-400 font-bold text-xl uppercase tracking-tighter">No Announcements Yet</p>
-                <p className="text-muted-foreground mt-2">Check back soon for the latest church updates and news.</p>
+              <div className="col-span-full py-24 border border-line text-center">
+                <p className="font-serif text-2xl font-bold mb-2">No Announcements Yet</p>
+                <p className="text-sm text-foreground/70">Check back soon for the latest church updates and news.</p>
               </div>
             ) : (
               events.map(event => (
-                <div key={event._id} className="animate-scaleIn">
+                <div key={event._id} className="border border-line hover:border-foreground transition-colors p-6">
                   <EventCard event={event} isAdmin={false} />
                 </div>
               ))

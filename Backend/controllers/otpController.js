@@ -105,7 +105,7 @@ async function verifyOtpAndRegister(req, res) {
             status,
         });
 
-        otpStore.delete(email); // Clean up OTP
+        otpStore.delete(email); 
         return res.status(201).json({ message: "Account created successfully!" });
     } catch (err) {
         console.error(err);

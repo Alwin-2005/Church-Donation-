@@ -105,10 +105,13 @@ const Cart = () => {
     <div className="bg-background min-h-screen pb-20">
       <Navbar />
 
-      <div className="pt-28 max-w-7xl mx-auto px-6">
-        <h1 className="text-3xl font-extrabold text-foreground mb-8 border-b pb-4">
-          Shopping Cart ({cart.reduce((a, c) => a + c.qty, 0)})
-        </h1>
+      <div className="pt-32 max-w-7xl mx-auto px-6">
+        <div className="border-b border-line pb-8 mb-12">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-accent mb-4 block">Your Sanctuary Selection</span>
+          <h1 className="font-serif text-5xl md:text-6xl font-bold tracking-tight text-foreground">
+            Shopping Cart ({cart.reduce((a, c) => a + c.qty, 0)})
+          </h1>
+        </div>
 
         {cart.length === 0 ? (
           <div className="text-center py-20 animate-fadeIn">
@@ -121,90 +124,92 @@ const Cart = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 animate-scaleIn">
 
             {/* LEFT: CART ITEMS */}
-            <div className="lg:col-span-2 space-y-6">
-              {cart.map((item) => (
-                <div key={item.id || item._id} className="bg-card p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-6 items-center hover:shadow-md transition-shadow">
-                  <div className="w-24 h-24 bg-muted rounded-xl overflow-hidden flex-shrink-0 border border-border">
-                    {item.url ? (
-                      <img src={item.url} alt={item.itemName} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">No Img</div>
-                    )}
-                  </div>
-
-                  <div className="flex-1 text-center sm:text-left">
-                    <h3 className="font-bold text-lg text-foreground">{item.itemName}</h3>
-                    <p className="text-sm text-muted-foreground mb-2">{item.category}</p>
-                    <p className="font-semibold text-foreground">₹{item.price}</p>
-                  </div>
-
-                  <div className="flex flex-col items-center sm:items-end gap-3">
-                    <div className="flex items-center gap-3 bg-muted rounded-full px-2 py-1">
-                      <button
-                        onClick={() => updateCart(item, item.qty - 1)}
-                        className="w-8 h-8 flex items-center justify-center bg-card rounded-full shadow-sm text-foreground hover:bg-gray-200 transition-colors"
-                      >-</button>
-                      <span className="font-bold w-4 text-center text-sm">{item.qty}</span>
-                      <button
-                        onClick={() => updateCart(item, item.qty + 1)}
-                        className="w-8 h-8 flex items-center justify-center bg-black rounded-full shadow-sm text-primary-foreground hover:bg-secondary transition-colors"
-                      >+</button>
+            <div className="lg:col-span-2">
+              <div className="border-t border-line">
+                {cart.map((item) => (
+                  <div key={item.id || item._id} className="py-12 border-b border-line flex flex-col sm:flex-row gap-8 items-center group transition-colors">
+                    <div className="w-32 h-32 bg-muted overflow-hidden flex-shrink-0 border border-line">
+                      {item.url ? (
+                        <img src={item.url} alt={item.itemName} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-[10px] uppercase tracking-widest font-bold text-foreground/20">No Img</div>
+                      )}
                     </div>
-                    <button
-                      onClick={() => handleRemove(item)}
-                      className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 font-medium transition-colors"
-                    >
-                      <Trash2 className="w-3 h-3" /> Remove
-                    </button>
+
+                    <div className="flex-1 text-center sm:text-left">
+                      <h3 className="font-serif text-2xl font-bold text-foreground mb-2 group-hover:text-accent transition-colors">{item.itemName}</h3>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-accent mb-4">{item.category}</p>
+                      <p className="font-serif text-xl font-bold text-foreground">₹{item.price}</p>
+                    </div>
+
+                    <div className="flex flex-col items-center sm:items-end gap-6">
+                      <div className="flex items-center border border-line p-1">
+                        <button
+                          onClick={() => updateCart(item, item.qty - 1)}
+                          className="w-10 h-10 flex items-center justify-center hover:bg-line transition-colors text-foreground"
+                        >-</button>
+                        <span className="font-bold w-10 text-center text-sm">{item.qty}</span>
+                        <button
+                          onClick={() => updateCart(item, item.qty + 1)}
+                          className="w-10 h-10 flex items-center justify-center bg-foreground text-background hover:bg-accent transition-colors"
+                        >+</button>
+                      </div>
+                      <button
+                        onClick={() => handleRemove(item)}
+                        className="text-[9px] font-bold uppercase tracking-widest text-red-500 hover:text-red-700 flex items-center gap-2 transition-colors"
+                      >
+                        <Trash2 className="w-3 h-3" /> Remove Item
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             {/* RIGHT: SUMMARY */}
             <div className="lg:col-span-1">
-              <div className="bg-card p-8 rounded-2xl shadow-lg border border-gray-100 sticky top-32">
-                <h2 className="text-xl font-bold mb-6 text-foreground">Order Summary</h2>
+              <div className="border border-line bg-background p-8 sticky top-32">
+                <h2 className="font-serif text-2xl font-bold mb-8 text-foreground pb-4 border-b border-line">Order Summary</h2>
 
-                <div className="space-y-4 mb-6 text-sm">
-                  <div className="flex justify-between text-muted-foreground">
+                <div className="space-y-6 mb-8">
+                  <div className="flex justify-between text-[10px] uppercase tracking-widest font-bold text-foreground/40">
                     <span>Subtotal</span>
-                    <span>₹{total}</span>
+                    <span className="text-foreground">₹{total}</span>
                   </div>
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>Shipping</span>
-                    <span className="text-emerald-600 font-medium">Free</span>
+                  <div className="flex justify-between text-[10px] uppercase tracking-widest font-bold text-foreground/40">
+                    <span>Delivery</span>
+                    <span className="text-accent">Complimentary</span>
                   </div>
-                  <div className="border-t border-gray-100 pt-4 flex justify-between font-bold text-xl text-foreground">
-                    <span>Total</span>
-                    <span>₹{total}</span>
+                  <div className="pt-6 border-t border-line flex justify-between">
+                    <span className="font-serif text-xl font-bold">Total</span>
+                    <span className="font-serif text-xl font-bold">₹{total}</span>
                   </div>
                 </div>
 
                 <button
                   onClick={handleCheckout}
                   disabled={isProcessing}
-                  className="w-full bg-black text-primary-foreground py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-foreground hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-wait"
+                  className="w-full bg-accent hover:bg-foreground text-background py-4 font-bold text-[11px] uppercase tracking-widest transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-wait"
                 >
                   {isProcessing ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" /> Processing...
+                      <Loader2 className="w-4 h-4 animate-spin" /> Processing order...
                     </>
                   ) : (
                     <>
-                      Checkout <ArrowRight className="w-5 h-5" />
+                      Proceed to Checkout <ArrowRight className="w-4 h-4" />
                     </>
                   )}
                 </button>
 
-                <div className="mt-6 space-y-3 border-t border-gray-100 pt-6">
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground font-medium">
-                    <ShieldCheck className="w-4 h-4 text-gray-400" />
-                    Secure Razorpay Payment
+                <div className="mt-8 space-y-4 border-t border-line pt-8">
+                  <div className="flex items-center gap-3 text-[9px] uppercase tracking-widest font-bold text-foreground/40">
+                    <ShieldCheck size={16} className="text-accent" />
+                    Secure Transaction
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground font-medium">
-                    <Smartphone className="w-4 h-4 text-gray-400" />
-                    Supports UPI, Cards & NetBanking
+                  <div className="flex items-center gap-3 text-[9px] uppercase tracking-widest font-bold text-foreground/40">
+                    <Smartphone size={16} className="text-accent" />
+                    UPI & Global Networks
                   </div>
                 </div>
               </div>

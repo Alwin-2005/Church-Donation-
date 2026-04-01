@@ -25,22 +25,28 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex items-center py-6 px-4 md:px-16 font-sans bg-black text-primary-foreground fixed top-0 left-0 w-full z-50">
+    <nav className="flex items-center justify-between py-6 px-4 md:px-16 bg-background text-foreground fixed top-0 left-0 w-full z-50 border-b border-line">
       {/* Logo */}
-      <img src={COG} className="h-10 w-auto" alt="COG" />
-      <h1 className="ml-2 text-lg font-semibold">Church of God</h1>
+      <div className="flex items-center gap-3">
+        <Link to="/">
+          <img src={COG} alt="COG Logo" className="w-10 h-10 object-contain" />
+        </Link>
+        <Link to="/" className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+          Church of God
+        </Link>
+      </div>
 
       {/* NAV LINKS */}
-      <div className="ml-auto flex gap-10 items-center text-base px-4">
+      <div className="hidden md:flex gap-8 items-center text-[10px] sm:text-[11px] font-bold uppercase tracking-widest font-sans">
         {role !== "admin" && (
-          <Link to="/" className="hover:scale-110 transition">
+          <Link to="/" className="text-foreground hover:text-accent transition-colors">
             HOME
           </Link>
         )}
 
         {/* ================= ADMIN NAV ================= */}
         {role === "admin" && (
-          <>
+          <div className="flex gap-6">
             {[
               ["Dashboard", "/admin/dashboard"],
               ["Users", "/admin/users"],
@@ -51,28 +57,44 @@ const Navbar = () => {
               ["Payments", "/admin/payments"],
               ["Announcements", "/admin/announcements"],
             ].map(([label, path]) => (
-              <Link key={path} to={path} className="hover:scale-110 transition">
+              <Link key={path} to={path} className="text-foreground hover:text-accent transition-colors">
                 {label}
               </Link>
             ))}
-          </>
+          </div>
         )}
 
+        {/* ================= COMMON LINKS ================= */}
+        {(role === "churchMember" || role === "externalMember") && (
+          <Link to="/shop" className="text-foreground hover:text-accent transition-colors">
+            SHOP
+          </Link>
+        )}
+
+        {role === "churchMember" && (
+          <Link to="/announcements" className="text-foreground hover:text-accent transition-colors">
+            ANNOUNCEMENTS
+          </Link>
+        )}
+      </div>
+
+      {/* RIGHT ACTION BUTTONS */}
+      <div className="flex items-center gap-6">
         {/* ================= DONATE DROPDOWN ================= */}
         {(role === "churchMember" || role === "externalMember") && (
           <div className="relative">
             <button
               onClick={() => setShowDonate(!showDonate)}
-              className="hover:scale-110 transition"
+              className="bg-accent text-background border border-accent px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest font-sans transition-colors hover:bg-foreground hover:border-foreground"
             >
-              DONATE
+              Donate Now
             </button>
 
             {showDonate && (
-              <div className="absolute right-0 mt-2 w-56 bg-card text-foreground rounded shadow-lg">
+              <div className="absolute right-0 mt-2 w-56 border border-line bg-background z-50 shadow-md">
                 <button
                   onClick={() => navigate("/ExtDon")}
-                  className="block w-full text-left px-4 py-2 hover:bg-muted"
+                  className="block w-full text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest font-sans hover:bg-line transition-colors"
                 >
                   Donate for a Cause
                 </button>
@@ -80,7 +102,7 @@ const Navbar = () => {
                 {role === "churchMember" && (
                   <button
                     onClick={() => navigate("/IntDon")}
-                    className="block w-full text-left px-4 py-2 hover:bg-muted"
+                    className="block w-full text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest font-sans hover:bg-line transition-colors border-t border-line"
                   >
                     Donate for Church
                   </button>
@@ -90,45 +112,29 @@ const Navbar = () => {
           </div>
         )}
 
-        {/* ================= COMMON LINKS ================= */}
-        {(role === "churchMember" || role === "externalMember") && (
-          <Link to="/shop" className="hover:scale-110 transition">
-            SHOP
-          </Link>
-        )}
-
-
-
-        {role === "churchMember" && (
-          <Link to="/announcements" className="hover:scale-110 transition">
-            ANNOUNCEMENTS
-          </Link>
-        )}
-
         {/* ================= PROFILE DROPDOWN ================= */}
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="hover:scale-110 transition"
+            className="text-foreground hover:text-accent transition-colors flex items-center justify-center"
           >
-            <UserCircle size={32} />
+            <UserCircle size={24} strokeWidth={1.5} />
           </button>
 
           {showMenu && (
-            <div className="absolute right-0 mt-2 w-44 bg-card text-foreground rounded shadow-lg">
-
+            <div className="absolute right-0 mt-2 w-48 border border-line bg-background z-50 shadow-md">
               {!user ? (
                 <>
                   <button
                     onClick={() => navigate("/login")}
-                    className="block w-full text-left px-4 py-2 hover:bg-muted"
+                    className="block w-full text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest font-sans hover:bg-line transition-colors"
                   >
                     Login
                   </button>
 
                   <button
                     onClick={() => navigate("/register")}
-                    className="block w-full text-left px-4 py-2 hover:bg-muted"
+                    className="block w-full text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest font-sans hover:bg-line transition-colors border-t border-line"
                   >
                     Register
                   </button>
@@ -137,14 +143,14 @@ const Navbar = () => {
                 <>
                   <button
                     onClick={() => navigate("/profile")}
-                    className="block w-full text-left px-4 py-2 hover:bg-muted"
+                    className="block w-full text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest font-sans hover:bg-line transition-colors"
                   >
                     Profile
                   </button>
 
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-muted"
+                    className="block w-full text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest font-sans text-red-600 hover:bg-line transition-colors border-t border-line"
                   >
                     Logout
                   </button>
@@ -153,9 +159,8 @@ const Navbar = () => {
             </div>
           )}
         </div>
-
       </div>
-    </div>
+    </nav>
   );
 };
 

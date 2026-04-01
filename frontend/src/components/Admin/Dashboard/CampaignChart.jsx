@@ -6,8 +6,8 @@ const CampaignChart = ({ data }) => {
 
   if (!data || data.length === 0) {
     return (
-      <div className="bg-card p-6 rounded-2xl shadow-sm border border-border h-[400px] flex items-center justify-center">
-        <p className="text-muted-foreground">No campaign data available</p>
+      <div className="bg-card p-10 rounded-none border border-border h-[450px] flex items-center justify-center">
+        <p className="text-muted-foreground font-black uppercase tracking-widest text-[10px]">No campaign data available</p>
       </div>
     );
   }
@@ -17,13 +17,13 @@ const CampaignChart = ({ data }) => {
     : data.filter(d => d.name === selectedCampaign);
 
   return (
-    <div className="bg-card p-6 rounded-2xl shadow-sm border border-border h-[400px] flex flex-col">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
-        <h3 className="text-lg font-bold text-foreground">Campaign Performance</h3>
+    <div className="bg-card p-10 rounded-none border border-border h-[450px] flex flex-col">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <h3 className="text-xl font-serif font-bold text-foreground tracking-tight">Campaign Performance</h3>
         <select 
           value={selectedCampaign} 
           onChange={(e) => setSelectedCampaign(e.target.value)}
-          className="bg-background border border-border px-3 py-1.5 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-black min-w-[150px] max-w-full sm:max-w-[200px]"
+          className="bg-background border border-border px-4 py-2 rounded-none text-xs font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-accent min-w-[200px]"
         >
           <option value="All">All Campaigns</option>
           {data.map(d => (
@@ -41,12 +41,12 @@ const CampaignChart = ({ data }) => {
             <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `₹${val.toLocaleString()}`} tick={{ fontSize: 12, fill: '#888' }} />
             <Tooltip 
               formatter={(val) => `₹${val.toLocaleString()}`}
-              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
-              cursor={{ fill: '#f8f8f8' }}
+              contentStyle={{ borderRadius: '0px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontSize: '12px', fontWeight: 'bold' }}
+              cursor={{ fill: '#f8f4f0' }}
             />
             <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-            <Bar dataKey="goal" name="Goal Amount" fill="#E9D5FF" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="collected" name="Collected Amount" fill="#9333EA" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="goal" name="Goal Amount" fill="#E9D5FF" />
+            <Bar dataKey="collected" name="Collected Amount" fill="#C06C4C" />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -232,16 +232,16 @@ const AdminProducts = () => {
         </div>
         <button
           onClick={handleAddClick}
-          className="bg-black hover:bg-secondary text-primary-foreground px-6 py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all font-medium flex items-center gap-2"
+          className="bg-accent hover:scale-[1.02] text-primary-foreground px-8 py-3 rounded-none shadow-lg shadow-accent/10 transition-all font-bold text-xs uppercase tracking-widest flex items-center gap-2"
         >
           <span>+</span> Add Product
         </button>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row justify-end gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row justify-end gap-6 mb-8">
         <select 
-          className="border border-border p-2 rounded-lg text-sm bg-card focus:ring-2 focus:ring-black outline-none"
+          className="border border-border p-3 rounded-none text-xs font-bold uppercase tracking-widest bg-background outline-none min-w-[200px] focus:ring-1 focus:ring-accent"
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
         >
@@ -253,7 +253,7 @@ const AdminProducts = () => {
         </select>
 
         <select 
-          className="border border-border p-2 rounded-lg text-sm bg-card focus:ring-2 focus:ring-black outline-none"
+          className="border border-border p-3 rounded-none text-xs font-bold uppercase tracking-widest bg-background outline-none min-w-[200px] focus:ring-1 focus:ring-accent"
           value={filterStock}
           onChange={(e) => setFilterStock(e.target.value)}
         >
@@ -263,7 +263,7 @@ const AdminProducts = () => {
         </select>
 
         <select 
-          className="border border-border p-2 rounded-lg text-sm bg-card focus:ring-2 focus:ring-black outline-none"
+          className="border border-border p-3 rounded-none text-xs font-bold uppercase tracking-widest bg-background outline-none min-w-[200px] focus:ring-1 focus:ring-accent"
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
         >
@@ -274,10 +274,10 @@ const AdminProducts = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-card shadow-sm border border-gray-100 rounded-xl overflow-hidden animate-scaleIn">
+      <div className="bg-card border border-border rounded-none overflow-hidden animate-scaleIn">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-background border-b border-gray-100 text-muted-foreground uppercase tracking-wider text-xs">
+            <thead className="bg-background border-b border-border text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
               <tr>
                 <th className="p-4 font-semibold">Image</th>
                 <th className="p-4 font-semibold">Product Info</th>
@@ -288,11 +288,11 @@ const AdminProducts = () => {
                 <th className="p-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border">
               {filteredProducts.map(p => (
                 <tr key={p._id} className="hover:bg-background/50 transition-colors group">
                   <td className="p-4">
-                    <div className="w-12 h-12 rounded-lg bg-muted overflow-hidden border border-border">
+                    <div className="w-16 h-16 rounded-none bg-muted overflow-hidden border border-border">
                       {p.url ? (
                         <img src={p.url} alt={p.itemName} className="w-full h-full object-cover" />
                       ) : (
@@ -305,7 +305,7 @@ const AdminProducts = () => {
                     <p className="text-xs text-muted-foreground truncate max-w[150px]">{p._id}</p>
                   </td>
                   <td className="p-4 text-muted-foreground">
-                    <span className="bg-muted px-2 py-1 rounded text-xs font-medium">{p.category}</span>
+                    <span className="bg-accent/5 text-accent border border-accent/20 px-3 py-1 rounded-none text-[10px] font-black uppercase tracking-widest">{p.category}</span>
                   </td>
                   <td className="p-4 font-medium text-foreground">₹{p.price}</td>
                   <td className="p-4">
@@ -330,7 +330,7 @@ const AdminProducts = () => {
                     <div className="flex items-center justify-end gap-2 transition-opacity">
                       <button
                         onClick={() => handleEditClick(p)}
-                        className="text-muted-foreground hover:text-foreground p-2 hover:bg-muted rounded-lg transition-colors"
+                        className="text-xs font-black uppercase tracking-widest text-accent hover:underline px-4 py-2 transition-all"
                         title="Edit"
                       >
                         Edit
@@ -347,13 +347,13 @@ const AdminProducts = () => {
       {/* Modal */}
       {showForm && (
 
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[1000] p-4 animate-fadeIn">
-          <div className="bg-card rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden scale-100 animate-scaleIn">
-            <div className="px-6 py-4 border-b border-gray-100 bg-background flex justify-between items-center">
-              <h2 className="text-lg font-bold text-foreground">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[1000] p-4 animate-fadeIn">
+          <div className="bg-card border border-border rounded-none w-full max-w-lg shadow-2xl overflow-hidden scale-100 animate-scaleIn">
+            <div className="px-8 py-5 border-b border-border bg-card flex justify-between items-center">
+              <h2 className="text-xl font-serif font-bold text-foreground">
                 {editingProduct ? "Edit Product" : "Add New Product"}
               </h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-foreground transition-colors">✕</button>
+              <button onClick={() => setShowForm(false)} className="text-foreground hover:rotate-90 transition-transform">✕</button>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -363,13 +363,13 @@ const AdminProducts = () => {
                   <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Product Image</label>
 
                   {formData.url ? (
-                    <div className="relative w-full h-48 bg-background rounded-xl border-2 border-dashed border-border overflow-hidden group">
+                    <div className="relative w-full h-48 bg-background border border-border overflow-hidden group">
                       <img src={formData.url} alt="Preview" className="w-full h-full object-contain" />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           type="button"
                           onClick={() => setFormData({ ...formData, url: "" })}
-                          className="bg-card text-red-600 px-4 py-2 rounded-lg font-bold shadow-lg hover:bg-red-50 transition-colors"
+                          className="bg-accent text-primary-foreground px-6 py-2 font-bold text-xs uppercase tracking-widest shadow-lg hover:scale-105 transition-all"
                         >
                           Remove Image
                         </button>
@@ -381,9 +381,9 @@ const AdminProducts = () => {
                       onDragLeave={handleDrag}
                       onDragOver={handleDrag}
                       onDrop={handleDrop}
-                      className={`relative w-full h-48 rounded-xl border-2 border-dashed flex flex-col items-center justify-center transition-all cursor-pointer ${dragActive
-                        ? "border-black bg-background scale-[1.02]"
-                        : "border-border hover:border-gray-400 hover:bg-background"
+                      className={`relative w-full h-48 border-2 border-dashed flex flex-col items-center justify-center transition-all cursor-pointer ${dragActive
+                        ? "border-accent bg-accent/5 scale-[1.01]"
+                        : "border-border hover:border-accent hover:bg-accent/5"
                         }`}
                     >
                       <input
@@ -397,11 +397,11 @@ const AdminProducts = () => {
                           <Upload className="w-6 h-6 text-gray-400" />
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-foreground">
-                            Click to upload or drag and drop
+                          <p className="text-xs font-bold text-foreground uppercase tracking-widest">
+                            Upload or drag and drop
                           </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            SVG, PNG, JPG or GIF (min. 500x500px)
+                          <p className="text-[10px] text-muted-foreground mt-1 uppercase">
+                            PNG, JPG or GIF (min. 500x500px)
                           </p>
                         </div>
                       </div>
@@ -422,7 +422,7 @@ const AdminProducts = () => {
                     value={formData.itemName}
                     onChange={handleChange}
                     placeholder="e.g. Holy Bible"
-                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm font-medium"
+                    className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm font-medium bg-background"
                     required
                   />
                 </div>
@@ -433,7 +433,7 @@ const AdminProducts = () => {
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm bg-card font-medium"
+                    className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-xs font-bold uppercase tracking-widest bg-background"
                     required
                   >
                     <option value="" disabled>Select Category</option>
@@ -456,7 +456,7 @@ const AdminProducts = () => {
                     placeholder="0.00"
                     min="0"
                     step="0.01"
-                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm"
+                    className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm bg-background"
                     required
                   />
                 </div>
@@ -469,7 +469,7 @@ const AdminProducts = () => {
                     onChange={handleChange}
                     placeholder="0"
                     min="0"
-                    className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm"
+                    className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm bg-background"
                     required
                   />
                 </div>
@@ -481,7 +481,7 @@ const AdminProducts = () => {
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm bg-card"
+                  className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-xs font-bold uppercase tracking-widest bg-background"
                 >
                   <option value="visible">Visible</option>
                   <option value="hidden">Hidden</option>
@@ -495,21 +495,21 @@ const AdminProducts = () => {
                   value={formData.description}
                   onChange={handleChange}
                   placeholder="Product details..."
-                  className="w-full border border-border p-2.5 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-all text-sm min-h[80px]"
+                  className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm min-h-[80px] bg-background"
                 />
               </div>
 
-              <div className="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+              <div className="flex justify-end space-x-3 pt-6 border-t border-border">
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="px-5 py-2.5 border border-border text-muted-foreground rounded-lg hover:bg-background font-medium text-sm transition-colors"
+                  className="px-8 py-3 border border-border text-muted-foreground hover:bg-muted font-bold text-xs uppercase tracking-widest transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-black text-primary-foreground rounded-lg hover:bg-foreground font-bold text-sm shadow-md transition-transform active:scale-95"
+                  className="px-10 py-3 bg-accent text-primary-foreground font-black text-xs uppercase tracking-widest shadow-lg shadow-accent/20 hover:scale-[1.02] transition-all active:scale-95"
                 >
                   {editingProduct ? "Update Product" : "Add Product"}
                 </button>
