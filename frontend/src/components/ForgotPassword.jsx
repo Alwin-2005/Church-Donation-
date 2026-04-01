@@ -47,7 +47,7 @@ const ForgotPassword = () => {
         </div>
 
         <p className="text-[11px] font-sans text-muted-foreground text-center mb-10 leading-relaxed uppercase tracking-wider">
-          Enter your email address to receive a link to restore your sanctuary access.
+          Enter your email address to receive a link to restore your access.
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -55,7 +55,7 @@ const ForgotPassword = () => {
             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Email Address</label>
             <input
               type="email"
-              placeholder="email@sanctuary.com"
+              placeholder="email@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="px-4 py-4 border border-border bg-background text-foreground font-sans focus:outline-none focus:border-accent transition-colors placeholder:text-muted-foreground/20 rounded-none shadow-sm"

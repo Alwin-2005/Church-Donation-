@@ -6,21 +6,20 @@ const LOGO_PATH = path.join(__dirname, '..', 'assets', 'COG.png');
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const COLORS = {
-    primary: '#0F766E',
-    primaryLight: '#14B8A6',
-    primaryPale: '#CCFBF1',
-    dark: '#0F172A',
-    heading: '#134E4A',
-    body: '#374151',
-    muted: '#6B7280',
-    border: '#D1FAF6',
-    rowAlt: '#F0FDFA',
+    primary: '#C06C4C',      // Terracotta/Accent
+    primaryLight: '#D18D73', // Lighter Terracotta
+    primaryPale: '#F9ECE5',  // Pale Terracotta for backgrounds
+    dark: '#1C1C1C',         // Main Dark Text
+    heading: '#1C1C1C',      // Heading Text
+    body: '#454545',         // Body Text
+    muted: '#7A7A7A',        // Muted Text
+    border: '#E8E8E8',       // Light Border
+    rowAlt: '#FAF9F4',       // Alternative Row (Cream-ish)
     white: '#FFFFFF',
     chartColors: [
-        '#0D9488', '#F59E0B', '#6366F1', '#EF4444', '#10B981', 
-        '#F43F5E', '#8B5CF6', '#3B82F6', '#F97316', '#06B6D4', 
-        '#84CC16', '#D946EF', '#64748B', '#A855F7', '#EAB308',
-        '#2DD4BF', '#FB923C', '#A78BFA', '#F472B6', '#22C55E'
+        '#C06C4C', '#8BA888', '#D4AF37', '#708090', '#556B2F', 
+        '#A0522D', '#4682B4', '#6B8E23', '#CD853F', '#5F9EA0', 
+        '#BDB76B', '#BC8F8F', '#483D8B', '#DAA520', '#B0C4DE'
     ],
 };
 

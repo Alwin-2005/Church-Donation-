@@ -217,7 +217,7 @@ const Regis = () => {
               <input
                 name="fullName"
                 type="text"
-                placeholder="John Doe"
+                placeholder="Full Name"
                 value={formInput.fullName}
                 onChange={(e) => handleInput(e.target.name, e.target.value)}
                 className="px-4 py-4 border border-border bg-background text-foreground font-sans focus:outline-none focus:border-accent transition-colors placeholder:text-muted-foreground/20 rounded-none shadow-sm"
@@ -230,7 +230,7 @@ const Regis = () => {
               <input
                 name="email"
                 type="email"
-                placeholder="email@sanctuary.com"
+                placeholder="email@gmail.com"
                 value={formInput.email}
                 onChange={(e) => handleInput(e.target.name, e.target.value)}
                 className="px-4 py-4 border border-border bg-background text-foreground font-sans focus:outline-none focus:border-accent transition-colors placeholder:text-muted-foreground/20 rounded-none shadow-sm"
@@ -259,7 +259,7 @@ const Regis = () => {
                 value={formInput.gender}
                 onChange={(e) => handleInput(e.target.name, e.target.value)}
               >
-                <option value="">Select identity</option>
+                <option value="">Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>

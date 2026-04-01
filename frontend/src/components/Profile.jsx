@@ -248,23 +248,26 @@ const Profile = () => {
                 <div className="space-y-3">
                   {orders.length === 0 ? <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest text-center py-20 border border-dashed border-border">No sanctuary acquisitions found.</p> :
                     orders.map(o => (
-                      <div key={o._id} className="border border-border p-6 flex justify-between items-center hover:bg-muted/30 transition-all group">
-                        <div className="space-y-1">
-                          <p className="font-serif text-lg font-bold text-foreground group-hover:text-accent transition-colors">Order #{o._id.slice(-6).toUpperCase()}</p>
-                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{new Date(o.createdAt).toLocaleDateString("en-IN")} · {o.items?.length} item(s)</p>
+                      <div key={o._id} className="border border-border p-8 flex justify-between items-center hover:bg-muted/30 transition-all group animate-fadeIn">
+                        <div className="space-y-2">
+                          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground group-hover:text-accent transition-colors">Digital Ledger ID: #{o._id.toUpperCase()}</p>
+                          <p className="font-serif text-2xl font-bold text-foreground tracking-tight">Order from {new Date(o.createdAt).toLocaleDateString("en-IN", { day: '2-digit', month: 'long' })}</p>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse" />
+                            {o.items?.length} sanctuary item(s) acquired
+                          </p>
                         </div>
-                        <div className="flex items-center gap-8">
+                        <div className="flex items-center gap-10">
                           <div className="text-right space-y-1">
-                            <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 border ${
-                              o.status === 'completed' || o.status === 'confirmed' ? 'border-accent text-accent' : 'border-border text-muted-foreground'
-                            }`}>{o.status}</span>
-                            <p className="font-serif text-xl font-bold text-foreground tracking-tight">₹{o.totalAmount}</p>
+                            <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 border block w-fit ml-auto ${o.status === 'completed' || o.status === 'confirmed' || o.status === 'paid' ? 'border-accent text-accent' : 'border-border text-muted-foreground'
+                              }`}>{o.status}</span>
+                            <p className="font-serif text-3xl font-black text-foreground tracking-tighter">₹{o.totalAmount}</p>
                           </div>
                           <button
                             onClick={() => setSelectedOrder(o)}
-                            className="text-[10px] font-black uppercase tracking-[0.2em] text-accent border border-accent/20 hover:bg-accent hover:text-background px-6 py-2.5 transition-all"
+                            className="text-[10px] font-black uppercase tracking-[0.2em] text-background bg-accent border border-accent hover:bg-foreground hover:border-foreground px-8 py-3 transition-all shadow-lg shadow-accent/10"
                           >
-                            Details
+                            View Receipt
                           </button>
                         </div>
                       </div>
@@ -426,45 +429,50 @@ const OrderModal = ({ order, onClose, onDownload }) => {
         <div className="flex justify-between items-start mb-12 border-b border-border pb-6">
           <div>
             <h3 className="text-4xl font-serif font-black text-foreground tracking-tight">Order Details</h3>
-            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-2">#{o._id.slice(-6).toUpperCase()} · {new Date(o.createdAt).toLocaleDateString("en-IN")}</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-2">#{o._id.toUpperCase()} · {new Date(o.createdAt).toLocaleDateString("en-IN")}</p>
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-accent transition-colors text-2xl">✕</button>
         </div>
 
-        <div className="flex items-center justify-between mb-10 border border-border p-4 bg-muted/20">
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Status</span>
-          <span className={`text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 border border-border bg-card ${
-            o.status === 'completed' || o.status === 'confirmed' ? 'text-accent' : 'text-muted-foreground'
-          }`}>{o.status}</span>
-        </div>
-
         <div className="space-y-4 mb-10">
-          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4 block underline underline-offset-4">Items</span>
-          {o.items?.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-6 border-b border-border/50 pb-4 last:border-0 hover:bg-muted/10 transition-colors p-2 -mx-2">
-              <div className="w-20 h-20 bg-muted overflow-hidden border border-border shrink-0">
-                {item.itemId?.url ? (
-                  <img src={item.itemId.url} alt={item.itemId.itemName} className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-[10px] font-black uppercase text-foreground/20 italic">No Visual</div>
-                )}
-              </div>
-              <div className="flex-1">
-                <p className="font-serif text-lg font-bold text-foreground leading-tight">{item.itemId?.itemName || "Unknown Item"}</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">{item.itemId?.category || "Article"}</p>
-                <p className="text-xs font-medium text-foreground/60 mt-2">Qty: {item.quantity}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-serif text-xl font-bold text-foreground tracking-tight">₹{item.price * item.quantity}</p>
-                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">₹{item.price}/ea</p>
-              </div>
-            </div>
-          ))}
+          <Row label="Order Status" value={o.status} highlight={o.status === 'completed' || o.status === 'confirmed' || o.status === 'paid'} />
+          <Row label="Order Date" value={new Date(o.createdAt).toLocaleDateString("en-IN", { day: '2-digit', month: 'long', year: 'numeric' })} />
         </div>
 
-        <div className="border-t border-2 border-foreground pt-6 flex justify-between items-center mb-10">
-          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground">Total</span>
-          <span className="text-4xl font-serif font-black text-foreground tracking-tighter">₹{o.totalAmount}</span>
+        <div className="space-y-6 mb-12">
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4 block underline underline-offset-8">Acquired Items</span>
+          <div className="space-y-4">
+            {o.items?.map((item, idx) => (
+              <div key={idx} className="flex items-center gap-6 border border-border/50 p-4 hover:bg-muted/10 transition-colors">
+                <div className="w-24 h-24 bg-muted overflow-hidden border border-border shrink-0">
+                  {item.itemId?.url ? (
+                    <img src={item.itemId.url} alt={item.itemId.itemName} className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-[10px] font-black uppercase text-foreground/20 italic">No Visual</div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="font-serif text-xl font-bold text-foreground leading-tight">{item.itemId?.itemName || "Unknown Item"}</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1.5">{item.itemId?.category || "Article"}</p>
+                  <div className="flex items-center gap-4 mt-4">
+                    <span className="text-[9px] font-black uppercase tracking-widest bg-muted px-2 py-1">Qty: {item.quantity}</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">₹{item.price}</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-serif text-2xl font-bold text-foreground tracking-tighter">₹{item.price * item.quantity}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t-2 border-foreground pt-8 flex justify-between items-end mb-12">
+          <div className="space-y-1">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Total Transaction</span>
+            <p className="text-[10px] font-black uppercase tracking-widest text-accent"></p>
+          </div>
+          <span className="text-5xl font-serif font-black text-foreground tracking-tighter">₹{o.totalAmount}</span>
         </div>
 
         <button

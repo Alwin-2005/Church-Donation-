@@ -373,7 +373,8 @@ const AdminDonation = () => {
                     value={formData.startDate}
                     min={editingCampaign ? undefined : todayDateStr}
                     onChange={handleInputChange}
-                    className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm font-medium bg-background"
+                    disabled={!!editingCampaign}
+                    className="w-full border border-border p-3 rounded-none focus:ring-1 focus:ring-accent outline-none transition-all text-sm font-medium bg-background disabled:bg-muted disabled:text-gray-400 disabled:cursor-not-allowed"
                     required
                   />
                 </div>

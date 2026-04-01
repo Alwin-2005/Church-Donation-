@@ -46,6 +46,7 @@ const AdminDashboard = () => {
   const [financialYear, setFinancialYear] = useState("");
   const [reportDateRange, setReportDateRange] = useState({ start: "", end: "" });
   const [exportFormat, setExportFormat] = useState("pdf");
+  const [reportFocus, setReportFocus] = useState("overview");
 
   const navigate = useNavigate();
 
@@ -126,6 +127,7 @@ const AdminDashboard = () => {
       }
       
       queryParams += queryParams ? `&format=${exportFormat}` : `?format=${exportFormat}`;
+      queryParams += `&focus=${reportFocus}`;
 
       const response = await api.get(`/admin/report/download${queryParams}`, {
         responseType: 'blob'
@@ -171,7 +173,7 @@ const AdminDashboard = () => {
           </div>
           <button
             onClick={() => setShowReportOptions(true)}
-            className="flex items-center gap-2 bg-black text-primary-foreground px-8 py-3 rounded-none font-black text-xs uppercase tracking-widest hover:bg-secondary transition active:scale-95 shadow-xl shadow-black/10 group"
+            className="flex justify-center items-center gap-2 bg-accent hover:bg-foreground text-background px-8 py-3 rounded-none text-xs font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98] shadow-lg shadow-accent/20 group"
           >
             <Download className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
             Generate Report
@@ -231,6 +233,16 @@ const AdminDashboard = () => {
                     <p className="text-muted-foreground text-sm mt-1">Configure your analytics summary for export</p>
                   </div>
                   <button onClick={() => setShowReportOptions(false)} className="p-2 hover:bg-muted rounded-full transition-colors">✕</button>
+                </div>
+
+                <div className="mb-6">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Report Focus</label>
+                  <select value={reportFocus} onChange={(e) => setReportFocus(e.target.value)} className="w-full bg-background border border-border px-4 py-3 rounded-none font-bold text-xs uppercase tracking-widest">
+                    <option value="overview">Overview (All Data)</option>
+                    <option value="donations">Donations Only</option>
+                    <option value="orders">Orders Only</option>
+                    <option value="payments">Payments Only</option>
+                  </select>
                 </div>
 
                 <div className="flex bg-muted p-1 rounded-none mb-8 overflow-x-auto no-scrollbar border border-border">

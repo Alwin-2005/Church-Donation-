@@ -17,7 +17,10 @@ async function generateExcelReport(reportData, res) {
         sheet.getRow(1).font = { bold: true };
     };
 
-    // 1. Donations Sheet - Map raw donation model
+    const focus = reportData.focus || 'overview';
+
+    if (focus === 'overview' || focus === 'donations') {
+        // 1. Donations Sheet - Map raw donation model
     addSheet('Donations', [
         { header: '_id', key: '_id', width: 25 },
         { header: 'userId', key: 'userId', width: 25 },
@@ -37,8 +40,10 @@ async function generateExcelReport(reportData, res) {
         createdAt: d.createdAt?.toISOString(),
         updatedAt: d.updatedAt?.toISOString()
     })));
+    }
 
-    // 2. Merchandise Orders Sheet - Map raw order model
+    if (focus === 'overview' || focus === 'orders') {
+        // 2. Merchandise Orders Sheet - Map raw order model
     addSheet('Orders', [
         { header: '_id', key: '_id', width: 25 },
         { header: 'userId', key: 'userId', width: 25 },
@@ -64,8 +69,10 @@ async function generateExcelReport(reportData, res) {
         createdAt: o.createdAt?.toISOString(),
         updatedAt: o.updatedAt?.toISOString()
     })));
+    }
 
-    // 3. Payments Sheet - Map raw payment model
+    if (focus === 'overview' || focus === 'payments') {
+        // 3. Payments Sheet - Map raw payment model
     addSheet('Payments', [
         { header: '_id', key: '_id', width: 25 },
         { header: 'orderId', key: 'orderId', width: 25 },
@@ -87,8 +94,10 @@ async function generateExcelReport(reportData, res) {
         createdAt: p.createdAt?.toISOString(),
         updatedAt: p.updatedAt?.toISOString()
     })));
+    }
 
-    // 4. Donation Campaigns Sheet - Map raw campaign model
+    if (focus === 'overview') {
+        // 4. Donation Campaigns Sheet - Map raw campaign model
     addSheet('DonationCampaigns', [
         { header: '_id', key: '_id', width: 25 },
         { header: 'title', key: 'title', width: 30 },
@@ -145,6 +154,7 @@ async function generateExcelReport(reportData, res) {
         createdAt: u.createdAt?.toISOString(),
         updatedAt: u.updatedAt?.toISOString()
     })));
+    }
 
     // Set Response Headers
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

@@ -31,7 +31,7 @@ async function handleGetAllDonationCampaignInfo(req, res) {
 }
 
 async function handleUpdateDonationCampaign(req, res) {
-    const { type, ctitle, desc, goalAmt, startDate, endate, isTithe, status } = req.body;
+    const { type, ctitle, desc, goalAmt, endate, isTithe, status } = req.body;
 
     try {
         const updateData = {
@@ -39,7 +39,6 @@ async function handleUpdateDonationCampaign(req, res) {
             title: ctitle,
             description: desc,
             goalAmount: isTithe ? 0 : goalAmt,
-            startDate: startDate,
             endDate: endate,
             isTithe: isTithe,
             status: status

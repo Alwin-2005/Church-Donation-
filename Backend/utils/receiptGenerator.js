@@ -6,15 +6,15 @@ const LOGO_PATH = path.join(__dirname, '..', 'assets', 'COG.png');
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const COLORS = {
-    primary: '#0F766E',
-    primaryLight: '#14B8A6',
-    primaryPale: '#CCFBF1',
-    dark: '#0F172A',
-    heading: '#134E4A',
-    body: '#374151',
-    muted: '#6B7280',
-    border: '#D1FAF6',
-    rowAlt: '#F0FDFA',
+    primary: '#C06C4C',      // Terracotta/Accent
+    primaryLight: '#D18D73', // Lighter Terracotta
+    primaryPale: '#F9ECE5',  // Pale Terracotta for accents
+    dark: '#1C1C1C',         // Main Dark Text
+    heading: '#1C1C1C',      // Heading Text
+    body: '#454545',         // Body Text
+    muted: '#7A7A7A',        // Muted Text
+    border: '#E8E8E8',       // Light Border
+    rowAlt: '#FAF9F4',       // Alternative Row (Cream-ish)
     white: '#FFFFFF',
 };
 

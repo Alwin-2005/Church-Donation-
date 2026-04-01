@@ -11,6 +11,7 @@ import AdminDashboard from "./components/Admin/AdminDashboard";
 import ExDonation from "./components/Donation/ExDonation";
 import IntDonation from "./components/Donation/IntDonation";
 import TermsCon from "./components/Footer/TermsCon";
+import Privacy from "./components/Footer/Privacy";
 import NotFound from "./components/NotFound";
 import Profile from "./components/Profile";
 import Event from "./components/Events/Event";
@@ -50,6 +51,7 @@ const App = () => {
               <Route path="/announcements" element={<Event />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/TermsCon" element={<TermsCon />} />
+              <Route path="/privacy" element={<Privacy />} />
               <Route path="/ExtDon" element={<ExDonation />} />
               <Route path="/IntDon" element={<IntDonation />} />
               <Route path="/tithe" element={<Tithe />} />

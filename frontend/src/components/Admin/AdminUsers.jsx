@@ -184,7 +184,7 @@ const AdminUsers = () => {
           <div className="relative">
             <button
               onClick={() => setShowAddMenu(prev => !prev)}
-              className="bg-black text-primary-foreground px-4 py-2 rounded-lg hover:bg-secondary transition flex items-center gap-2"
+              className="flex justify-center items-center gap-2 bg-accent hover:bg-foreground text-background px-8 py-3 rounded-none text-xs font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98] shadow-lg shadow-accent/20"
             >
               <UserPlus className="w-4 h-4" />
               Add User

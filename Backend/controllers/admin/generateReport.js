@@ -10,7 +10,7 @@ const { generateExcelReport } = require("../../utils/excelGenerator");
 
 async function handleGenerateAdminReport(req, res) {
     try {
-        const { months, year, startDate, endDate, format } = req.query;
+        const { months, year, startDate, endDate, format, focus } = req.query;
         const selectedMonths = months ? months.split(',').map(Number) : [];
         const selectedYear = year ? Number(year) : new Date().getFullYear();
 
@@ -49,18 +49,36 @@ async function handleGenerateAdminReport(req, res) {
         const campaignFilter = buildFilter('startDate');
 
         // Fetch filtered data
-        let users = await User.find(isFiltered ? timeFilter : {});
-        users = users.filter(u => u.role !== 'admin'); // Exclude admin
+        let users = [];
+        let donations = [];
+        let orders = [];
+        let campaigns = [];
+        let payments = [];
 
-        let donations = await Donation.find(isFiltered ? timeFilter : {}).populate('userId donationCampaignId');
-        donations = donations.filter(d => !d.donationCampaignId?.isTithe); // Exclude tithes
+        if (!focus || focus === 'overview' || focus === 'users') {
+            users = await User.find(isFiltered ? timeFilter : {});
+            users = users.filter(u => u.role !== 'admin'); // Exclude admin
+        }
 
-        const orders = await Order.find(isFiltered ? timeFilter : {}).populate('userId items.itemId');
-        const campaigns = await DonationCampaign.find(isFiltered ? campaignFilter : {}); 
-        const payments = await Payment.find(isFiltered ? timeFilter : {}).populate({
-            path: 'orderId',
-            populate: { path: 'userId' }
-        });
+        if (!focus || focus === 'overview' || focus === 'donations') {
+            donations = await Donation.find(isFiltered ? timeFilter : {}).populate('userId donationCampaignId');
+            donations = donations.filter(d => !d.donationCampaignId?.isTithe); // Exclude tithes
+        }
+
+        if (!focus || focus === 'overview' || focus === 'orders') {
+            orders = await Order.find(isFiltered ? timeFilter : {}).populate('userId items.itemId');
+        }
+
+        if (!focus || focus === 'overview' || focus === 'campaigns' || focus === 'donations') {
+            campaigns = await DonationCampaign.find(isFiltered ? campaignFilter : {}); 
+        }
+
+        if (!focus || focus === 'overview' || focus === 'payments') {
+            payments = await Payment.find(isFiltered ? timeFilter : {}).populate({
+                path: 'orderId',
+                populate: { path: 'userId' }
+            });
+        }
 
 
         if (format === 'excel') {
@@ -69,7 +87,8 @@ async function handleGenerateAdminReport(req, res) {
                 orders,
                 payments,
                 campaigns,
-                users
+                users,
+                focus
             }, res);
             return;
         }
@@ -147,7 +166,7 @@ async function handleGenerateAdminReport(req, res) {
                 merch: { totalOrders: orders.length, revenue: merchRevenue, completed: completedOrders, topProduct },
                 user: { total: users.length, new: newUsers, verified: users.length, active: activeDonors }
             },
-            donationTable: donations.slice(-100).map(d => [
+            donationTable: donations.slice(-1000).map(d => [
                 new Date(d.createdAt).toLocaleDateString(), // 0
                 (d.userId?.fullname || 'Guest').substring(0, 15), // 1
                 (d.userId?.email || 'N/A').substring(0, 15), // 2
@@ -157,7 +176,7 @@ async function handleGenerateAdminReport(req, res) {
                 d._id.toString(), // 6
                 d.paymentStatus // 7
             ]),
-            merchTable: orders.slice(-100).map(o => [
+            merchTable: orders.slice(-1000).map(o => [
                 o._id.toString(), // 0
                 (o.userId?.fullname || 'Guest').substring(0, 10), // 1
                 o.items.map(i => i.itemId?.itemName).join(', ').substring(0, 10), // 2
@@ -174,7 +193,7 @@ async function handleGenerateAdminReport(req, res) {
                 `Rs. ${c.collectedAmount || 0}`, // 2
                 (c.goalAmount ? `${(((c.collectedAmount || 0) / c.goalAmount) * 100).toFixed(1)}%` : 'N/A') // 3
             ]),
-            userTable: users.slice(-100).map(u => [
+            userTable: users.slice(-1000).map(u => [
                 (u.fullname || '').substring(0, 15),
                 (u.email || '').substring(0, 15),
                 u.phoneNo || 'N/A',
@@ -216,7 +235,18 @@ async function handleGenerateAdminReport(req, res) {
             notes: `Report generated on ${new Date().toLocaleDateString()}`
         };
 
-        await generateAdminReport(reportData, res);
+        if (focus === 'donations') {
+            const { generateDetailedDonationReport } = require("../../utils/detailedReportGenerators");
+            await generateDetailedDonationReport(reportData, res);
+        } else if (focus === 'orders') {
+            const { generateDetailedOrderReport } = require("../../utils/detailedReportGenerators");
+            await generateDetailedOrderReport(reportData, res);
+        } else if (focus === 'payments') {
+            const { generateDetailedPaymentReport } = require("../../utils/detailedReportGenerators");
+            await generateDetailedPaymentReport(reportData, res);
+        } else {
+            await generateAdminReport(reportData, res);
+        }
 
     } catch (error) {
         console.error("Report gen error:", error);
