@@ -57,12 +57,12 @@ const ResetPass = () => {
         <div className="mb-12 text-center">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent mb-4 block">Security Update</span>
           <h1 className="text-5xl md:text-6xl font-serif font-bold text-foreground tracking-tight">
-            Reset Identity
+            Reset Password
           </h1>
         </div>
 
         <p className="text-[11px] font-sans text-muted-foreground text-center mb-10 leading-relaxed uppercase tracking-wider">
-          Create a secure new password for your sanctuary profile.
+          Create a secure new password for your profile.
         </p>
 
         <form onSubmit={handleReset} className="flex flex-col gap-8">
@@ -79,7 +79,7 @@ const ResetPass = () => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Confirm Identity</label>
+            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Confirm</label>
             <input
               type="password"
               placeholder="••••••••"
@@ -115,7 +115,7 @@ const ResetPass = () => {
             to="/login"
             className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-accent transition"
           >
-            Return to Sanctuary Sign In
+            Return to Sign In
           </Link>
         </div>
       </div>

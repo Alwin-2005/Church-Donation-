@@ -339,10 +339,10 @@ const Regis = () => {
       {showOtpModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-[450px] bg-card border border-border p-10 md:p-16 animate-scaleIn text-center rounded-none shadow-2xl">
-            <h2 className="font-serif text-3xl font-bold text-[#1C1C1C] mb-6 tracking-tight">Confirm Identity</h2>
+            <h2 className="font-serif text-3xl font-bold text-[#1C1C1C] mb-6 tracking-tight">Enter OTP</h2>
             <p className="text-[11px] font-sans text-[#1C1C1C]/60 mb-10 leading-relaxed uppercase tracking-wider">
               We've sent a code to <span className="text-[#C06C4C] font-bold">{formInput.email}</span>.
-              Enter it below to finalize your sanctuary profile.
+              Enter it below to finalize your profile.
             </p>
 
             <input
@@ -366,7 +366,7 @@ const Regis = () => {
               disabled={otpLoading}
               className="w-full bg-[#C06C4C] hover:bg-[#1C1C1C] text-white py-4 text-[11px] font-bold uppercase tracking-widest transition-all mb-8 disabled:opacity-50"
             >
-              {otpLoading ? "Confirming..." : "Finalize Identity"}
+              {otpLoading ? "Confirming..." : "Submit"}
             </button>
 
             <div className="flex flex-col gap-4 pt-8 border-t border-line">

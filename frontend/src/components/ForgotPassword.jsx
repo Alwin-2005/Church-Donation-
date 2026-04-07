@@ -42,7 +42,7 @@ const ForgotPassword = () => {
         <div className="mb-12 text-center">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent mb-4 block">Identity Recovery</span>
           <h1 className="text-5xl md:text-6xl font-serif font-bold text-foreground tracking-tight">
-            Forgot Pass
+            Forgot Password
           </h1>
         </div>
 
@@ -87,7 +87,7 @@ const ForgotPassword = () => {
             to="/login"
             className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-accent transition"
           >
-            Back to Sanctuary Access
+            Back to Login
           </Link>
           <Link
             to="/register"
