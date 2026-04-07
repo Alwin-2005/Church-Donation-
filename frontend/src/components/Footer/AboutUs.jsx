@@ -4,7 +4,7 @@ const AboutUs = () => {
   const sections = [
     {
       title: "Our Heritage",
-      content: "Founded with a deep commitment to faith and service, the Church of God has stood as a beacon of hope and unity for over fifty years. We trace our roots back to a small group of faithful believers who sought to create a true sanctuary for anyone seeking spiritual guidance and community."
+      content: "Founded with a deep commitment to faith and service, the Church of God stands as a beacon of hope and unity. We trace our roots back to a small group of faithful believers who sought to create a true sanctuary for anyone seeking spiritual guidance and community."
     },
     {
       title: "Our Mission",
@@ -39,7 +39,7 @@ const AboutUs = () => {
              </p>
           </div>
           <div className="hidden sm:flex mt-8 sm:mt-0 items-center justify-center w-24 h-24 rounded-full border border-dashed border-accent">
-            <span className="text-[10px] uppercase font-black tracking-widest text-accent rotate-[-45deg]">Est. 1974</span>
+            <span className="text-[10px] uppercase font-black tracking-widest text-accent rotate-[-45deg] whitespace-nowrap">United</span>
           </div>
         </div>
 
