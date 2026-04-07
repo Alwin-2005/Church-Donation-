@@ -12,6 +12,7 @@ import ExDonation from "./components/Donation/ExDonation";
 import IntDonation from "./components/Donation/IntDonation";
 import TermsCon from "./components/Footer/TermsCon";
 import Privacy from "./components/Footer/Privacy";
+import AboutUs from "./components/Footer/AboutUs";
 import NotFound from "./components/NotFound";
 import Profile from "./components/Profile";
 import Event from "./components/Events/Event";
@@ -52,6 +53,7 @@ const App = () => {
               <Route path="/profile" element={<Profile />} />
               <Route path="/TermsCon" element={<TermsCon />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/about" element={<AboutUs />} />
               <Route path="/ExtDon" element={<ExDonation />} />
               <Route path="/IntDon" element={<IntDonation />} />
               <Route path="/tithe" element={<Tithe />} />
