@@ -103,8 +103,6 @@ const AdminDashboard = () => {
 
   const handleDownloadReport = async () => {
     try {
-      setShowReportOptions(false); 
-      
       let queryParams = "";
       if (reportType === "monthly") {
         queryParams = `?year=${selectedYear}`;
@@ -123,8 +121,24 @@ const AdminDashboard = () => {
           toast.error("Please select both start and end dates");
           return;
         }
+        
+        const now = new Date();
+        const start = new Date(reportDateRange.start);
+        const end = new Date(reportDateRange.end);
+        
+        if (start > now || end > now) {
+          toast.error("Date cannot be in the future");
+          return;
+        }
+        if (start > end) {
+          toast.error("Start date cannot be after end date");
+          return;
+        }
+        
         queryParams = `?startDate=${reportDateRange.start}&endDate=${reportDateRange.end}`;
       }
+      
+      setShowReportOptions(false);
       
       queryParams += queryParams ? `&format=${exportFormat}` : `?format=${exportFormat}`;
       queryParams += `&focus=${reportFocus}`;
@@ -240,8 +254,7 @@ const AdminDashboard = () => {
                   <select value={reportFocus} onChange={(e) => setReportFocus(e.target.value)} className="w-full bg-background border border-border px-4 py-3 rounded-none font-bold text-xs uppercase tracking-widest">
                     <option value="overview">Overview (All Data)</option>
                     <option value="donations">Donations Only</option>
-                    <option value="orders">Orders Only</option>
-                    <option value="payments">Payments Only</option>
+                    <option value="sales">Sales / Revenue (Orders + Payments)</option>
                   </select>
                 </div>
 

@@ -395,24 +395,26 @@ async function generateAdminReport(reportData, res) {
             if (hasMutual || hasAll) {
                 if (doc.y > doc.page.height - 200) doc.addPage();
                 const rowStartY = doc.y;
-                let maxY = rowStartY;
+                let maxLegendItems = 0;
 
                 if (hasMutual) {
+                    const keys = Object.keys(reportData.pieCharts.donationByMutualRole);
+                    maxLegendItems = Math.max(maxLegendItems, keys.length);
                     drawPieChart(doc, reportData.pieCharts.donationByMutualRole, 'Mutual Campaigns', true, {
                         size: 90, centerX: 110, legendX: 180, isSmall: true, titleX: 50, keepY: true,
                     });
-                    maxY = Math.max(maxY, doc.y);
                 }
 
                 if (hasAll) {
-                    doc.y = rowStartY;
+                    doc.y = rowStartY; // Reset Y so second chart draws horizontally adjacent!
+                    const keys = Object.keys(reportData.pieCharts.donationByAllRole);
+                    maxLegendItems = Math.max(maxLegendItems, keys.length);
                     drawPieChart(doc, reportData.pieCharts.donationByAllRole, 'Overall (External vs Church)', true, {
                         size: 90, centerX: 360, legendX: 430, isSmall: true, titleX: 300, keepY: true,
                     });
-                    maxY = Math.max(maxY, doc.y);
                 }
 
-                doc.y = maxY + 40;
+                doc.y = Math.max(rowStartY + 170, rowStartY + 90 + (maxLegendItems * 22));
                 doc.x = 50;
             }
 
@@ -434,8 +436,7 @@ async function generateAdminReport(reportData, res) {
             ay = drawSummaryLine(doc, 'Highest Donation Month:', reportData.analytics.topMonth || 'N/A', ay, false);
             ay = drawSummaryLine(doc, 'Most Popular Campaign:', reportData.analytics.popularCampaign || 'N/A', ay, true);
             ay = drawSummaryLine(doc, 'Top-Selling Merchandise:', reportData.analytics.popularMerch || 'N/A', ay, false);
-            ay = drawSummaryLine(doc, 'User Verification Rate:', reportData.analytics.verifiedPercent || 'N/A', ay, true);
-            ay = drawSummaryLine(doc, 'Growth Insight:', reportData.analytics.growth || 'N/A', ay, false);
+            ay = drawSummaryLine(doc, 'Growth Insight:', reportData.analytics.growth || 'N/A', ay, true);
 
             doc.y = ay + 8;
 
@@ -451,4 +452,18 @@ async function generateAdminReport(reportData, res) {
     });
 }
 
-module.exports = { generateAdminReport };
+module.exports = {
+    generateAdminReport,
+    // Shared helpers for detailedReportGenerators
+    COLORS,
+    fill,
+    stroke,
+    generateHeader,
+    sectionHeader,
+    subHeader,
+    drawKpiRow,
+    drawSummaryLine,
+    drawPieChart,
+    drawBarChart,
+    drawFooter,
+};

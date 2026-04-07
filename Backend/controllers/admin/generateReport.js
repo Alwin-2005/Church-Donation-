@@ -14,13 +14,14 @@ async function handleGenerateAdminReport(req, res) {
         const selectedMonths = months ? months.split(',').map(Number) : [];
         const selectedYear = year ? Number(year) : new Date().getFullYear();
 
-        // Helper to build date filters for different fields
         const buildFilter = (dateField) => {
             if (startDate && endDate) {
+                const endD = new Date(endDate);
+                if (endDate.length <= 10) endD.setUTCHours(23, 59, 59, 999);
                 return {
                     [dateField]: {
                         $gte: new Date(startDate),
-                        $lte: new Date(endDate)
+                        $lte: endD
                     }
                 };
             } else if (selectedMonths.length > 0) {
@@ -65,7 +66,7 @@ async function handleGenerateAdminReport(req, res) {
             donations = donations.filter(d => !d.donationCampaignId?.isTithe); // Exclude tithes
         }
 
-        if (!focus || focus === 'overview' || focus === 'orders') {
+        if (!focus || focus === 'overview' || focus === 'orders' || focus === 'sales') {
             orders = await Order.find(isFiltered ? timeFilter : {}).populate('userId items.itemId');
         }
 
@@ -73,7 +74,7 @@ async function handleGenerateAdminReport(req, res) {
             campaigns = await DonationCampaign.find(isFiltered ? campaignFilter : {}); 
         }
 
-        if (!focus || focus === 'overview' || focus === 'payments') {
+        if (!focus || focus === 'overview' || focus === 'payments' || focus === 'sales') {
             payments = await Payment.find(isFiltered ? timeFilter : {}).populate({
                 path: 'orderId',
                 populate: { path: 'userId' }
@@ -96,7 +97,7 @@ async function handleGenerateAdminReport(req, res) {
         // 1. Summary
         const donationCollected = donations.reduce((sum, d) => sum + (d.paymentStatus === 'paid' ? d.amount : 0), 0);
         const uniqueDonors = new Set(donations.map(d => d.userId?._id?.toString())).size;
-        const avgDonation = donations.length > 0 ? donationCollected / donations.length : 0;
+        const avgDonation = uniqueDonors > 0 ? donationCollected / uniqueDonors : 0;
 
         let topCampaign = "N/A";
         if (campaigns.length > 0) {
@@ -178,8 +179,8 @@ async function handleGenerateAdminReport(req, res) {
             ]),
             merchTable: orders.slice(-1000).map(o => [
                 o._id.toString(), // 0
-                (o.userId?.fullname || 'Guest').substring(0, 10), // 1
-                o.items.map(i => i.itemId?.itemName).join(', ').substring(0, 10), // 2
+                (o.userId?.fullname || 'Guest').substring(0, 20), // 1
+                o.items.map(i => `${i.itemId?.itemName || 'Unknown'}${i.quantity > 1 ? ` x${i.quantity}` : ''}`).join(', '), // 2 — full names
                 (o.items.reduce((sum, i) => sum + i.quantity, 0).toString()), // 3
                 `Rs. ${o.totalAmount}`, // 4
                 o.status, // 5
@@ -238,12 +239,9 @@ async function handleGenerateAdminReport(req, res) {
         if (focus === 'donations') {
             const { generateDetailedDonationReport } = require("../../utils/detailedReportGenerators");
             await generateDetailedDonationReport(reportData, res);
-        } else if (focus === 'orders') {
-            const { generateDetailedOrderReport } = require("../../utils/detailedReportGenerators");
-            await generateDetailedOrderReport(reportData, res);
-        } else if (focus === 'payments') {
-            const { generateDetailedPaymentReport } = require("../../utils/detailedReportGenerators");
-            await generateDetailedPaymentReport(reportData, res);
+        } else if (focus === 'sales') {
+            const { generateSalesRevenueReport } = require("../../utils/detailedReportGenerators");
+            await generateSalesRevenueReport(reportData, res);
         } else {
             await generateAdminReport(reportData, res);
         }
